@@ -13,6 +13,7 @@ public interface CustomerService {
     CustomerDTO createCustomer(CustomerDTO customerDTO) throws ResourceNotFoundException;
     Page<CustomerDTO> getCustomers(Map<String, String> params) throws ResourceNotFoundException;
     CustomerDTO getCustomerById(UUID id) throws ResourceNotFoundException;
+    CustomerDTO getLoggedInCustomer();
     CustomerDTO updateCustomer(UUID id, CustomerDTO customerDTO) throws ResourceNotFoundException;
     void deleteCustomer(UUID id) throws ResourceNotFoundException;
     void changePassword(UUID id, ChangePasswordRequest changePasswordRequest) throws ResourceNotFoundException;

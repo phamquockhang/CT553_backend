@@ -48,6 +48,16 @@ public class CustomerController {
                 .build();
     }
 
+    @GetMapping("/logged-in")
+    public ApiResponse<CustomerDTO> getLoggedInCustomer() {
+        return ApiResponse.<CustomerDTO>builder()
+                .status(HttpStatus.OK.value())
+                .success(true)
+                .payload(customerService.getLoggedInCustomer())
+                .message("Get logged in customer successfully")
+                .build();
+    }
+
     @PutMapping("/{id}")
     public ApiResponse<CustomerDTO> updateCustomer(@PathVariable("id") UUID id, @RequestBody CustomerDTO customerDTO) throws ResourceNotFoundException {
         return ApiResponse.<CustomerDTO>builder()

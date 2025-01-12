@@ -1,0 +1,24 @@
+CREATE EXTENSION IF NOT EXISTS unaccent;
+
+--USER
+ALTER TABLE public.customers
+    ALTER COLUMN created_at SET DEFAULT CURRENT_TIMESTAMP;
+
+--ROLE
+DROP SEQUENCE IF EXISTS roles_seq CASCADE;
+CREATE SEQUENCE roles_seq
+    START WITH 1
+    INCREMENT BY 1;
+ALTER TABLE public.roles
+    ALTER COLUMN role_id SET DEFAULT nextval('roles_seq'),
+ALTER COLUMN created_at SET DEFAULT CURRENT_TIMESTAMP;
+
+--PERMISSION
+DROP SEQUENCE IF EXISTS permissions_seq CASCADE;
+CREATE SEQUENCE permissions_seq
+    START WITH 1
+    INCREMENT BY 1;
+ALTER TABLE public.permissions
+    ALTER COLUMN permission_id SET DEFAULT nextval('permissions_seq'),
+ALTER COLUMN created_at SET DEFAULT CURRENT_TIMESTAMP;
+

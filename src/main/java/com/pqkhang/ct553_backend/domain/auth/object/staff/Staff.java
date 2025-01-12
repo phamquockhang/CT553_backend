@@ -1,4 +1,4 @@
-package com.pqkhang.ct553_backend.domain.auth.object.customer;
+package com.pqkhang.ct553_backend.domain.auth.object.staff;
 
 import com.pqkhang.ct553_backend.domain.auth.object.enums.GenderEnum;
 import com.pqkhang.ct553_backend.domain.auth.object.role.Role;
@@ -20,9 +20,9 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "customers")
+@Table(name = "staffs")
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Customer extends BaseEntity implements UserDetails {
+public class Staff extends BaseEntity implements UserDetails {
 
     @Id
     @Column(name = "id", columnDefinition = "UUID DEFAULT gen_random_uuid()")

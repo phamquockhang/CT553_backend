@@ -3,12 +3,16 @@ package com.pqkhang.ct553_backend.domain.auth.object.customer;
 import com.pqkhang.ct553_backend.app.exception.ResourceNotFoundException;
 import com.pqkhang.ct553_backend.app.response.Meta;
 import com.pqkhang.ct553_backend.app.response.Page;
+import com.pqkhang.ct553_backend.domain.auth.object.role.Role;
+import com.pqkhang.ct553_backend.domain.auth.object.role.RoleRepository;
 import com.pqkhang.ct553_backend.domain.auth.request.ChangePasswordRequest;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,6 +29,7 @@ public class CustomerServiceImpl implements CustomerService {
     CustomerRepository customerRepository;
     CustomerMapper customerMapper;
     PasswordEncoder passwordEncoder;
+    RoleRepository roleRepository;
 
     @Override
     @Transactional
@@ -34,6 +39,9 @@ public class CustomerServiceImpl implements CustomerService {
         } else {
             Customer customer = customerMapper.toCustomer(customerDTO);
             customer.setPassword(passwordEncoder.encode(customerDTO.getPassword()));
+            Role role = roleRepository.findById(customerDTO.getRole().getRoleId()).orElseThrow(() -> new ResourceNotFoundException("Role ID " + customerDTO.getRole().getRoleId() + " is invalid."));
+            customer.setRole(role);
+//            customer.setRole();
             customerRepository.save(customer);
             return customerMapper.toCustomerDTO(customer);
         }
@@ -68,12 +76,29 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
+    public CustomerDTO getLoggedInCustomer() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null) {
+            Customer customer = customerRepository.findCustomerByEmail(authentication.getName())
+                    .orElseThrow(() -> new IllegalArgumentException("Customer not found: " + authentication.getName()));
+            return customerMapper.toCustomerDTO(customer);
+        }
+        return null;
+    }
+
+    @Override
     @Transactional
     public CustomerDTO updateCustomer(UUID id, CustomerDTO customerDTO) throws ResourceNotFoundException {
         Customer customer = customerRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Customer ID " + id + " is invalid."));
 
         if (!customer.getEmail().equals(customerDTO.getEmail())) {
             throw new ResourceNotFoundException("Email cannot be changed");
+        }
+
+        if (customerDTO.getRole() != null) {
+            Role role = roleRepository.findById(customerDTO.getRole().getRoleId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Role ID " + customerDTO.getRole().getRoleId() + " is invalid."));
+            customer.setRole(role);
         }
 
         customerMapper.updateCustomerFromDTO(customerDTO, customer);

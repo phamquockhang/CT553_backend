@@ -1,8 +1,7 @@
-package com.pqkhang.ct553_backend.domain.auth.object.customer;
+package com.pqkhang.ct553_backend.domain.auth.object.staff;
 
 import com.pqkhang.ct553_backend.domain.auth.object.role.RoleDTO;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -15,7 +14,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class CustomerDTO {
+public class StaffDTO {
     UUID id;
     @NotBlank(message = "First name is required")
     String firstName;

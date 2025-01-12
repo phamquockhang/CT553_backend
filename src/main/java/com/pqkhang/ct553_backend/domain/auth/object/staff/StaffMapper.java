@@ -1,4 +1,4 @@
-package com.pqkhang.ct553_backend.domain.auth.object.customer;
+package com.pqkhang.ct553_backend.domain.auth.object.staff;
 
 import com.pqkhang.ct553_backend.domain.auth.object.role.RoleMapper;
 import org.mapstruct.Mapper;
@@ -6,13 +6,13 @@ import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 
 @Mapper(componentModel = "spring", uses = {RoleMapper.class})
-public interface CustomerMapper {
+public interface StaffMapper {
     @Mapping(target = "password", ignore = true)
-    CustomerDTO toCustomerDTO(Customer Customer);
+    StaffDTO toStaffDTO(Staff staff);
 
-    Customer toCustomer(CustomerDTO CustomerDTO);
+    Staff toStaff(StaffDTO staffDTO);
 
     @Mapping(target = "password", ignore = true)
     @Mapping(target = "role.permissions", ignore = true)
-    void updateCustomerFromDTO(CustomerDTO CustomerDTO, @MappingTarget Customer Customer);
+    void updateStaffFromDTO(StaffDTO staffDTO, @MappingTarget Staff staff);
 }
