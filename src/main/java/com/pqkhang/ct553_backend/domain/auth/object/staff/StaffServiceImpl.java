@@ -94,7 +94,9 @@ public class StaffServiceImpl implements StaffService {
         } else {
             Staff staff = staffMapper.toStaff(staffDTO);
             staff.setPassword(passwordEncoder.encode(staffDTO.getPassword()));
-            Role role = roleRepository.findById(staffDTO.getRole().getRoleId()).orElseThrow(() -> new ResourceNotFoundException("Role ID " + staffDTO.getRole().getRoleId() + " is invalid."));
+
+            // default role is staff
+            Role role = roleRepository.findById(2L).orElseThrow(() -> new ResourceNotFoundException("Role ID " + staffDTO.getRole().getRoleId() + " is invalid."));
             staff.setRole(role);
 
             staffRepository.save(staff);
@@ -110,6 +112,10 @@ public class StaffServiceImpl implements StaffService {
         if (!staff.getEmail().equals(staffDTO.getEmail())) {
             throw new ResourceNotFoundException("Email cannot be changed");
         }
+
+        // default role is staff
+        Role role = roleRepository.findByName("STAFF").orElseThrow(() -> new ResourceNotFoundException("Role name " + staffDTO.getRole().getName() + " is invalid."));
+        staff.setRole(role);
 
         staffMapper.updateStaffFromDTO(staffDTO, staff);
         staffRepository.save(staff);

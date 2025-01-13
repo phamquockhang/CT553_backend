@@ -36,24 +36,6 @@ public class CustomerServiceImpl implements CustomerService {
     RequestParamUtils requestParamUtils;
 
     @Override
-    @Transactional
-    public CustomerDTO createCustomer(CustomerDTO customerDTO) throws ResourceNotFoundException {
-        if (customerRepository.existsByEmail(customerDTO.getEmail())) {
-            throw new ResourceNotFoundException("Email already exists");
-        } else {
-            Customer customer = customerMapper.toCustomer(customerDTO);
-            customer.setPassword(passwordEncoder.encode(customerDTO.getPassword()));
-
-            // default role is customer
-            Role role = roleRepository.findById(3L).orElseThrow(() -> new ResourceNotFoundException("Role ID " + customerDTO.getRole().getRoleId() + " is invalid."));
-            customer.setRole(role);
-
-            customerRepository.save(customer);
-            return customerMapper.toCustomerDTO(customer);
-        }
-    }
-
-    @Override
     public Page<CustomerDTO> getCustomers(Map<String, String> params) throws ResourceNotFoundException {
         int page = Integer.parseInt(params.getOrDefault("page", "1"));
         int pageSize = Integer.parseInt(params.getOrDefault("pageSize", "10"));
@@ -105,11 +87,33 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     @Transactional
+    public CustomerDTO createCustomer(CustomerDTO customerDTO) throws ResourceNotFoundException {
+        if (customerRepository.existsByEmail(customerDTO.getEmail())) {
+            throw new ResourceNotFoundException("Email already exists");
+        } else {
+            Customer customer = customerMapper.toCustomer(customerDTO);
+            customer.setPassword(passwordEncoder.encode(customerDTO.getPassword()));
+
+            // default role is customer
+            Role role = roleRepository.findById(3L).orElseThrow(() -> new ResourceNotFoundException("Role ID " + customerDTO.getRole().getRoleId() + " is invalid."));
+            customer.setRole(role);
+
+            customerRepository.save(customer);
+            return customerMapper.toCustomerDTO(customer);
+        }
+    }
+
+    @Override
+    @Transactional
     public CustomerDTO updateCustomer(UUID id, CustomerDTO customerDTO) throws ResourceNotFoundException {
         Customer customer = customerRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Customer ID " + id + " is invalid."));
 
+        if(!customerDTO.getEmail().equals(customer.getEmail())){
+            throw new ResourceNotFoundException("Email cannot be changed");
+        }
+
         // default role is customer
-        Role role = roleRepository.findById(3L).orElseThrow(() -> new ResourceNotFoundException("Role ID " + customerDTO.getRole().getRoleId() + " is invalid."));
+        Role role = roleRepository.findByName("CUSTOMER").orElseThrow(() -> new ResourceNotFoundException("Role name " + customerDTO.getRole().getName() + " is invalid."));
         customer.setRole(role);
 
         customerMapper.updateCustomerFromDTO(customerDTO, customer);

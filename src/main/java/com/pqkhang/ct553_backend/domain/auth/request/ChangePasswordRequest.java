@@ -13,10 +13,8 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE)
 public class ChangePasswordRequest {
-
     @NotBlank(message = "Current password is required")
     String currentPassword;
-
     @NotBlank(message = "New password is required")
     String newPassword;
 }

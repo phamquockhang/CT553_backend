@@ -18,5 +18,14 @@ spring:
   jackson:
     default-property-inclusion: non_null
 
+application:
+  security:
+    rsa:
+      rsa-public-key: classpath:certs/public-key.pem
+      rsa-private-key: classpath:certs/private-key.pem
+    jwt:
+      access-token-validity-in-seconds: 604800 # 1 day
+      refresh-token-validity-in-seconds: 604800 # 7 days
+
 cloudinary:
   url: cloudinary://449763141578937:5XPkEpp24XbH8zBKGt32MeBkpds@djqcnzjbg

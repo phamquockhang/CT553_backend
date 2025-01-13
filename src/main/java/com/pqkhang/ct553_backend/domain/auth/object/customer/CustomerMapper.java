@@ -10,8 +10,6 @@ import org.mapstruct.MappingTarget;
 
 @Mapper(componentModel = "spring", uses = {RoleMapper.class})
 public interface CustomerMapper {
-    RoleRepository roleRepository = null;
-
     @Mapping(target = "password", ignore = true)
     CustomerDTO toCustomerDTO(Customer Customer);
 
