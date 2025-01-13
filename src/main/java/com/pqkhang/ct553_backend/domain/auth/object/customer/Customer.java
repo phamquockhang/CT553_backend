@@ -43,16 +43,16 @@ public class Customer extends BaseEntity implements UserDetails {
 
     Boolean isActivated;
 
+    @ManyToOne
+    @JoinColumn(name = "role_id", nullable = false)
+    Role role;
+
     @PrePersist
     public void prePersist() {
         if (isActivated == null) {
             isActivated = true;
         }
     }
-
-    @ManyToOne
-    @JoinColumn(name = "role_id", nullable = false)
-    Role role;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

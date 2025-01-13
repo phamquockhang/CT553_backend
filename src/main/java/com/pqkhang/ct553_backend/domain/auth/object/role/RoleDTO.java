@@ -1,6 +1,5 @@
 package com.pqkhang.ct553_backend.domain.auth.object.role;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.pqkhang.ct553_backend.domain.auth.object.permission.PermissionDTO;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
@@ -18,12 +17,11 @@ public class RoleDTO {
     Long roleId;
 
     @NotBlank(message = "Role name is required")
-    String roleName;
+    String name;
 
     String description;
 
-    @JsonProperty("isActive")
-    boolean isActive;
+    Boolean isActivated;
 
     List<PermissionDTO> permissions;
 

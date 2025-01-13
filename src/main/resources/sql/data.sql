@@ -1,8 +1,8 @@
 --ROLE
-INSERT INTO public.roles (name, description, is_active)
-VALUES ('MANAGER', 'Quản lý', true),
-       ('EMPLOYEE', 'Nhân viên', true),
-       ('CUSTOMER', 'Khách hàng', true);
+INSERT INTO public.roles (name, description)
+VALUES ('MANAGER', 'Quản lý'),
+       ('EMPLOYEE', 'Nhân viên'),
+       ('CUSTOMER', 'Khách hàng');
 
 --PERMISSION
 INSERT INTO public.permissions (name, api_path, method, module)
@@ -22,5 +22,23 @@ VALUES (gen_random_uuid(), 'customer@gmail.com', 'MALE', 'I am', 'CUSTOMER',
 
 --STAFF
 INSERT INTO public.staffs (id, email, gender, first_name, last_name, password, role_id, is_activated, dob)
-VALUES (gen_random_uuid(), 'staff@gmail.com', 'MALE', 'I am', 'STAFF',
+VALUES (gen_random_uuid(), 'staff1@gmail.com', 'MALE', 'I am', 'STAFF',
+        '$2a$10$MEo.Zw55GDOEVwKtOnJ/TuKNrWVAjluxnWqH96ecqAKUwkFwAVkra', 2, true, '1999-12-03'),
+       (gen_random_uuid(), 'staff3@gmail.com', 'MALE', 'I am', 'STAFF',
+        '$2a$10$MEo.Zw55GDOEVwKtOnJ/TuKNrWVAjluxnWqH96ecqAKUwkFwAVkra', 2, true, '1999-12-03'),
+       (gen_random_uuid(), 'staff5@gmail.com', 'MALE', 'I am', 'STAFF',
+        '$2a$10$MEo.Zw55GDOEVwKtOnJ/TuKNrWVAjluxnWqH96ecqAKUwkFwAVkra', 2, true, '1999-12-03'),
+       (gen_random_uuid(), 'staff8@gmail.com', 'MALE', 'I am', 'STAFF',
+        '$2a$10$MEo.Zw55GDOEVwKtOnJ/TuKNrWVAjluxnWqH96ecqAKUwkFwAVkra', 2, true, '1999-12-03'),
+       (gen_random_uuid(), 'staff2@gmail.com', 'MALE', 'I am', 'STAFF',
+        '$2a$10$MEo.Zw55GDOEVwKtOnJ/TuKNrWVAjluxnWqH96ecqAKUwkFwAVkra', 2, true, '1999-12-03'),
+       (gen_random_uuid(), 'staff4@gmail.com', 'MALE', 'I am', 'STAFF',
+        '$2a$10$MEo.Zw55GDOEVwKtOnJ/TuKNrWVAjluxnWqH96ecqAKUwkFwAVkra', 2, true, '1999-12-03'),
+       (gen_random_uuid(), 'staff7@gmail.com', 'MALE', 'I am', 'STAFF',
+        '$2a$10$MEo.Zw55GDOEVwKtOnJ/TuKNrWVAjluxnWqH96ecqAKUwkFwAVkra', 2, true, '1999-12-03'),
+       (gen_random_uuid(), 'staff6@gmail.com', 'MALE', 'I am', 'STAFF',
+        '$2a$10$MEo.Zw55GDOEVwKtOnJ/TuKNrWVAjluxnWqH96ecqAKUwkFwAVkra', 2, true, '1999-12-03'),
+       (gen_random_uuid(), 'staff9@gmail.com', 'MALE', 'I am', 'STAFF',
+        '$2a$10$MEo.Zw55GDOEVwKtOnJ/TuKNrWVAjluxnWqH96ecqAKUwkFwAVkra', 2, true, '1999-12-03'),
+       (gen_random_uuid(), 'staff10@gmail.com', 'MALE', 'I am', 'STAFF',
         '$2a$10$MEo.Zw55GDOEVwKtOnJ/TuKNrWVAjluxnWqH96ecqAKUwkFwAVkra', 2, true, '1999-12-03');

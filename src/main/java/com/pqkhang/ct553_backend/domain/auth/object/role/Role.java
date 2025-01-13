@@ -27,8 +27,15 @@ public class Role extends BaseEntity implements GrantedAuthority {
     String name;
     String description;
 
-    @Column(name = "is_active")
-    boolean isActive;
+//    @Column(name = "is_active")
+    Boolean isActivated;
+
+    @PrePersist
+    public void prePersist() {
+        if (isActivated == null) {
+            isActivated = true;
+        }
+    }
 
     @OneToMany(mappedBy = "role", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     List<Customer> customers;
@@ -36,6 +43,7 @@ public class Role extends BaseEntity implements GrantedAuthority {
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "permission_role", joinColumns = @JoinColumn(name = "role_id"), inverseJoinColumns = @JoinColumn(name = "permission_id"))
     List<Permission> permissions;
+
 
     @Override
     public String getAuthority() {

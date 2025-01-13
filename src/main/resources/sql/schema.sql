@@ -11,6 +11,7 @@ CREATE SEQUENCE roles_seq
     INCREMENT BY 1;
 ALTER TABLE public.roles
     ALTER COLUMN role_id SET DEFAULT nextval('roles_seq'),
+    ALTER COLUMN is_activated SET DEFAULT true,
 ALTER COLUMN created_at SET DEFAULT CURRENT_TIMESTAMP;
 
 --PERMISSION

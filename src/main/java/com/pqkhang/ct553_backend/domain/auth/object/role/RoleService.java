@@ -7,10 +7,10 @@ import java.util.List;
 import java.util.Map;
 
 public interface RoleService {
-    RoleDTO createRole (RoleDTO roleDTO) throws ResourceNotFoundException;
-    Page<RoleDTO> getRoles(Map<String, String> params);
-    RoleDTO getRoleById(Long id) throws ResourceNotFoundException;
-    void deleteRole(Long id) throws ResourceNotFoundException;
-    RoleDTO updateRole(Long id, RoleDTO roleDTO) throws ResourceNotFoundException;
+    Page<RoleDTO> getRoles(Map<String, String> params) throws ResourceNotFoundException;
     List<RoleDTO> getAllRoles();
+    RoleDTO getRoleById(Long id) throws ResourceNotFoundException;
+    RoleDTO createRole (RoleDTO roleDTO) throws ResourceNotFoundException;
+    RoleDTO updateRole(Long id, RoleDTO roleDTO) throws ResourceNotFoundException;
+    void deleteRole(Long id) throws ResourceNotFoundException;
 }

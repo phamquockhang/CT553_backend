@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -18,22 +19,22 @@ import java.util.UUID;
 public class StaffController {
     private final StaffService staffService;
 
-    @PostMapping
-    public ApiResponse<StaffDTO> createStaff(@Valid @RequestBody StaffDTO staffDTO) throws ResourceNotFoundException {
-        return ApiResponse.<StaffDTO>builder()
-                .status(HttpStatus.CREATED.value())
-                .success(true)
-                .payload(staffService.createStaff(staffDTO))
-                .message("Staff created successfully")
-                .build();
-    }
-
     @GetMapping
     public ApiResponse<Page<StaffDTO>> getStaffs(@RequestParam Map<String, String> params) throws ResourceNotFoundException {
         return ApiResponse.<Page<StaffDTO>>builder()
                 .status(HttpStatus.OK.value())
                 .success(true)
                 .payload(staffService.getStaffs(params))
+                .message("Get all staffs successfully")
+                .build();
+    }
+
+    @GetMapping("/all")
+    public ApiResponse<List<StaffDTO>> getAllStaffs() {
+        return ApiResponse.<List<StaffDTO>>builder()
+                .status(HttpStatus.OK.value())
+                .success(true)
+                .payload(staffService.getAllStaffs())
                 .message("Get all staffs successfully")
                 .build();
     }
@@ -55,6 +56,16 @@ public class StaffController {
                 .success(true)
                 .payload(staffService.getLoggedInStaff())
                 .message("Get logged in staff successfully")
+                .build();
+    }
+
+    @PostMapping
+    public ApiResponse<StaffDTO> createStaff(@Valid @RequestBody StaffDTO staffDTO) throws ResourceNotFoundException {
+        return ApiResponse.<StaffDTO>builder()
+                .status(HttpStatus.CREATED.value())
+                .success(true)
+                .payload(staffService.createStaff(staffDTO))
+                .message("Staff created successfully")
                 .build();
     }
 

@@ -21,9 +21,11 @@ public class RoleController {
     RoleService roleService;
 
     @GetMapping
-    public ApiResponse<Page<RoleDTO>> getRole(@RequestParam Map<String, String> params) {
+    public ApiResponse<Page<RoleDTO>> getRoles(@RequestParam Map<String, String> params) throws ResourceNotFoundException {
         return ApiResponse.<Page<RoleDTO>>builder()
                 .status(HttpStatus.OK.value())
+                .success(true)
+                .message("Get all roles successfully")
                 .payload(roleService.getRoles(params))
                 .build();
     }
@@ -32,23 +34,29 @@ public class RoleController {
     public ApiResponse<List<RoleDTO>> getAllRoles() {
         return ApiResponse.<List<RoleDTO>>builder()
                 .status(HttpStatus.OK.value())
+                .success(true)
+                .message("Get all roles successfully")
                 .payload(roleService.getAllRoles())
                 .build();
     }
 
-    @PostMapping
-    public ApiResponse<RoleDTO> create(@Valid @RequestBody RoleDTO roleDTO) throws ResourceNotFoundException {
+    @GetMapping("/{id}")
+    public ApiResponse<RoleDTO> getRoleById(@PathVariable("id") Long id) throws ResourceNotFoundException {
         return ApiResponse.<RoleDTO>builder()
-                .status(HttpStatus.CREATED.value())
-                .payload(roleService.createRole(roleDTO))
+                .status(HttpStatus.OK.value())
+                .success(true)
+                .message("Get role has id " + id + " successfully")
+                .payload(roleService.getRoleById(id))
                 .build();
     }
 
-    @GetMapping("/{id}")
-    public ApiResponse<RoleDTO> getRole(@PathVariable("id") Long id) throws ResourceNotFoundException {
+    @PostMapping
+    public ApiResponse<RoleDTO> createRole(@Valid @RequestBody RoleDTO roleDTO) throws ResourceNotFoundException {
         return ApiResponse.<RoleDTO>builder()
-                .status(HttpStatus.OK.value())
-                .payload(roleService.getRoleById(id))
+                .status(HttpStatus.CREATED.value())
+                .success(true)
+                .message("Role created successfully")
+                .payload(roleService.createRole(roleDTO))
                 .build();
     }
 
@@ -57,6 +65,8 @@ public class RoleController {
         roleService.deleteRole(id);
         return ApiResponse.<Void>builder()
                 .status(HttpStatus.OK.value())
+                .success(true)
+                .message("Role deleted successfully")
                 .build();
     }
 
@@ -64,6 +74,8 @@ public class RoleController {
     public ApiResponse<RoleDTO> updateRole(@PathVariable Long id,@Valid @RequestBody RoleDTO roleDTO) throws ResourceNotFoundException {
         return ApiResponse.<RoleDTO>builder()
                 .status(HttpStatus.OK.value())
+                .success(true)
+                .message("Role updated successfully")
                 .payload(roleService.updateRole(id, roleDTO))
                 .build();
     }
