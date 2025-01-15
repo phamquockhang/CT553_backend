@@ -90,11 +90,6 @@ public class RoleServiceImpl implements RoleService {
     @Transactional
     public RoleDTO createRole(RoleDTO roleDTO) throws ResourceNotFoundException {
         Role newRole = roleMapper.toRole(roleDTO);
-//        newRole.getPermissions().forEach(permission -> {
-//            if (permission.getPermissionId() != null) {
-//                entityManager.merge(permission);
-//            }
-//        });
         return roleMapper.toRoleDTO(roleRepository.save(newRole));
     }
 

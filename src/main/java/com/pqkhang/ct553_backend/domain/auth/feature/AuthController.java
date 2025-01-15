@@ -25,16 +25,6 @@ public class AuthController {
 
     AuthService authService;
 
-//    @PostMapping("/register/staff")
-//    public ApiResponse<StaffDTO> registerStaff(@RequestBody StaffDTO staffDTO) throws ResourceNotFoundException {
-//        return ApiResponse.<StaffDTO>builder()
-//                .status(HttpStatus.CREATED.value())
-//                .success(true)
-//                .message("Register for staff successfully")
-//                .payload(authService.registerStaff(staffDTO))
-//                .build();
-//    }
-
     @PostMapping("/register/customer")
     public ApiResponse<CustomerDTO> registerCustomer(@RequestBody CustomerDTO customerDTO) throws ResourceNotFoundException {
         return ApiResponse.<CustomerDTO>builder()
@@ -47,12 +37,23 @@ public class AuthController {
 
     @PostMapping("/login/customer")
     public ApiResponse<AuthResponse> loginCustomer(@Valid @RequestBody AuthRequest authRequest,
-                                           HttpServletResponse response) {
+                                                   HttpServletResponse response) {
         return ApiResponse.<AuthResponse>builder()
                 .status(HttpStatus.OK.value())
                 .success(true)
                 .message("Login for customer successfully")
                 .payload(authService.loginCustomer(authRequest, response))
+                .build();
+    }
+
+    @PostMapping("/login/staff")
+    public ApiResponse<AuthResponse> loginStaff(@Valid @RequestBody AuthRequest authRequest,
+                                                   HttpServletResponse response) {
+        return ApiResponse.<AuthResponse>builder()
+                .status(HttpStatus.OK.value())
+                .success(true)
+                .message("Login for staff successfully")
+                .payload(authService.loginStaff(authRequest, response))
                 .build();
     }
 

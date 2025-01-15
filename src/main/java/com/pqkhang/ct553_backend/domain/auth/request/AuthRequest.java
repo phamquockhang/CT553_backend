@@ -1,5 +1,6 @@
 package com.pqkhang.ct553_backend.domain.auth.request;
 
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -11,7 +12,10 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class AuthRequest {
     @NotNull
+//    @NotBlank(message = "Email is required")
     String email;
+
     @NotNull
+//    @NotBlank(message = "Password is required")
     String password;
 }

@@ -13,8 +13,9 @@ import java.io.UnsupportedEncodingException;
 
 public interface AuthService {
     CustomerDTO registerCustomer(CustomerDTO customerDTO) throws ResourceNotFoundException;
-
     AuthResponse loginCustomer(@Valid AuthRequest authRequest, HttpServletResponse response);
+
+    AuthResponse loginStaff(@Valid AuthRequest authRequest, HttpServletResponse response);
 
 //    AuthResponse login(AuthRequest authRequest, HttpServletResponse response);
 //

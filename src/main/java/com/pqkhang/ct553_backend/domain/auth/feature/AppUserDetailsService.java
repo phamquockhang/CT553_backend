@@ -29,13 +29,13 @@ public class AppUserDetailsService implements UserDetailsService {
         Customer customer = customerRepository.findCustomerByEmail(email).orElse(null);
         if (customer != null) {
             List<GrantedAuthority> authoritiesCustomer = List.of(new SimpleGrantedAuthority(customer.getRole().getName()));
-            return new User(customer.getEmail(), null, authoritiesCustomer);
+            return new User(customer.getEmail(), customer.getPassword(), authoritiesCustomer);
         }
 
         Staff staff = staffRepository.findStaffByEmail(email).orElse(null);
         if (staff != null) {
             List<GrantedAuthority> authoritiesStaff = List.of(new SimpleGrantedAuthority(staff.getRole().getName()));
-            return new User(staff.getEmail(), null, authoritiesStaff);
+            return new User(staff.getEmail(), staff.getPassword(), authoritiesStaff);
         }else{
             throw new UsernameNotFoundException("User not found");
         }

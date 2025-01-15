@@ -65,17 +65,6 @@ public class SecurityConfig {
                 }))
                 .authorizeHttpRequests(requests -> requests
                         .requestMatchers("/","/api/v1/auth/**",
-                                "/api/v1/countries/**",
-                                "/api/v1/airports/all",
-                                "/api/v1/flights/search",
-                                "/api/v1/flights/overview" ,
-                                "/api/v1/bookings",
-                                "/api/v1/bookings/search",
-                                "/api/v1/bookings/{bookingId}/reserve",
-                                "/api/v1/meals/all",
-                                "/api/v1/baggage/all",
-                                "/api/v1/transactions/**",
-                                "/api/v1/coupons/{code}",
                                 "/oauth2/**").permitAll()
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

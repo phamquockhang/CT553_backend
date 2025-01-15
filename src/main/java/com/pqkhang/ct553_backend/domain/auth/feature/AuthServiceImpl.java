@@ -10,7 +10,6 @@ import com.pqkhang.ct553_backend.domain.auth.object.permission.PermissionReposit
 import com.pqkhang.ct553_backend.domain.auth.object.role.Role;
 import com.pqkhang.ct553_backend.domain.auth.object.role.RoleRepository;
 import com.pqkhang.ct553_backend.domain.auth.object.staff.Staff;
-import com.pqkhang.ct553_backend.domain.auth.object.staff.StaffDTO;
 import com.pqkhang.ct553_backend.domain.auth.object.staff.StaffMapper;
 import com.pqkhang.ct553_backend.domain.auth.object.staff.StaffRepository;
 import com.pqkhang.ct553_backend.domain.auth.request.AuthRequest;
@@ -24,12 +23,10 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -71,6 +68,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public AuthResponse loginCustomer(AuthRequest authRequest, HttpServletResponse response) {
+        SecurityContextHolder.clearContext();
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(authRequest.getEmail(), authRequest.getPassword())
         );
@@ -94,11 +92,32 @@ public class AuthServiceImpl implements AuthService {
                 .build();
     }
 
-//    @Override
-//    public AuthResponse login(AuthRequest authRequest, HttpServletResponse response) {
-//
-//    }
-//
+    @Override
+    public AuthResponse loginStaff(AuthRequest authRequest, HttpServletResponse response) {
+        SecurityContextHolder.clearContext();
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(authRequest.getEmail(), authRequest.getPassword())
+        );
+
+        Staff staff = staffRepository.findStaffByEmail(authRequest.getEmail())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        String accessToken = jwtUtils.generateAccessToken(staff);
+        String refreshToken = jwtUtils.generateRefreshToken(staff);
+
+        // Store refresh token in http only cookie
+        Cookie refreshTokenCookie = new Cookie("refresh_token", refreshToken);
+        refreshTokenCookie.setHttpOnly(true);
+        refreshTokenCookie.setPath("/");
+        refreshTokenCookie.setAttribute("SameSite", "Strict");
+        refreshTokenCookie.setMaxAge(7 * 24 * 60 * 60); // 7 days
+
+        response.addCookie(refreshTokenCookie);
+        return AuthResponse.builder()
+                .accessToken(accessToken)
+                .build();
+    }
+
 //    @Override
 //    public AuthResponse refreshAccessToken(String refreshToken) {
 //        Jwt jwtRefreshToken = jwtDecoder.decode(refreshToken);
