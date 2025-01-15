@@ -14,6 +14,7 @@ import com.pqkhang.ct553_backend.domain.auth.object.staff.StaffMapper;
 import com.pqkhang.ct553_backend.domain.auth.object.staff.StaffRepository;
 import com.pqkhang.ct553_backend.domain.auth.request.AuthRequest;
 import com.pqkhang.ct553_backend.domain.auth.response.AuthResponse;
+import com.pqkhang.ct553_backend.infrastructure.audit.AuditAwareImpl;
 import com.pqkhang.ct553_backend.infrastructure.utils.JwtUtils;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
@@ -43,6 +44,9 @@ public class AuthServiceImpl implements AuthService {
     StaffRepository staffRepository;
     StaffMapper staffMapper;
     JwtDecoder jwtDecoder;
+
+
+    AuditAwareImpl auditAware;
 
     @Override
     public CustomerDTO registerCustomer(CustomerDTO customerDTO) throws ResourceNotFoundException {
@@ -116,6 +120,22 @@ public class AuthServiceImpl implements AuthService {
         return AuthResponse.builder()
                 .accessToken(accessToken)
                 .build();
+    }
+
+    @Override
+    public void logout(HttpServletResponse httpServletResponse) throws ResourceNotFoundException {
+        String email = auditAware.getCurrentAuditor().orElse("");
+//
+        if (email.isEmpty()) {
+            throw new ResourceNotFoundException("Access Token not valid");
+        }
+        SecurityContextHolder.clearContext();
+        Cookie refreshTokenCookie = new Cookie("refresh_token", null);
+        refreshTokenCookie.setHttpOnly(true);
+        refreshTokenCookie.setPath("/");
+        refreshTokenCookie.setMaxAge(0);
+
+        httpServletResponse.addCookie(refreshTokenCookie);
     }
 
 //    @Override

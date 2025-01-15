@@ -17,6 +17,7 @@ public interface AuthService {
 
     AuthResponse loginStaff(@Valid AuthRequest authRequest, HttpServletResponse response);
 
+    void logout(HttpServletResponse httpServletResponse) throws ResourceNotFoundException;
 //    AuthResponse login(AuthRequest authRequest, HttpServletResponse response);
 //
 //    AuthResponse refreshAccessToken(String refreshToken);

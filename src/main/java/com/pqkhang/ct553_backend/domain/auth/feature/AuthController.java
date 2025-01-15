@@ -57,6 +57,14 @@ public class AuthController {
                 .build();
     }
 
+    @PostMapping("/logout")
+    public ApiResponse<Void> logout(HttpServletResponse response) throws ResourceNotFoundException {
+        authService.logout(response);
+        return ApiResponse.<Void>builder()
+                .status(HttpStatus.OK.value())
+                .build();
+    }
+
 //    @GetMapping("/verify")
 //    public ApiResponse<UserDTO> verifyUser(@RequestParam("token") String token) throws ResourceNotFoundException {
 //        UserDTO userDTO = authService.verifyUser(token);
@@ -78,13 +86,6 @@ public class AuthController {
 //                .build();
 //    }
 //
-//    @PostMapping("/logout")
-//    public ApiResponse<Void> logout(HttpServletResponse response) throws ResourceNotFoundException {
-//        authService.logout(response);
-//        return ApiResponse.<Void>builder()
-//                .status(HttpStatus.OK.value())
-//                .build();
-//    }
 //
 //    @GetMapping("/success")
 //    public ApiResponse<UserDTO> loginSuccess(@AuthenticationPrincipal OidcUser oidcUser) {
