@@ -75,7 +75,7 @@ public class StaffController {
                 .status(HttpStatus.OK.value())
                 .success(true)
                 .payload(staffService.updateStaff(id, staffDTO))
-                .message("Update staff has id " + id + " successfully")
+                .message("Cập nhật nhân viên thành công")
                 .build();
     }
 
@@ -85,7 +85,7 @@ public class StaffController {
         return ApiResponse.<Void>builder()
                 .status(HttpStatus.OK.value())
                 .success(true)
-                .message("Delete staff has id " + id + " successfully")
+                .message("Xóa nhân viên thành công")
                 .build();
     }
 
@@ -95,7 +95,7 @@ public class StaffController {
         return ApiResponse.<Void>builder()
                 .status(HttpStatus.OK.value())
                 .success(true)
-                .message("Change password successfully")
+                .message("Đổi mật khẩu thành công")
                 .build();
     }
 }

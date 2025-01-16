@@ -78,7 +78,7 @@ public class AuthServiceImpl implements AuthService {
         );
 
         Customer customer = customerRepository.findCustomerByEmail(authRequest.getEmail())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy tài khoản khách hàng này!"));
 
         String accessToken = jwtUtils.generateAccessToken(customer);
         String refreshToken = jwtUtils.generateRefreshToken(customer);
@@ -104,7 +104,10 @@ public class AuthServiceImpl implements AuthService {
         );
 
         Staff staff = staffRepository.findStaffByEmail(authRequest.getEmail())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy tài khoản nhân viên này!"));
+        if (!staff.getIsActivated()) {
+            throw new RuntimeException("Tài khoản nhân viên chưa kích hoạt!");
+        }
 
         String accessToken = jwtUtils.generateAccessToken(staff);
         String refreshToken = jwtUtils.generateRefreshToken(staff);

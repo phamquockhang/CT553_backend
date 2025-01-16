@@ -75,7 +75,7 @@ public class CustomerController {
                 .status(HttpStatus.OK.value())
                 .success(true)
                 .payload(customerService.updateCustomer(id, customerDTO))
-                .message("Update customer has id " + id + " successfully")
+                .message("Cập nhật khách hàng thành công")
                 .build();
     }
 
@@ -85,7 +85,7 @@ public class CustomerController {
         return ApiResponse.<Void>builder()
                 .status(HttpStatus.OK.value())
                 .success(true)
-                .message("Delete customer has id " + id + " successfully")
+                .message("Xóa khách hàng thành công")
                 .build();
     }
 
@@ -95,7 +95,7 @@ public class CustomerController {
         return ApiResponse.<Void>builder()
                 .status(HttpStatus.OK.value())
                 .success(true)
-                .message("Change password successfully")
+                .message("Đổi mật khẩu thành công")
                 .build();
     }
 }
