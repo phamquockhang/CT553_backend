@@ -22,10 +22,14 @@ public class RequestParamUtils {
         String idFieldName = EntityUtils.getIdFieldName(entityManager, entityClass);
 
         if (sortBy != null && !sortBy.isEmpty()) {
-            Sort.Order createdAtOrder = new Sort.Order(Sort.Direction.fromString(direction), sortBy);
-            Sort.Order updatedAtOrder = new Sort.Order(Sort.Direction.fromString("asc"), "updatedAt");
+            String[] sortByFields = sortBy.split(",");
+            for(String field : sortByFields) {
+                Sort.Order order = new Sort.Order(Sort.Direction.fromString(direction), field.trim());
+                sortOrders.add(order);
+            }
+
             Sort.Order idOrder = new Sort.Order(Sort.Direction.ASC, idFieldName);
-            sortOrders.addAll(List.of(createdAtOrder, updatedAtOrder, idOrder));
+            sortOrders.add(idOrder);
         }
         return sortOrders;
     }
