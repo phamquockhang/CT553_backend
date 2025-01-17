@@ -25,9 +25,9 @@ import java.util.UUID;
 public class Staff extends BaseEntity implements UserDetails {
 
     @Id
-    @Column(name = "id", columnDefinition = "UUID DEFAULT gen_random_uuid()")
+    @Column(name = "staff_id", columnDefinition = "UUID DEFAULT gen_random_uuid()")
     @GeneratedValue(strategy = GenerationType.UUID)
-    UUID id;
+    UUID staffId;
 
     String lastName;
     String firstName;

@@ -25,10 +25,10 @@ VALUES  ('Get all roles', '/api/v1/roles', 'GET', 'ROLE'),
         ('Delete a staff', '/api/v1/staffs/{id}', 'DELETE', 'STAFF'),
 
         ('Get all customers', '/api/v1/customers', 'GET', 'CUSTOMER'),
-        ('Get a customer', '/api/v1/customers/{id}', 'GET', 'CUSTOMER'),
-        ('Create a customer', '/api/v1/customers', 'POST', 'CUSTOMER'),
-        ('Update a customer', '/api/v1/customers/{id}', 'PUT', 'CUSTOMER'),
-        ('Delete a customer', '/api/v1/customers/{id}', 'DELETE', 'CUSTOMER');
+        ('Get a score', '/api/v1/customers/{id}', 'GET', 'CUSTOMER'),
+        ('Create a score', '/api/v1/customers', 'POST', 'CUSTOMER'),
+        ('Update a score', '/api/v1/customers/{id}', 'PUT', 'CUSTOMER'),
+        ('Delete a score', '/api/v1/customers/{id}', 'DELETE', 'CUSTOMER');
 
 --         ('Create a product', '/api/v1/products', 'POST', 'PRODUCT'),
 --         ('Update a product', '/api/v1/products', 'PUT', 'PRODUCT'),
@@ -53,7 +53,7 @@ VALUES (2, 18),
 -- VALUES (3, 6);
 
 --CUSTOMER
-INSERT INTO public.customers (id, email, gender, first_name, last_name, password, role_id, is_activated, dob)
+INSERT INTO public.customers (customer_id, email, gender, first_name, last_name, password, role_id, is_activated, dob)
 VALUES (gen_random_uuid(), 'customer1@gmail.com', 'MALE', 'CUSTOMER', 'I am',
         '$2a$10$MEo.Zw55GDOEVwKtOnJ/TuKNrWVAjluxnWqH96ecqAKUwkFwAVkra', 3, true, '1999-01-01'),
        (gen_random_uuid(), 'customer2@gmail.com', 'FEMALE', 'CUSTOMER', 'I am',
@@ -64,12 +64,12 @@ VALUES (gen_random_uuid(), 'customer1@gmail.com', 'MALE', 'CUSTOMER', 'I am',
         '$2a$10$MEo.Zw55GDOEVwKtOnJ/TuKNrWVAjluxnWqH96ecqAKUwkFwAVkra', 3, true, '1999-01-04');
 
 --MANAGER
-INSERT INTO public.staffs (id, email, gender, first_name, last_name, password, role_id, is_activated, dob)
+INSERT INTO public.staffs (staff_id, email, gender, first_name, last_name, password, role_id, is_activated, dob)
 VALUES (gen_random_uuid(), 'manager@gmail.com', 'MALE', 'MANAGER', 'I am',
         '$2a$10$MEo.Zw55GDOEVwKtOnJ/TuKNrWVAjluxnWqH96ecqAKUwkFwAVkra', 1, true, '2003-08-11');
 
---EMPLOYEE
-INSERT INTO public.staffs (id, email, gender, first_name, last_name, password, role_id, is_activated, dob)
+--STAFF
+INSERT INTO public.staffs (staff_id, email, gender, first_name, last_name, password, role_id, is_activated, dob)
 VALUES (gen_random_uuid(), 'staff1@gmail.com', 'MALE', 'STAFF', 'I am',
         '$2a$10$MEo.Zw55GDOEVwKtOnJ/TuKNrWVAjluxnWqH96ecqAKUwkFwAVkra', 2, true, '1999-12-01'),
        (gen_random_uuid(), 'staff2@gmail.com', 'MALE', 'STAFF', 'I am',
@@ -90,3 +90,10 @@ VALUES (gen_random_uuid(), 'staff1@gmail.com', 'MALE', 'STAFF', 'I am',
         '$2a$10$MEo.Zw55GDOEVwKtOnJ/TuKNrWVAjluxnWqH96ecqAKUwkFwAVkra', 2, true, '1999-12-09'),
        (gen_random_uuid(), 'staff10@gmail.com', 'MALE', 'STAFF', 'I am',
         '$2a$10$MEo.Zw55GDOEVwKtOnJ/TuKNrWVAjluxnWqH96ecqAKUwkFwAVkra', 2, true, '1999-12-10');
+
+--SCORE
+INSERT INTO public.scores (score_id, customer_id, change_amount, new_value, is_current)
+VALUES (gen_random_uuid(), (SELECT customer_id FROM public.customers WHERE email = 'customer1@gmail.com'), 100, 100, true),
+       (gen_random_uuid(), (SELECT customer_id FROM public.customers WHERE email = 'customer2@gmail.com'), 200, 200, true),
+       (gen_random_uuid(), (SELECT customer_id FROM public.customers WHERE email = 'customer3@gmail.com'), 30, 30, true),
+       (gen_random_uuid(), (SELECT customer_id FROM public.customers WHERE email = 'customer1@gmail.com'), -10, 90, true);

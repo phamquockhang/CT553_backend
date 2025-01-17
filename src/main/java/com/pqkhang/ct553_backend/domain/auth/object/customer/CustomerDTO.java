@@ -16,7 +16,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class CustomerDTO {
-    UUID id;
+    UUID customerId;
     @NotBlank(message = "First name is required")
     String firstName;
     @NotBlank(message = "Last name is required")

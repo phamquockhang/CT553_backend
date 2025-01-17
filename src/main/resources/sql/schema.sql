@@ -8,6 +8,10 @@ ALTER TABLE public.customers
 ALTER TABLE public.staffs
     ALTER COLUMN created_at SET DEFAULT CURRENT_TIMESTAMP;
 
+--SCORE
+ALTER TABLE public.scores
+    ALTER COLUMN created_at SET DEFAULT CURRENT_TIMESTAMP;
+
 --ROLE
 DROP SEQUENCE IF EXISTS roles_seq CASCADE;
 CREATE SEQUENCE roles_seq
@@ -26,4 +30,3 @@ CREATE SEQUENCE permissions_seq
 ALTER TABLE public.permissions
     ALTER COLUMN permission_id SET DEFAULT nextval('permissions_seq'),
 ALTER COLUMN created_at SET DEFAULT CURRENT_TIMESTAMP;
-

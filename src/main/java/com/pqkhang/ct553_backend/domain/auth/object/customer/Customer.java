@@ -1,5 +1,6 @@
 package com.pqkhang.ct553_backend.domain.auth.object.customer;
 
+import com.pqkhang.ct553_backend.domain.auth.object.customer.score.Score;
 import com.pqkhang.ct553_backend.domain.auth.object.enums.GenderEnum;
 import com.pqkhang.ct553_backend.domain.auth.object.role.Role;
 import com.pqkhang.ct553_backend.domain.common.entity.BaseEntity;
@@ -25,9 +26,9 @@ import java.util.UUID;
 public class Customer extends BaseEntity implements UserDetails {
 
     @Id
-    @Column(name = "id", columnDefinition = "UUID DEFAULT gen_random_uuid()")
+    @Column(name = "customer_id", columnDefinition = "UUID DEFAULT gen_random_uuid()")
     @GeneratedValue(strategy = GenerationType.UUID)
-    UUID id;
+    UUID customerId;
 
     String lastName;
     String firstName;
@@ -46,6 +47,9 @@ public class Customer extends BaseEntity implements UserDetails {
     @ManyToOne
     @JoinColumn(name = "role_id", nullable = false)
     Role role;
+
+    @OneToMany(mappedBy = "customer", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
+    List<Score> scores;
 
     @PrePersist
     public void prePersist() {
