@@ -3,7 +3,6 @@ package com.pqkhang.ct553_backend.domain.auth.feature;
 import com.pqkhang.ct553_backend.app.exception.ResourceNotFoundException;
 import com.pqkhang.ct553_backend.app.response.ApiResponse;
 import com.pqkhang.ct553_backend.domain.auth.object.customer.CustomerDTO;
-import com.pqkhang.ct553_backend.domain.auth.object.staff.StaffDTO;
 import com.pqkhang.ct553_backend.domain.auth.request.AuthRequest;
 import com.pqkhang.ct553_backend.domain.auth.response.AuthResponse;
 import jakarta.servlet.http.HttpServletResponse;
@@ -12,10 +11,10 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.*;
-
-import java.io.UnsupportedEncodingException;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/v1/auth")
@@ -35,25 +34,14 @@ public class AuthController {
                 .build();
     }
 
-    @PostMapping("/login/customer")
-    public ApiResponse<AuthResponse> loginCustomer(@Valid @RequestBody AuthRequest authRequest,
+    @PostMapping("/login")
+    public ApiResponse<AuthResponse> login(@Valid @RequestBody AuthRequest authRequest,
                                                    HttpServletResponse response) {
         return ApiResponse.<AuthResponse>builder()
                 .status(HttpStatus.OK.value())
                 .success(true)
                 .message("Login for customer successfully")
-                .payload(authService.loginCustomer(authRequest, response))
-                .build();
-    }
-
-    @PostMapping("/login/staff")
-    public ApiResponse<AuthResponse> loginStaff(@Valid @RequestBody AuthRequest authRequest,
-                                                   HttpServletResponse response) {
-        return ApiResponse.<AuthResponse>builder()
-                .status(HttpStatus.OK.value())
-                .success(true)
-                .message("Login for staff successfully")
-                .payload(authService.loginStaff(authRequest, response))
+                .payload(authService.login(authRequest, response))
                 .build();
     }
 

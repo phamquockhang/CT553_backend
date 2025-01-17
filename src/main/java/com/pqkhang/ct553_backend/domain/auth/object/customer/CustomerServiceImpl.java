@@ -136,7 +136,7 @@ public class CustomerServiceImpl implements CustomerService {
     @Transactional
     public CustomerDTO createCustomer(CustomerDTO customerDTO) throws ResourceNotFoundException {
         if (customerRepository.existsByEmail(customerDTO.getEmail())) {
-            throw new ResourceNotFoundException("Email already exists");
+            throw new ResourceNotFoundException("Email này đã được sử dụng");
         } else {
             Customer customer = customerMapper.toCustomer(customerDTO);
             customer.setPassword(passwordEncoder.encode(customerDTO.getPassword()));

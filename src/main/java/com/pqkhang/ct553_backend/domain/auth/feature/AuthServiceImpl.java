@@ -52,7 +52,7 @@ public class AuthServiceImpl implements AuthService {
     public CustomerDTO registerCustomer(CustomerDTO customerDTO) throws ResourceNotFoundException {
         boolean isEmailExist = this.customerRepository.existsByEmail(customerDTO.getEmail());
         if (isEmailExist) {
-            throw new DataIntegrityViolationException("Email " + customerDTO.getEmail() + " already exists, please use another email.");
+            throw new DataIntegrityViolationException("Email này đã được sử dụng! Vui lòng chọn email khác.");
         }
 
         Customer customer = customerMapper.toCustomer(customerDTO);
@@ -71,47 +71,37 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public AuthResponse loginCustomer(AuthRequest authRequest, HttpServletResponse response) {
+    public AuthResponse login(AuthRequest authRequest, HttpServletResponse response) {
         SecurityContextHolder.clearContext();
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(authRequest.getEmail(), authRequest.getPassword())
         );
 
-        Customer customer = customerRepository.findCustomerByEmail(authRequest.getEmail())
-                .orElseThrow(() -> new RuntimeException("Không tìm thấy tài khoản khách hàng này!"));
+        String accessToken = "";
+        String refreshToken = "";
+        Staff staff = staffRepository.findStaffByEmail(authRequest.getEmail()).orElse(null);
+        Customer customer = customerRepository.findCustomerByEmail(authRequest.getEmail()).orElse(null);
 
-        String accessToken = jwtUtils.generateAccessToken(customer);
-        String refreshToken = jwtUtils.generateRefreshToken(customer);
+//        System.out.println("&&&&&&&&&&&&&&&&&&&Staff: " + staff);
+//        System.out.println("&&&&&&&&&&&&&&&&&&&Customer: " + customer);
 
-        // Store refresh token in http only cookie
-        Cookie refreshTokenCookie = new Cookie("refresh_token", refreshToken);
-        refreshTokenCookie.setHttpOnly(true);
-        refreshTokenCookie.setPath("/");
-        refreshTokenCookie.setAttribute("SameSite", "Strict");
-        refreshTokenCookie.setMaxAge(7 * 24 * 60 * 60); // 7 days
+        if (staff != null) {
+            if (!staff.getIsActivated()) {
+                throw new RuntimeException("Tài khoản nhân viên chưa kích hoạt!");
+            }
+            accessToken = jwtUtils.generateAccessToken(staff);
+            refreshToken = jwtUtils.generateRefreshToken(staff);
 
-        response.addCookie(refreshTokenCookie);
-        return AuthResponse.builder()
-                .accessToken(accessToken)
-                .build();
-    }
-
-    @Override
-    public AuthResponse loginStaff(AuthRequest authRequest, HttpServletResponse response) {
-        SecurityContextHolder.clearContext();
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(authRequest.getEmail(), authRequest.getPassword())
-        );
-
-        Staff staff = staffRepository.findStaffByEmail(authRequest.getEmail())
-                .orElseThrow(() -> new RuntimeException("Không tìm thấy tài khoản nhân viên này!"));
-        if (!staff.getIsActivated()) {
-            throw new RuntimeException("Tài khoản nhân viên chưa kích hoạt!");
+        } else if (customer != null) {
+            if (!customer.getIsActivated()) {
+                throw new RuntimeException("Tài khoản khách hàng chưa kích hoạt!");
+            }
+            accessToken = jwtUtils.generateAccessToken(customer);
+            refreshToken = jwtUtils.generateRefreshToken(customer);
+        } else {
+            throw new RuntimeException("Không tìm thấy tài khoản!");
         }
 
-        String accessToken = jwtUtils.generateAccessToken(staff);
-        String refreshToken = jwtUtils.generateRefreshToken(staff);
-
         // Store refresh token in http only cookie
         Cookie refreshTokenCookie = new Cookie("refresh_token", refreshToken);
         refreshTokenCookie.setHttpOnly(true);
@@ -124,11 +114,12 @@ public class AuthServiceImpl implements AuthService {
                 .accessToken(accessToken)
                 .build();
     }
+
 
     @Override
     public void logout(HttpServletResponse httpServletResponse) throws ResourceNotFoundException {
         String email = auditAware.getCurrentAuditor().orElse("");
-//
+
         if (email.isEmpty()) {
             throw new ResourceNotFoundException("Access Token not valid");
         }

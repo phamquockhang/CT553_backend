@@ -5,6 +5,8 @@ import com.pqkhang.ct553_backend.app.request.SearchCriteria;
 import com.pqkhang.ct553_backend.app.response.Meta;
 import com.pqkhang.ct553_backend.app.response.Page;
 import com.pqkhang.ct553_backend.infrastructure.utils.RequestParamUtils;
+import com.pqkhang.ct553_backend.infrastructure.utils.StringUtils;
+import jakarta.persistence.criteria.Predicate;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -15,6 +17,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -27,6 +30,7 @@ public class PermissionServiceImpl implements PermissionService {
     PermissionRepository permissionRepository;
     PermissionMapper permissionMapper;
     RequestParamUtils requestParamUtils;
+    private final StringUtils stringUtils;
 
     private Permission findPermissionById(Long id) throws ResourceNotFoundException {
         return permissionRepository.findById(id)
@@ -34,14 +38,19 @@ public class PermissionServiceImpl implements PermissionService {
     }
 
     @Override
-    public Page<PermissionDTO> getPermissions(Map<String, String> params) {
+    public Page<PermissionDTO> getPermissions(Map<String, String> params) throws ResourceNotFoundException {
         int page = Integer.parseInt(params.getOrDefault("page", "1"));
         int pageSize = Integer.parseInt(params.getOrDefault("pageSize", "10"));
 
+        Specification<Permission> spec = getPermissionSpec(params);
         List<Sort.Order> sortOrders = requestParamUtils.toSortOrders(params, Permission.class);
         Pageable pageable = PageRequest.of(page - 1, pageSize, Sort.by(sortOrders));
-        Specification<Permission> spec = getPermissionSpec(params);
         org.springframework.data.domain.Page<Permission> permissionPage = permissionRepository.findAll(spec, pageable);
+
+        if (permissionPage.isEmpty()) {
+            throw new ResourceNotFoundException("No permission found");
+        }
+
         Meta meta = Meta.builder()
                 .page(pageable.getPageNumber() + 1)
                 .pageSize(pageable.getPageSize())
@@ -58,6 +67,29 @@ public class PermissionServiceImpl implements PermissionService {
 
     private Specification<Permission> getPermissionSpec(Map<String, String> params) {
         Specification<Permission> spec = Specification.where(null);
+
+        if (params.containsKey("query")) {
+            String searchValue = params.get("query").trim().toLowerCase();
+            String[] searchValues = searchValue.split(",");
+            spec = spec.or((root, query, criteriaBuilder) -> {
+//                Join<Staff, Role> roleJoin = root.join("role", JoinType.LEFT);
+                return criteriaBuilder.or(
+                        Arrays.stream(searchValues)
+                                .map(stringUtils::normalizeString)
+                                .map(value -> "%" + value.trim().toLowerCase() + "%")
+                                .map(likePattern -> criteriaBuilder.or(
+                                        criteriaBuilder.like(
+                                                criteriaBuilder.function("unaccent", String.class, criteriaBuilder.lower(root.get("name"))),
+                                                likePattern),
+                                        criteriaBuilder.like(
+                                                criteriaBuilder.function("unaccent", String.class, criteriaBuilder.lower(root.get("apiPath"))),
+                                                likePattern)
+                                ))
+                                .toArray(Predicate[]::new)
+                );
+            });
+        }
+
         List<SearchCriteria> methodCriteria = requestParamUtils.getSearchCriteria(params, "method");
         List<SearchCriteria> moduleCriteria = requestParamUtils.getSearchCriteria(params, "module");
         Specification<Permission> methodSpec = Specification.where(null);
@@ -84,7 +116,7 @@ public class PermissionServiceImpl implements PermissionService {
     @Transactional
     public PermissionDTO createPermission(PermissionDTO permissionDTO) throws ResourceNotFoundException {
         if (permissionRepository.existsByModuleAndApiPathAndMethod(permissionDTO.getModule(), permissionDTO.getApiPath(), permissionDTO.getMethod())) {
-            throw new ResourceNotFoundException("Permission already exists");
+            throw new ResourceNotFoundException("Quyền này đã tồn tại");
         }
         Permission newPermission = permissionRepository.save(permissionMapper.toPermission(permissionDTO));
         return permissionMapper.toPermissionDTO(newPermission);
@@ -100,8 +132,8 @@ public class PermissionServiceImpl implements PermissionService {
     @Transactional
     public PermissionDTO updatePermission(Long id, PermissionDTO permissionDTO) throws ResourceNotFoundException {
         Permission permissionToUpdate = findPermissionById(id);
-        if (permissionRepository.existsByModuleAndApiPathAndMethod(permissionDTO.getModule(), permissionDTO.getApiPath(), permissionDTO.getMethod())) {
-            throw new ResourceNotFoundException("Permission already exists");
+        if (permissionRepository.existsByNameAndModuleAndApiPathAndMethod(permissionDTO.getName(), permissionDTO.getModule(), permissionDTO.getApiPath(), permissionDTO.getMethod())) {
+            throw new ResourceNotFoundException("Quyền này đã tồn tại");
         }
 
         permissionMapper.updatePermissionFromDTO(permissionToUpdate, permissionDTO);

@@ -22,7 +22,7 @@ public class PermissionController {
     @GetMapping
     public ApiResponse<Page<PermissionDTO>> getPermissions(
             @RequestParam Map<String, String> params
-    ){
+    ) throws ResourceNotFoundException {
         return ApiResponse.<Page<PermissionDTO>>builder()
                 .status(HttpStatus.OK.value())
                 .success(true)

@@ -54,13 +54,13 @@ VALUES (2, 18),
 
 --CUSTOMER
 INSERT INTO public.customers (id, email, gender, first_name, last_name, password, role_id, is_activated, dob)
-VALUES (gen_random_uuid(), 'customer1@gmail.com', 'MALE', 'CUSTOMER1', 'I am',
+VALUES (gen_random_uuid(), 'customer1@gmail.com', 'MALE', 'CUSTOMER', 'I am',
         '$2a$10$MEo.Zw55GDOEVwKtOnJ/TuKNrWVAjluxnWqH96ecqAKUwkFwAVkra', 3, true, '1999-01-01'),
-       (gen_random_uuid(), 'customer2@gmail.com', 'FEMALE', 'CUSTOMER2', 'I am',
+       (gen_random_uuid(), 'customer2@gmail.com', 'FEMALE', 'CUSTOMER', 'I am',
         '$2a$10$MEo.Zw55GDOEVwKtOnJ/TuKNrWVAjluxnWqH96ecqAKUwkFwAVkra', 3, true, '1999-01-02'),
-       (gen_random_uuid(), 'customer3@gmail.com', 'FEMALE', 'CUSTOMER3', 'I am',
+       (gen_random_uuid(), 'customer3@gmail.com', 'FEMALE', 'CUSTOMER', 'I am',
         '$2a$10$MEo.Zw55GDOEVwKtOnJ/TuKNrWVAjluxnWqH96ecqAKUwkFwAVkra', 3, true, '1999-01-03'),
-       (gen_random_uuid(), 'customer4@gmail.com', 'MALE', 'CUSTOMER4', 'I am',
+       (gen_random_uuid(), 'customer4@gmail.com', 'MALE', 'CUSTOMER', 'I am',
         '$2a$10$MEo.Zw55GDOEVwKtOnJ/TuKNrWVAjluxnWqH96ecqAKUwkFwAVkra', 3, true, '1999-01-04');
 
 --MANAGER

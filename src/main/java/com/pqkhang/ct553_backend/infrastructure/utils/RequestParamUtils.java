@@ -15,6 +15,7 @@ public class RequestParamUtils {
 
     @Autowired
     private EntityManager entityManager;
+
     public List<Sort.Order> toSortOrders(Map<String, String> params, Class<?> entityClass) {
         List<Sort.Order> sortOrders = new ArrayList<>();
         String sortBy = params.getOrDefault("sortBy", "createdAt");
@@ -27,9 +28,9 @@ public class RequestParamUtils {
                 Sort.Order order = new Sort.Order(Sort.Direction.fromString(direction), field.trim());
                 sortOrders.add(order);
             }
-
+            Sort.Order updatedAtOrder = new Sort.Order(Sort.Direction.fromString("asc"), "updatedAt");
             Sort.Order idOrder = new Sort.Order(Sort.Direction.ASC, idFieldName);
-            sortOrders.add(idOrder);
+            sortOrders.addAll(List.of(updatedAtOrder, idOrder));
         }
         return sortOrders;
     }
