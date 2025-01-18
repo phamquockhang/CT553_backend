@@ -1,7 +1,6 @@
 package com.pqkhang.ct553_backend.domain.auth.object.customer.score;
 
-import com.pqkhang.ct553_backend.domain.auth.object.customer.CustomerDTO;
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -16,10 +15,9 @@ import java.util.UUID;
 public class ScoreDTO {
     UUID scoreId;
 
-    @NotBlank(message = "Change amount is required")
+    @NotNull(message = "Change amount is required")
     Integer changeAmount;
 
-    @NotBlank(message = "New value is required")
     Integer newValue;
 
     Boolean isCurrent;

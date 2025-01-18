@@ -70,9 +70,9 @@ VALUES (gen_random_uuid(), 'manager@gmail.com', 'MALE', 'MANAGER', 'I am',
 
 --STAFF
 INSERT INTO public.staffs (staff_id, email, gender, first_name, last_name, password, role_id, is_activated, dob)
-VALUES (gen_random_uuid(), 'staff1@gmail.com', 'MALE', 'STAFF', 'I am',
+VALUES (gen_random_uuid(), 'staff1@gmail.com', 'FEMALE', 'STAFF', 'I am',
         '$2a$10$MEo.Zw55GDOEVwKtOnJ/TuKNrWVAjluxnWqH96ecqAKUwkFwAVkra', 2, true, '1999-12-01'),
-       (gen_random_uuid(), 'staff2@gmail.com', 'MALE', 'STAFF', 'I am',
+       (gen_random_uuid(), 'staff2@gmail.com', 'FEMALE', 'STAFF', 'I am',
         '$2a$10$MEo.Zw55GDOEVwKtOnJ/TuKNrWVAjluxnWqH96ecqAKUwkFwAVkra', 2, true, '1999-12-02'),
        (gen_random_uuid(), 'staff3@gmail.com', 'MALE', 'STAFF', 'I am',
         '$2a$10$MEo.Zw55GDOEVwKtOnJ/TuKNrWVAjluxnWqH96ecqAKUwkFwAVkra', 2, true, '1999-12-03'),
@@ -95,5 +95,5 @@ VALUES (gen_random_uuid(), 'staff1@gmail.com', 'MALE', 'STAFF', 'I am',
 INSERT INTO public.scores (score_id, customer_id, change_amount, new_value, is_current)
 VALUES (gen_random_uuid(), (SELECT customer_id FROM public.customers WHERE email = 'customer1@gmail.com'), 100, 100, true),
        (gen_random_uuid(), (SELECT customer_id FROM public.customers WHERE email = 'customer2@gmail.com'), 200, 200, true),
-       (gen_random_uuid(), (SELECT customer_id FROM public.customers WHERE email = 'customer3@gmail.com'), 30, 30, true),
-       (gen_random_uuid(), (SELECT customer_id FROM public.customers WHERE email = 'customer1@gmail.com'), -10, 90, true);
+       (gen_random_uuid(), (SELECT customer_id FROM public.customers WHERE email = 'customer3@gmail.com'), 30, 30, true);
+--        (gen_random_uuid(), (SELECT customer_id FROM public.customers WHERE email = 'customer1@gmail.com'), -10, 90, true);
