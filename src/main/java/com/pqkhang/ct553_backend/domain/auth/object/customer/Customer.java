@@ -1,5 +1,6 @@
 package com.pqkhang.ct553_backend.domain.auth.object.customer;
 
+import com.pqkhang.ct553_backend.domain.auth.object.customer.address.Address;
 import com.pqkhang.ct553_backend.domain.auth.object.customer.score.Score;
 import com.pqkhang.ct553_backend.domain.auth.object.enums.GenderEnum;
 import com.pqkhang.ct553_backend.domain.auth.object.role.Role;
@@ -50,6 +51,9 @@ public class Customer extends BaseEntity implements UserDetails {
 
     @OneToMany(mappedBy = "customer", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     List<Score> scores;
+
+    @OneToMany(mappedBy = "customer", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
+    List<Address> addresses;
 
     @PrePersist
     public void prePersist() {

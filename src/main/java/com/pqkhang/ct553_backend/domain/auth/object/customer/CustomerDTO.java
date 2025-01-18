@@ -1,8 +1,8 @@
 package com.pqkhang.ct553_backend.domain.auth.object.customer;
 
+import com.pqkhang.ct553_backend.domain.auth.object.customer.address.AddressDTO;
 import com.pqkhang.ct553_backend.domain.auth.object.role.RoleDTO;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -32,6 +32,8 @@ public class CustomerDTO {
     Boolean isActivated;
 
     RoleDTO role;
+
+    AddressDTO address;
 
     LocalDateTime createdAt;
     LocalDateTime updatedAt;
