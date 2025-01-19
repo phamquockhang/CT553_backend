@@ -19,4 +19,5 @@ public interface CustomerService {
     CustomerDTO updateCustomer(UUID id, CustomerDTO customerDTO) throws ResourceNotFoundException;
     void deleteCustomer(UUID id) throws ResourceNotFoundException;
     void changePassword(UUID id, ChangePasswordRequest changePasswordRequest) throws ResourceNotFoundException;
+    UUID getCustomerIdByEmail(String email);
 }

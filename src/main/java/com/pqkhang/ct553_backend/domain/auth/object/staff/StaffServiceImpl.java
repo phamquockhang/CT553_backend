@@ -162,9 +162,15 @@ public class StaffServiceImpl implements StaffService {
             throw new ResourceNotFoundException("Email cannot be changed");
         }
 
-        // default role is staff
-        Role role = roleRepository.findByName("STAFF").orElseThrow(() -> new ResourceNotFoundException("Role name " + staffDTO.getRole().getName() + " is invalid."));
-        staff.setRole(role);
+        if (staffDTO.getRole() != null && staffDTO.getRole().getRoleId().equals(1L)) {
+            Role role = roleRepository.findByName("MANAGER").orElseThrow(() -> new ResourceNotFoundException("Role name " + staffDTO.getRole().getName() + " is invalid."));
+            staff.setRole(role);
+        }else{
+            // default role is staff
+            Role role = roleRepository.findByName("STAFF").orElseThrow(() -> new ResourceNotFoundException("Role name " + staffDTO.getRole().getName() + " is invalid."));
+            staff.setRole(role);
+        }
+
 
         staffMapper.updateStaffFromDTO(staffDTO, staff);
         staffRepository.save(staff);

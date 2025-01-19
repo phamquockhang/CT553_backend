@@ -29,7 +29,7 @@ public class AuthController {
         return ApiResponse.<CustomerDTO>builder()
                 .status(HttpStatus.CREATED.value())
                 .success(true)
-                .message("Register for customer successfully")
+                .message("Đăng ký thành công")
                 .payload(authService.registerCustomer(customerDTO))
                 .build();
     }
@@ -40,7 +40,7 @@ public class AuthController {
         return ApiResponse.<AuthResponse>builder()
                 .status(HttpStatus.OK.value())
                 .success(true)
-                .message("Login for customer successfully")
+                .message("Đăng nhập thành công")
                 .payload(authService.login(authRequest, response))
                 .build();
     }

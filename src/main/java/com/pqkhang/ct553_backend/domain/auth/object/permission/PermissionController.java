@@ -46,7 +46,7 @@ public class PermissionController {
         return ApiResponse.<PermissionDTO>builder()
                 .status(HttpStatus.CREATED.value())
                 .success(true)
-                .message("Permission created successfully")
+                .message("Tạo quyền mới thành công")
                 .payload(permissionService.createPermission(permissionDTO))
                 .build();
     }
@@ -66,7 +66,7 @@ public class PermissionController {
         return ApiResponse.<PermissionDTO>builder()
                 .status(HttpStatus.OK.value())
                 .success(true)
-                .message("Permission updated successfully")
+                .message("Cập nhật quyền thành công")
                 .payload(permissionService.updatePermission(id, permissionDTO))
                 .build();
     }

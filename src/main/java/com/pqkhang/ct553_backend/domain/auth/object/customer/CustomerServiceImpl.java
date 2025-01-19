@@ -189,5 +189,12 @@ public class CustomerServiceImpl implements CustomerService {
         customer.setPassword(passwordEncoder.encode(changePasswordRequest.getNewPassword()));
         customerRepository.save(customer);
     }
+
+    @Override
+    public UUID getCustomerIdByEmail(String email) {
+        Customer customer = customerRepository.findCustomerByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("Customer not found: " + email));
+        return customer.getCustomerId();
+    }
 }
 

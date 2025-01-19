@@ -55,7 +55,7 @@ public class RoleController {
         return ApiResponse.<RoleDTO>builder()
                 .status(HttpStatus.CREATED.value())
                 .success(true)
-                .message("Role created successfully")
+                .message("Tạo vai trò thành công")
                 .payload(roleService.createRole(roleDTO))
                 .build();
     }
@@ -66,7 +66,7 @@ public class RoleController {
         return ApiResponse.<Void>builder()
                 .status(HttpStatus.OK.value())
                 .success(true)
-                .message("Role deleted successfully")
+                .message("Xóa vai trò thành công")
                 .build();
     }
 
@@ -75,7 +75,7 @@ public class RoleController {
         return ApiResponse.<RoleDTO>builder()
                 .status(HttpStatus.OK.value())
                 .success(true)
-                .message("Role updated successfully")
+                .message("Cập nhật vai trò thành công")
                 .payload(roleService.updateRole(id, roleDTO))
                 .build();
     }

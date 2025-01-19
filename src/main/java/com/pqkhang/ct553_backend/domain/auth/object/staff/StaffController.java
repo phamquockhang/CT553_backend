@@ -65,7 +65,7 @@ public class StaffController {
                 .status(HttpStatus.CREATED.value())
                 .success(true)
                 .payload(staffService.createStaff(staffDTO))
-                .message("Staff created successfully")
+                .message("Tạo nhân viên thành công")
                 .build();
     }
 

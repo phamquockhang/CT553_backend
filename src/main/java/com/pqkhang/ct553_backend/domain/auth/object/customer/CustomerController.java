@@ -49,13 +49,23 @@ public class CustomerController {
                 .build();
     }
 
+    @GetMapping("/customer_id/{email}")
+    public ApiResponse<UUID> getCustomerIdByEmail(@PathVariable("email") String email) throws ResourceNotFoundException {
+        return ApiResponse.<UUID>builder()
+                .status(HttpStatus.OK.value())
+                .success(true)
+                .payload(customerService.getCustomerIdByEmail(email))
+                .message("Get customer id by email successfully")
+                .build();
+    }
+
     @PostMapping
     public ApiResponse<CustomerDTO> createCustomer(@Valid @RequestBody CustomerDTO customerDTO) throws ResourceNotFoundException {
         return ApiResponse.<CustomerDTO>builder()
                 .status(HttpStatus.CREATED.value())
                 .success(true)
                 .payload(customerService.createCustomer(customerDTO))
-                .message("Customer created successfully")
+                .message("Tạo khách hàng mới thành công")
                 .build();
     }
 

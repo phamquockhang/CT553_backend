@@ -11,4 +11,5 @@ import java.util.UUID;
 public interface AddressRepository extends JpaRepository<Address, UUID>, JpaSpecificationExecutor<Address> {
     List<Address> findAllByCustomer_CustomerId(UUID customerId);
     Address findAddressesByCustomer_CustomerIdAndProvinceIdAndDistrictIdAndWardCodeAndDescription(UUID customerCustomerId, Long provinceId, Long districtId, String wardCode, String description);
+    Address findByCustomer_CustomerIdAndIsDefault(UUID customerCustomerId, Boolean isDefault);
 }

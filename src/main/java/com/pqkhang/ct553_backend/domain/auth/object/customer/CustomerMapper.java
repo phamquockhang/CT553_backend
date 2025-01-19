@@ -3,7 +3,6 @@ package com.pqkhang.ct553_backend.domain.auth.object.customer;
 import com.pqkhang.ct553_backend.app.exception.ResourceNotFoundException;
 import com.pqkhang.ct553_backend.domain.auth.object.enums.GenderEnum;
 import com.pqkhang.ct553_backend.domain.auth.object.role.RoleMapper;
-import com.pqkhang.ct553_backend.domain.auth.object.role.RoleRepository;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
@@ -20,7 +19,7 @@ public interface CustomerMapper {
     default void updateCustomerFromDTO(CustomerDTO CustomerDTO, @MappingTarget Customer Customer) throws ResourceNotFoundException {
 
         if (CustomerDTO.getLastName().equals(Customer.getLastName()) && CustomerDTO.getFirstName().equals(Customer.getFirstName()) && CustomerDTO.getDob().equals(Customer.getDob()) && CustomerDTO.getGender().equals(Customer.getGender().toString()) && CustomerDTO.getIsActivated().equals(Customer.getIsActivated())) {
-            throw new ResourceNotFoundException("Customer information no have change");
+            throw new ResourceNotFoundException("Không có thông tin nào thay đổi!");
         }
 
         Customer.setUpdatedAt( CustomerDTO.getUpdatedAt() );
