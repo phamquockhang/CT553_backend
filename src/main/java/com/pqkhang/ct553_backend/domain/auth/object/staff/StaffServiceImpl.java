@@ -165,7 +165,7 @@ public class StaffServiceImpl implements StaffService {
         if (staffDTO.getRole() != null && staffDTO.getRole().getRoleId().equals(1L)) {
             Role role = roleRepository.findByName("MANAGER").orElseThrow(() -> new ResourceNotFoundException("Role name " + staffDTO.getRole().getName() + " is invalid."));
             staff.setRole(role);
-        }else{
+        } else {
             // default role is staff
             Role role = roleRepository.findByName("STAFF").orElseThrow(() -> new ResourceNotFoundException("Role name " + staffDTO.getRole().getName() + " is invalid."));
             staff.setRole(role);
@@ -191,7 +191,7 @@ public class StaffServiceImpl implements StaffService {
 
         if (!passwordEncoder.matches(changePasswordRequest.getCurrentPassword(), staff.getPassword())) {
             throw new ResourceNotFoundException("Current password is incorrect");
-        }else if(changePasswordRequest.getCurrentPassword().equals(changePasswordRequest.getNewPassword())){
+        } else if (changePasswordRequest.getCurrentPassword().equals(changePasswordRequest.getNewPassword())) {
             throw new ResourceNotFoundException("New password must be different from the current password");
         }
 

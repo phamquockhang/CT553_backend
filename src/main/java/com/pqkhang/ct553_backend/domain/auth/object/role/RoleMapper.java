@@ -6,8 +6,10 @@ import org.mapstruct.MappingTarget;
 
 @Mapper(componentModel = "spring", uses = {PermissionMapper.class})
 public interface RoleMapper {
-//    @Mapping(target = "isActive", source = "active")
+    //    @Mapping(target = "isActive", source = "active")
     RoleDTO toRoleDTO(Role role);
+
     Role toRole(RoleDTO roleDTO);
+
     void updateRoleFromDTO(@MappingTarget Role role, RoleDTO roleDTO);
 }

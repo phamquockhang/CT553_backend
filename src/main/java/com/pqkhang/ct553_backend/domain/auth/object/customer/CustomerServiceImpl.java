@@ -155,7 +155,7 @@ public class CustomerServiceImpl implements CustomerService {
     public CustomerDTO updateCustomer(UUID id, CustomerDTO customerDTO) throws ResourceNotFoundException {
         Customer customer = customerRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Customer ID " + id + " is invalid."));
 
-        if(!customerDTO.getEmail().equals(customer.getEmail())){
+        if (!customerDTO.getEmail().equals(customer.getEmail())) {
             throw new ResourceNotFoundException("Email cannot be changed");
         }
 
@@ -182,7 +182,7 @@ public class CustomerServiceImpl implements CustomerService {
 
         if (!passwordEncoder.matches(changePasswordRequest.getCurrentPassword(), customer.getPassword())) {
             throw new ResourceNotFoundException("Current password is incorrect");
-        }else if(changePasswordRequest.getCurrentPassword().equals(changePasswordRequest.getNewPassword())){
+        } else if (changePasswordRequest.getCurrentPassword().equals(changePasswordRequest.getNewPassword())) {
             throw new ResourceNotFoundException("New password must be different from the current password");
         }
 

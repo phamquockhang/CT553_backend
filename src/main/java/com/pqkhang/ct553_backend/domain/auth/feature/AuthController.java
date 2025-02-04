@@ -36,7 +36,7 @@ public class AuthController {
 
     @PostMapping("/login")
     public ApiResponse<AuthResponse> login(@Valid @RequestBody AuthRequest authRequest,
-                                                   HttpServletResponse response) {
+                                           HttpServletResponse response) {
         return ApiResponse.<AuthResponse>builder()
                 .status(HttpStatus.OK.value())
                 .success(true)

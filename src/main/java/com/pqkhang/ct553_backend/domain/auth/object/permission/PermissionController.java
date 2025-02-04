@@ -32,7 +32,7 @@ public class PermissionController {
     }
 
     @GetMapping("/all")
-    public ApiResponse<List<PermissionDTO>> getAllPermissions(){
+    public ApiResponse<List<PermissionDTO>> getAllPermissions() {
         return ApiResponse.<List<PermissionDTO>>builder()
                 .status(HttpStatus.OK.value())
                 .success(true)
@@ -62,7 +62,7 @@ public class PermissionController {
     }
 
     @PutMapping({"/{id}"})
-    public ApiResponse<PermissionDTO> updatePermission(@PathVariable("id") Long id ,@Valid @RequestBody PermissionDTO permissionDTO) throws ResourceNotFoundException {
+    public ApiResponse<PermissionDTO> updatePermission(@PathVariable("id") Long id, @Valid @RequestBody PermissionDTO permissionDTO) throws ResourceNotFoundException {
         return ApiResponse.<PermissionDTO>builder()
                 .status(HttpStatus.OK.value())
                 .success(true)

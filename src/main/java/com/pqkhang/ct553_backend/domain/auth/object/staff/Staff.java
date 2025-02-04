@@ -42,6 +42,9 @@ public class Staff extends BaseEntity implements UserDetails {
     GenderEnum gender;
 
     Boolean isActivated;
+    @ManyToOne
+    @JoinColumn(name = "role_id", nullable = false)
+    Role role;
 
     @PrePersist
     public void prePersist() {
@@ -49,10 +52,6 @@ public class Staff extends BaseEntity implements UserDetails {
             isActivated = true;
         }
     }
-
-    @ManyToOne
-    @JoinColumn(name = "role_id", nullable = false)
-    Role role;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

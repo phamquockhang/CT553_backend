@@ -27,8 +27,8 @@ public class Permission extends BaseEntity {
     String method;
     String module;
 
-//    cascade = {CascadeType.PERSIST, CascadeType.MERGE}
-    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "permissions" )
+    //    cascade = {CascadeType.PERSIST, CascadeType.MERGE}
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "permissions")
     List<Role> roles;
 
 }

@@ -12,12 +12,19 @@ import java.util.UUID;
 @Service
 public interface StaffService {
     Page<StaffDTO> getStaffs(Map<String, String> params) throws ResourceNotFoundException;
+
     List<StaffDTO> getAllStaffs();
+
     StaffDTO createStaff(StaffDTO staffDTO) throws ResourceNotFoundException;
+
     StaffDTO getStaffById(UUID id) throws ResourceNotFoundException;
+
     StaffDTO getLoggedInStaff();
+
     StaffDTO updateStaff(UUID id, StaffDTO staffDTO) throws ResourceNotFoundException;
+
     void deleteStaff(UUID id) throws ResourceNotFoundException;
+
     void changePassword(UUID id, ChangePasswordRequest changePasswordRequest) throws ResourceNotFoundException;
 
 }

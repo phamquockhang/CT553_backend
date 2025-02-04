@@ -1,15 +1,11 @@
 package com.pqkhang.ct553_backend.domain.auth.object.customer.score;
 
 import com.pqkhang.ct553_backend.domain.auth.object.customer.Customer;
-import com.pqkhang.ct553_backend.domain.auth.object.role.Role;
 import com.pqkhang.ct553_backend.domain.common.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import org.springframework.security.core.GrantedAuthority;
 
-import java.util.Collection;
-import java.util.List;
 import java.util.UUID;
 
 @Getter

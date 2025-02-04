@@ -36,7 +36,7 @@ public class AppUserDetailsService implements UserDetailsService {
         if (staff != null) {
             List<GrantedAuthority> authoritiesStaff = List.of(new SimpleGrantedAuthority(staff.getRole().getName()));
             return new User(staff.getEmail(), staff.getPassword(), authoritiesStaff);
-        }else{
+        } else {
             throw new UsernameNotFoundException("User not found");
         }
     }

@@ -64,7 +64,7 @@ public class SecurityConfig {
                     return config;
                 }))
                 .authorizeHttpRequests(requests -> requests
-                        .requestMatchers("/","/api/v1/auth/**",
+                        .requestMatchers("/", "/api/v1/auth/**",
                                 "/oauth2/**").permitAll()
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

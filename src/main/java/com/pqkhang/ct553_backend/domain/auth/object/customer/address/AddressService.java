@@ -9,8 +9,12 @@ import java.util.UUID;
 @Service
 public interface AddressService {
     List<AddressDTO> getAllAddressesByCustomerId(UUID customerId) throws ResourceNotFoundException;
+
     AddressDTO getDefaultAddressByCustomerId(UUID customerId) throws ResourceNotFoundException;
+
     AddressDTO createAddress(UUID customerId, AddressDTO addressDTO) throws ResourceNotFoundException;
+
     AddressDTO updateAddress(UUID id, AddressDTO addressDTO) throws ResourceNotFoundException;
+
     void deleteAddress(UUID id) throws ResourceNotFoundException;
 }

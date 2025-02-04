@@ -52,7 +52,7 @@ public class AddressServiceImpl implements AddressService {
             throw new ResourceNotFoundException("Address already exists");
         }
 
-        Address currentDefaultAddress = addressRepository.findByCustomer_CustomerIdAndIsDefault(customerId,true);
+        Address currentDefaultAddress = addressRepository.findByCustomer_CustomerIdAndIsDefault(customerId, true);
         if (currentDefaultAddress != null) {
             currentDefaultAddress.setIsDefault(false);
             addressRepository.save(currentDefaultAddress);

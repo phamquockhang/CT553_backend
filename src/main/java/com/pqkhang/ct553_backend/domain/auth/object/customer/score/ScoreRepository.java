@@ -10,5 +10,6 @@ import java.util.UUID;
 @Repository
 public interface ScoreRepository extends JpaRepository<Score, UUID>, JpaSpecificationExecutor<Score> {
     List<Score> findAllByCustomer_CustomerId(UUID customerCustomerId);
+
     Score findByCustomer_CustomerIdAndIsCurrent(UUID customerId, boolean b);
 }

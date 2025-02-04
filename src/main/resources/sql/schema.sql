@@ -1,6 +1,6 @@
 CREATE EXTENSION IF NOT EXISTS unaccent;
 
---USER
+--CUSTOMER
 ALTER TABLE public.customers
     ALTER COLUMN created_at SET DEFAULT CURRENT_TIMESTAMP;
 
@@ -34,3 +34,12 @@ CREATE SEQUENCE permissions_seq
 ALTER TABLE public.permissions
     ALTER COLUMN permission_id SET DEFAULT nextval('permissions_seq'),
 ALTER COLUMN created_at SET DEFAULT CURRENT_TIMESTAMP;
+
+--ITEM
+DROP SEQUENCE IF EXISTS items_seq CASCADE;
+CREATE SEQUENCE items_seq
+    START WITH 1
+    INCREMENT BY 1;
+ALTER TABLE public.items
+    ALTER COLUMN item_id SET DEFAULT nextval('items_seq'),
+    ALTER COLUMN created_at SET DEFAULT CURRENT_TIMESTAMP;

@@ -22,16 +22,15 @@ public interface CustomerMapper {
             throw new ResourceNotFoundException("Không có thông tin nào thay đổi!");
         }
 
-        Customer.setUpdatedAt( CustomerDTO.getUpdatedAt() );
-        Customer.setLastName( CustomerDTO.getLastName() );
-        Customer.setFirstName( CustomerDTO.getFirstName() );
-        Customer.setDob( CustomerDTO.getDob() );
-        if ( CustomerDTO.getGender() != null ) {
-            Customer.setGender( Enum.valueOf( GenderEnum.class, CustomerDTO.getGender() ) );
+        Customer.setUpdatedAt(CustomerDTO.getUpdatedAt());
+        Customer.setLastName(CustomerDTO.getLastName());
+        Customer.setFirstName(CustomerDTO.getFirstName());
+        Customer.setDob(CustomerDTO.getDob());
+        if (CustomerDTO.getGender() != null) {
+            Customer.setGender(Enum.valueOf(GenderEnum.class, CustomerDTO.getGender()));
+        } else {
+            Customer.setGender(null);
         }
-        else {
-            Customer.setGender( null );
-        }
-        Customer.setIsActivated( CustomerDTO.getIsActivated() );
+        Customer.setIsActivated(CustomerDTO.getIsActivated());
     }
 }

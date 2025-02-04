@@ -13,9 +13,6 @@ import javax.sql.DataSource;
 @RequiredArgsConstructor
 public class DataSourceConfig {
 
-    private final JdbcTemplate jdbcTemplate;
-    private final DataSource dataSource;
-
     final String PERMISSIONS_AFTER_INSERT_TRIGGER = """
             DROP FUNCTION IF EXISTS insert_permission_role CASCADE;
             CREATE OR REPLACE FUNCTION insert_permission_role() RETURNS TRIGGER
@@ -31,6 +28,8 @@ public class DataSourceConfig {
             FOR EACH ROW
             EXECUTE FUNCTION insert_permission_role();
             """;
+    private final JdbcTemplate jdbcTemplate;
+    private final DataSource dataSource;
 
     @PostConstruct
     public void initialize() {

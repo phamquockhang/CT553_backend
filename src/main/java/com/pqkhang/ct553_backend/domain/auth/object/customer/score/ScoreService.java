@@ -10,6 +10,8 @@ import java.util.UUID;
 @Service
 public interface ScoreService {
     List<ScoreDTO> getAllScoresByCustomerId(UUID customerId) throws ResourceNotFoundException;
+
     ScoreDTO getCurrentScoreByCustomerId(UUID customerId) throws ResourceNotFoundException;
+
     ScoreDTO createScore(UUID customerId, @Valid ScoreDTO scoreDTO);
 }

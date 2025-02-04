@@ -1,8 +1,6 @@
 package com.pqkhang.ct553_backend.domain.auth.object.staff;
 
 import com.pqkhang.ct553_backend.app.exception.ResourceNotFoundException;
-import com.pqkhang.ct553_backend.domain.auth.object.customer.Customer;
-import com.pqkhang.ct553_backend.domain.auth.object.customer.CustomerDTO;
 import com.pqkhang.ct553_backend.domain.auth.object.enums.GenderEnum;
 import com.pqkhang.ct553_backend.domain.auth.object.role.RoleMapper;
 import org.mapstruct.Mapper;
@@ -24,16 +22,15 @@ public interface StaffMapper {
             throw new ResourceNotFoundException("Staff information no have change");
         }
 
-        staff.setUpdatedAt( staffDTO.getUpdatedAt() );
-        staff.setLastName( staffDTO.getLastName() );
-        staff.setFirstName( staffDTO.getFirstName() );
-        staff.setDob( staffDTO.getDob() );
-        if ( staffDTO.getGender() != null ) {
-            staff.setGender( Enum.valueOf( GenderEnum.class, staffDTO.getGender() ) );
+        staff.setUpdatedAt(staffDTO.getUpdatedAt());
+        staff.setLastName(staffDTO.getLastName());
+        staff.setFirstName(staffDTO.getFirstName());
+        staff.setDob(staffDTO.getDob());
+        if (staffDTO.getGender() != null) {
+            staff.setGender(Enum.valueOf(GenderEnum.class, staffDTO.getGender()));
+        } else {
+            staff.setGender(null);
         }
-        else {
-            staff.setGender( null );
-        }
-        staff.setIsActivated( staffDTO.getIsActivated() );
+        staff.setIsActivated(staffDTO.getIsActivated());
     }
 }

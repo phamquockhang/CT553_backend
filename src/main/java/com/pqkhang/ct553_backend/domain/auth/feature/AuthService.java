@@ -9,7 +9,9 @@ import jakarta.validation.Valid;
 
 public interface AuthService {
     CustomerDTO registerCustomer(CustomerDTO customerDTO) throws ResourceNotFoundException;
+
     AuthResponse login(@Valid AuthRequest authRequest, HttpServletResponse response);
+
     void logout(HttpServletResponse httpServletResponse) throws ResourceNotFoundException;
 
 //    AuthResponse loginCustomer(@Valid AuthRequest authRequest, HttpServletResponse response);

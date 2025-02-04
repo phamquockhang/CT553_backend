@@ -21,7 +21,7 @@ public class CustomerDTO {
     String firstName;
     @NotBlank(message = "Last name is required")
     String lastName;
-//    @NotNull(message = "Date of birth is required")
+    //    @NotNull(message = "Date of birth is required")
     LocalDate dob;
     @NotBlank(message = "Email is required")
     String email;

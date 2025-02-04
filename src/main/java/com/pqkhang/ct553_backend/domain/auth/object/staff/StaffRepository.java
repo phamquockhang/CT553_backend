@@ -10,5 +10,6 @@ import java.util.UUID;
 @Repository
 public interface StaffRepository extends JpaRepository<Staff, UUID>, JpaSpecificationExecutor<Staff> {
     boolean existsByEmail(String email);
+
     Optional<Staff> findStaffByEmail(String email);
 }

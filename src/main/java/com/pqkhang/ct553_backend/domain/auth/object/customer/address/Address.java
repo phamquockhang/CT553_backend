@@ -16,7 +16,7 @@ import java.util.UUID;
 @Entity
 @Table(name = "addresses")
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Address extends BaseEntity  {
+public class Address extends BaseEntity {
 
     @Id
     @Column(name = "address_id", columnDefinition = "UUID DEFAULT gen_random_uuid()")

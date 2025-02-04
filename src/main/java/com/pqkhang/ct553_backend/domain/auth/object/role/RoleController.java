@@ -71,7 +71,7 @@ public class RoleController {
     }
 
     @PutMapping({"/{id}"})
-    public ApiResponse<RoleDTO> updateRole(@PathVariable Long id,@Valid @RequestBody RoleDTO roleDTO) throws ResourceNotFoundException {
+    public ApiResponse<RoleDTO> updateRole(@PathVariable Long id, @Valid @RequestBody RoleDTO roleDTO) throws ResourceNotFoundException {
         return ApiResponse.<RoleDTO>builder()
                 .status(HttpStatus.OK.value())
                 .success(true)

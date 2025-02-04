@@ -25,10 +25,10 @@ VALUES  ('Get all roles', '/api/v1/roles', 'GET', 'ROLE'),
         ('Delete a staff', '/api/v1/staffs/{id}', 'DELETE', 'STAFF'),
 
         ('Get all customers', '/api/v1/customers', 'GET', 'CUSTOMER'),
-        ('Get a score', '/api/v1/customers/{id}', 'GET', 'CUSTOMER'),
-        ('Create a score', '/api/v1/customers', 'POST', 'CUSTOMER'),
-        ('Update a score', '/api/v1/customers/{id}', 'PUT', 'CUSTOMER'),
-        ('Delete a score', '/api/v1/customers/{id}', 'DELETE', 'CUSTOMER');
+        ('Get a item', '/api/v1/customers/{id}', 'GET', 'CUSTOMER'),
+        ('Create a item', '/api/v1/customers', 'POST', 'CUSTOMER'),
+        ('Update a item', '/api/v1/customers/{id}', 'PUT', 'CUSTOMER'),
+        ('Delete a item', '/api/v1/customers/{id}', 'DELETE', 'CUSTOMER');
 
 --         ('Create a product', '/api/v1/products', 'POST', 'PRODUCT'),
 --         ('Update a product', '/api/v1/products', 'PUT', 'PRODUCT'),
@@ -104,3 +104,21 @@ VALUES (gen_random_uuid(), (SELECT customer_id FROM public.customers WHERE email
         '610201', 'Khóm 5', true),
        (gen_random_uuid(), (SELECT customer_id FROM public.customers WHERE email = 'customer2@gmail.com'), 252, 1782,
         '610201', 'Khóm 6', true);
+
+--ITEM
+INSERT INTO public.items (name)
+VALUES ('Item 1'),
+       ('Item 2'),
+       ('Item 3'),
+       ('Item 4'),
+       ('Item 5'),
+       ('Item 6'),
+       ('Item 7'),
+       ('Item 8'),
+       ('Item 9'),
+       ('Item 10'),
+       ('Item 11'),
+       ('Item 12'),
+       ('Item 13'),
+       ('Item 14'),
+       ('Item 15');
