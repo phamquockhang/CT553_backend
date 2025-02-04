@@ -1,4 +1,4 @@
-package com.pqkhang.ct553_backend.domain.booking.product.item;
+package com.pqkhang.ct553_backend.domain.booking.item;
 
 import com.pqkhang.ct553_backend.app.exception.ResourceNotFoundException;
 import com.pqkhang.ct553_backend.app.response.Page;

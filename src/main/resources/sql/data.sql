@@ -122,3 +122,21 @@ VALUES ('Item 1'),
        ('Item 13'),
        ('Item 14'),
        ('Item 15');
+
+--PRODUCT
+INSERT INTO public.products (name, description, item_id)
+VALUES ('Product 1', 'Description 1', 1),
+       ('Product 2', 'Description 2', 1),
+       ('Product 3', 'Description 3', 1),
+       ('Product 4', 'Description 4', 1),
+       ('Product 5', 'Description 5', 2),
+       ('Product 6', 'Description 6', 2),
+       ('Product 7', 'Description 7', 2),
+       ('Product 8', 'Description 8', 3),
+       ('Product 9', 'Description 9', 3),
+       ('Product 10', 'Description 10', 4),
+       ('Product 11', 'Description 11', 4),
+       ('Product 12', 'Description 12', 4),
+       ('Product 13', 'Description 13', 4),
+       ('Product 14', 'Description 14', 4),
+       ('Product 15', 'Description 15', 5);

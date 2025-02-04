@@ -29,8 +29,10 @@ public class Role extends BaseEntity implements GrantedAuthority {
 
     //    @Column(name = "is_active")
     Boolean isActivated;
+
     @OneToMany(mappedBy = "role", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     List<Customer> customers;
+
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "permission_role", joinColumns = @JoinColumn(name = "role_id"), inverseJoinColumns = @JoinColumn(name = "permission_id"))
     List<Permission> permissions;

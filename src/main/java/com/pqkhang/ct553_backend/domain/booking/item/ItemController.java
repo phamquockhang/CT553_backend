@@ -1,4 +1,4 @@
-package com.pqkhang.ct553_backend.domain.booking.product.item;
+package com.pqkhang.ct553_backend.domain.booking.item;
 
 import com.pqkhang.ct553_backend.app.exception.ResourceNotFoundException;
 import com.pqkhang.ct553_backend.app.response.ApiResponse;
@@ -47,8 +47,8 @@ public class ItemController {
                 .build();
     }
 
-    @PutMapping("/{itemId}")
-    public ApiResponse<ItemDTO> updateItem(@PathVariable("itemId") Integer itemId, @RequestBody ItemDTO itemDTO) throws ResourceNotFoundException {
+    @PutMapping("/{id}")
+    public ApiResponse<ItemDTO> updateItem(@PathVariable("id") Integer itemId, @RequestBody ItemDTO itemDTO) throws ResourceNotFoundException {
         return ApiResponse.<ItemDTO>builder()
                 .status(HttpStatus.OK.value())
                 .success(true)
@@ -57,8 +57,8 @@ public class ItemController {
                 .build();
     }
 
-    @DeleteMapping("/{itemId}")
-    public ApiResponse<String> deleteItem(@PathVariable("itemId") Integer itemId) throws ResourceNotFoundException {
+    @DeleteMapping("/{id}")
+    public ApiResponse<String> deleteItem(@PathVariable("id") Integer itemId) throws ResourceNotFoundException {
         itemService.deleteItem(itemId);
         return ApiResponse.<String>builder()
                 .status(HttpStatus.OK.value())

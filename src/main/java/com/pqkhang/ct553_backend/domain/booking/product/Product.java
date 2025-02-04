@@ -1,0 +1,29 @@
+package com.pqkhang.ct553_backend.domain.booking.product;
+
+import com.pqkhang.ct553_backend.domain.booking.item.Item;
+import com.pqkhang.ct553_backend.domain.common.entity.BaseEntity;
+import jakarta.persistence.*;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
+
+@Getter
+@Setter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@Entity
+@Table(name = "products")
+@FieldDefaults(level = AccessLevel.PRIVATE)
+public class Product extends BaseEntity {
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "product_id_seq")
+    @SequenceGenerator(name = "product_id_seq", sequenceName = "products_seq", allocationSize = 1)
+    Integer productId;
+
+    String name;
+    String description;
+
+    @ManyToOne
+    @JoinColumn(name = "item_id", nullable = false)
+    Item item;
+}

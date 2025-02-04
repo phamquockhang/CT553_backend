@@ -1,9 +1,12 @@
-package com.pqkhang.ct553_backend.domain.booking.product.item;
+package com.pqkhang.ct553_backend.domain.booking.item;
 
+import com.pqkhang.ct553_backend.domain.booking.product.Product;
 import com.pqkhang.ct553_backend.domain.common.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+
+import java.util.List;
 
 @Getter
 @Setter
@@ -20,5 +23,8 @@ public class Item extends BaseEntity {
     Integer itemId;
 
     String name;
+
+    @OneToMany(mappedBy = "item", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
+    List<Product> products;
 
 }

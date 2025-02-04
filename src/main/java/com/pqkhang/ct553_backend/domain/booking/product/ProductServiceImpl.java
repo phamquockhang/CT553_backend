@@ -1,4 +1,4 @@
-package com.pqkhang.ct553_backend.domain.booking.product.item;
+package com.pqkhang.ct553_backend.domain.booking.product;
 
 import com.pqkhang.ct553_backend.app.exception.ResourceNotFoundException;
 import com.pqkhang.ct553_backend.app.response.Meta;
@@ -24,15 +24,15 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PACKAGE, makeFinal = true)
-public class ItemServiceImpl implements ItemService {
+public class ProductServiceImpl implements ProductService {
 
     StringUtils stringUtils;
     RequestParamUtils requestParamUtils;
-    ItemRepository itemRepository;
-    ItemMapper itemMapper;
+    ProductRepository productRepository;
+    ProductMapper productMapper;
 
-    private Specification<Item> getItemSpec(Map<String, String> params) {
-        Specification<Item> spec = Specification.where(null);
+    private Specification<Product> getProductSpec(Map<String, String> params) {
+        Specification<Product> spec = Specification.where(null);
         if (params.containsKey("query")) {
             String searchValue = params.get("query").trim().toLowerCase();
             String[] searchValues = searchValue.split(",");
@@ -52,80 +52,80 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public Page<ItemDTO> getItems(Map<String, String> params) throws ResourceNotFoundException {
+    public Page<ProductDTO> getProducts(Map<String, String> params) throws ResourceNotFoundException {
         int page = Integer.parseInt(params.getOrDefault("page", "1"));
         int pageSize = Integer.parseInt(params.getOrDefault("pageSize", "10"));
-        Specification<Item> spec = getItemSpec(params);
-        List<Sort.Order> sortOrders = requestParamUtils.toSortOrders(params, Item.class);
+        Specification<Product> spec = getProductSpec(params);
+        List<Sort.Order> sortOrders = requestParamUtils.toSortOrders(params, Product.class);
         Pageable pageable = PageRequest.of(page - 1, pageSize, Sort.by(sortOrders));
-        org.springframework.data.domain.Page<Item> itemPage = itemRepository.findAll(spec, pageable);
+        org.springframework.data.domain.Page<Product> productPage = productRepository.findAll(spec, pageable);
 
-        if (itemPage.isEmpty()) {
-            throw new ResourceNotFoundException("No item found!");
+        if (productPage.isEmpty()) {
+            throw new ResourceNotFoundException("No product found!");
         }
 
         Meta meta = Meta.builder()
                 .page(pageable.getPageNumber() + 1)
                 .pageSize(pageable.getPageSize())
-                .pages(itemPage.getTotalPages())
-                .total(itemPage.getTotalElements())
+                .pages(productPage.getTotalPages())
+                .total(productPage.getTotalElements())
                 .build();
-        return Page.<ItemDTO>builder()
+        return Page.<ProductDTO>builder()
                 .meta(meta)
-                .data(itemPage.getContent().stream()
-                        .map(itemMapper::toItemDTO)
+                .data(productPage.getContent().stream()
+                        .map(productMapper::toProductDTO)
                         .collect(Collectors.toList()))
                 .build();
     }
 
     @Override
-    public List<ItemDTO> getAllItems() {
-        return itemRepository.findAll().stream()
-                .map(itemMapper::toItemDTO)
+    public List<ProductDTO> getAllProducts() {
+        return productRepository.findAll().stream()
+                .map(productMapper::toProductDTO)
                 .toList();
     }
 
     @Override
-    public ItemDTO getItemById(Integer id) {
-        Item item = itemRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Item ID " + id + " is invalid."));
-        return itemMapper.toItemDTO(item);
+    public ProductDTO getProductById(Integer id) {
+        Product product = productRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Product ID " + id + " is invalid."));
+        return productMapper.toProductDTO(product);
     }
 
     @Override
     @Transactional
-    public ItemDTO createItem(ItemDTO itemDTO) throws ResourceNotFoundException {
-        if (itemRepository.existsByName((itemDTO.getName()))) {
+    public ProductDTO createProduct(ProductDTO productDTO) throws ResourceNotFoundException {
+        if (productRepository.existsByName((productDTO.getName()))) {
             throw new ResourceNotFoundException("Tên sản phẩm đã tồn tại");
         } else {
-            Item item = itemMapper.toItem(itemDTO);
-            itemRepository.save(item);
-            return itemMapper.toItemDTO(item);
+            Product product = productMapper.toProduct(productDTO);
+            productRepository.save(product);
+            return productMapper.toProductDTO(product);
         }
     }
 
     @Override
     @Transactional
-    public ItemDTO updateItem(Integer id, ItemDTO itemDTO) throws ResourceNotFoundException {
-        Item item = itemRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Item ID " + id + " is invalid."));
+    public ProductDTO updateProduct(Integer id, ProductDTO productDTO) throws ResourceNotFoundException {
+        Product product = productRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Product ID " + id + " is invalid."));
 
-        if (!itemDTO.getName().equals(item.getName())) {
+        if (productDTO.getName().equals(product.getName()) && productDTO.getDescription().equals(product.getDescription())) {
             throw new ResourceNotFoundException("Không có thông tin sản phẩm cần cập nhật");
         }
 
-        itemMapper.updateItemFromDTO(itemDTO, item);
-        itemRepository.save(item);
-        return itemMapper.toItemDTO(item);
+        productMapper.updateProductFromDTO(productDTO, product);
+        productRepository.save(product);
+        return productMapper.toProductDTO(product);
     }
 
     @Override
-    public void deleteItem(Integer itemId) throws ResourceNotFoundException {
-        Item item = itemRepository.findById(itemId).orElseThrow(() -> new ResourceNotFoundException("Item ID " + itemId + " is invalid."));
-        itemRepository.delete(item);
+    public void deleteProduct(Integer productId) throws ResourceNotFoundException {
+        Product product = productRepository.findById(productId).orElseThrow(() -> new ResourceNotFoundException("Product ID " + productId + " is invalid."));
+        productRepository.delete(product);
     }
 
     @Override
     public boolean existsByName(String name) {
-        return itemRepository.existsByName(name);
+        return productRepository.existsByName(name);
     }
 
 }

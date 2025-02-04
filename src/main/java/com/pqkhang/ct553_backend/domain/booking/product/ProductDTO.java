@@ -1,4 +1,4 @@
-package com.pqkhang.ct553_backend.domain.booking.product.item;
+package com.pqkhang.ct553_backend.domain.booking.product;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
@@ -11,11 +11,15 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class ItemDTO {
-    Integer itemId;
+public class ProductDTO {
+    Integer productId;
 
-    @NotBlank(message = "Name item is required")
+    @NotBlank(message = "Product name is required")
     String name;
+
+    String description;
+
+    Integer itemId;
 
     LocalDateTime createdAt;
     LocalDateTime updatedAt;
