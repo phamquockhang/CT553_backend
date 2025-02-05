@@ -1,10 +1,13 @@
 package com.pqkhang.ct553_backend.domain.booking.product;
 
 import com.pqkhang.ct553_backend.domain.booking.item.Item;
+import com.pqkhang.ct553_backend.domain.booking.product.product_image.ProductImage;
 import com.pqkhang.ct553_backend.domain.common.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+
+import java.util.List;
 
 @Getter
 @Setter
@@ -26,4 +29,11 @@ public class Product extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "item_id", nullable = false)
     Item item;
+
+    @OneToMany(mappedBy = "product", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
+    List<ProductImage> productImages;
+
+    public String getProductName() {
+        return name;
+    }
 }

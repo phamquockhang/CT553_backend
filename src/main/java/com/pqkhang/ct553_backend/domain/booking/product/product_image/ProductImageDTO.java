@@ -1,6 +1,6 @@
 package com.pqkhang.ct553_backend.domain.booking.product.product_image;
 
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -14,9 +14,9 @@ import java.time.LocalDateTime;
 public class ProductImageDTO {
     Integer productImageId;
 
-    @NotBlank(message = "Product image URL is required")
     String imageUrl;
 
+    @NotNull(message = "Product ID is required")
     Integer productId;
 
     LocalDateTime createdAt;

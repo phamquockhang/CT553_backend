@@ -1,10 +1,13 @@
 package com.pqkhang.ct553_backend.domain.booking.product;
 
+import com.pqkhang.ct553_backend.domain.booking.product.product_image.ProductImageDTO;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @Builder
@@ -19,7 +22,10 @@ public class ProductDTO {
 
     String description;
 
+    @NotNull(message = "Item ID is required")
     Integer itemId;
+
+    List<ProductImageDTO> productImages;
 
     LocalDateTime createdAt;
     LocalDateTime updatedAt;

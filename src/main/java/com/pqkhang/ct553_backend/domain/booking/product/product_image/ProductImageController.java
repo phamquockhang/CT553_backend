@@ -2,6 +2,7 @@ package com.pqkhang.ct553_backend.domain.booking.product.product_image;
 
 import com.pqkhang.ct553_backend.app.exception.ResourceNotFoundException;
 import com.pqkhang.ct553_backend.app.response.ApiResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -26,18 +27,20 @@ public class ProductImageController {
     }
 
     @PostMapping
-    public ApiResponse<ProductImageDTO> createProductImage(ProductImageDTO productImageDTO, List<MultipartFile> productImageFiles) {
-        return ApiResponse.<ProductImageDTO>builder()
+    public ApiResponse<Void> createProductImage(@ModelAttribute @Valid ProductImageDTO productImageDTO, @RequestParam("productImageFiles") List<MultipartFile> productImageFiles) {
+        productImageService.createProductImage(productImageDTO, productImageFiles);
+        return ApiResponse.<Void>builder()
                 .status(HttpStatus.OK.value())
+                .success(true)
                 .message("Tạo ảnh sản phẩm thành công")
-                .payload(productImageService.createProductImage(productImageDTO, productImageFiles))
                 .build();
     }
 
-    @PutMapping
-    public ApiResponse<ProductImageDTO> updateAllProductImageByProductId(@RequestPart("productImageDTO") ProductImageDTO productImageDTO, @RequestPart("imageUrl") List<MultipartFile> productImageFiles) throws ResourceNotFoundException {
+    @PutMapping("/{productId}")
+    public ApiResponse<ProductImageDTO> updateAllProductImageByProductId(@ModelAttribute @Valid ProductImageDTO productImageDTO, @RequestParam("productImageFiles") List<MultipartFile> productImageFiles) throws ResourceNotFoundException {
         return ApiResponse.<ProductImageDTO>builder()
                 .status(HttpStatus.OK.value())
+                .success(true)
                 .message("Cập nhật ảnh sản phẩm thành công")
                 .payload(productImageService.updateAllProductImageByProductId(productImageDTO, productImageFiles))
                 .build();
@@ -48,6 +51,7 @@ public class ProductImageController {
         productImageService.deleteProductImage(productImageId);
         return ApiResponse.<Void>builder()
                 .status(HttpStatus.OK.value())
+                .success(true)
                 .message("Xóa ảnh sản phẩm thành công")
                 .build();
     }
