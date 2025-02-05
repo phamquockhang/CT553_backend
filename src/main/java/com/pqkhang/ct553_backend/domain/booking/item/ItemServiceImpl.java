@@ -108,7 +108,9 @@ public class ItemServiceImpl implements ItemService {
     public ItemDTO updateItem(Integer id, ItemDTO itemDTO) throws ResourceNotFoundException {
         Item item = itemRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Item ID " + id + " is invalid."));
 
-        if (itemDTO.getName().equals(item.getName())) {
+        if (itemDTO.getName().equals(item.getName()) && itemDTO.getIsActivated() == item.getIsActivated()
+//            && itemDTO.getProducts().equals(item.getProducts())
+        ) {
             throw new ResourceNotFoundException("Không có thông tin sản phẩm cần cập nhật");
         }
 
