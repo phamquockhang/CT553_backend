@@ -28,7 +28,19 @@ VALUES  ('Get all roles', '/api/v1/roles', 'GET', 'ROLE'),
         ('Get a item', '/api/v1/customers/{id}', 'GET', 'CUSTOMER'),
         ('Create a item', '/api/v1/customers', 'POST', 'CUSTOMER'),
         ('Update a item', '/api/v1/customers/{id}', 'PUT', 'CUSTOMER'),
-        ('Delete a item', '/api/v1/customers/{id}', 'DELETE', 'CUSTOMER');
+        ('Delete a item', '/api/v1/customers/{id}', 'DELETE', 'CUSTOMER'),
+
+        ('Get all items', '/api/v1/items', 'GET', 'ITEM'),
+        ('Get a item', '/api/v1/items/{id}', 'GET', 'ITEM'),
+        ('Create a item', '/api/v1/items', 'POST', 'ITEM'),
+        ('Update a item', '/api/v1/items/{id}', 'PUT', 'ITEM'),
+        ('Delete a item', '/api/v1/items/{id}', 'DELETE', 'ITEM'),
+
+        ('Get all products', '/api/v1/products', 'GET', 'PRODUCT'),
+        ('Get a product', '/api/v1/products/{id}', 'GET', 'PRODUCT'),
+        ('Create a product', '/api/v1/products', 'POST', 'PRODUCT'),
+        ('Update a product', '/api/v1/products/{id}', 'PUT', 'PRODUCT'),
+        ('Delete a product', '/api/v1/products/{id}', 'DELETE', 'PRODUCT');
 
 --         ('Create a product', '/api/v1/products', 'POST', 'PRODUCT'),
 --         ('Update a product', '/api/v1/products', 'PUT', 'PRODUCT'),
@@ -106,37 +118,37 @@ VALUES (gen_random_uuid(), (SELECT customer_id FROM public.customers WHERE email
         '610201', 'Khóm 6', true);
 
 --ITEM
-INSERT INTO public.items (name)
-VALUES ('Item 1'),
-       ('Item 2'),
-       ('Item 3'),
-       ('Item 4'),
-       ('Item 5'),
-       ('Item 6'),
-       ('Item 7'),
-       ('Item 8'),
-       ('Item 9'),
-       ('Item 10'),
-       ('Item 11'),
-       ('Item 12'),
-       ('Item 13'),
-       ('Item 14'),
-       ('Item 15');
+INSERT INTO public.items (name, is_activated)
+VALUES ('Item 1', true),
+       ('Item 2', true),
+       ('Item 3', true),
+       ('Item 4', true),
+       ('Item 5', true),
+       ('Item 6', true),
+       ('Item 7', true),
+       ('Item 8', true),
+       ('Item 9', true),
+       ('Item 10', true),
+       ('Item 11', true),
+       ('Item 12', true),
+       ('Item 13', true),
+       ('Item 14', true),
+       ('Item 15', true);
 
 --PRODUCT
-INSERT INTO public.products (name, description, item_id)
-VALUES ('Product 1', 'Description 1', 1),
-       ('Product 2', 'Description 2', 1),
-       ('Product 3', 'Description 3', 1),
-       ('Product 4', 'Description 4', 1),
-       ('Product 5', 'Description 5', 2),
-       ('Product 6', 'Description 6', 2),
-       ('Product 7', 'Description 7', 2),
-       ('Product 8', 'Description 8', 3),
-       ('Product 9', 'Description 9', 3),
-       ('Product 10', 'Description 10', 4),
-       ('Product 11', 'Description 11', 4),
-       ('Product 12', 'Description 12', 4),
-       ('Product 13', 'Description 13', 4),
-       ('Product 14', 'Description 14', 4),
-       ('Product 15', 'Description 15', 5);
+INSERT INTO public.products (name, description, item_id, is_activated)
+VALUES ('Product 1', 'Description 1', 1, true),
+       ('Product 2', 'Description 2', 1, true),
+       ('Product 3', 'Description 3', 1, true),
+       ('Product 4', 'Description 4', 1, true),
+       ('Product 5', 'Description 5', 1, true),
+       ('Product 6', 'Description 6', 2, true),
+       ('Product 7', 'Description 7', 2, true),
+       ('Product 8', 'Description 8', 2, true),
+       ('Product 9', 'Description 9', 3, true),
+       ('Product 10', 'Description 10', 4, true),
+       ('Product 11', 'Description 11', 4, true),
+       ('Product 12', 'Description 12', 4, true),
+       ('Product 13', 'Description 13', 5, true),
+       ('Product 14', 'Description 14', 5, true),
+       ('Product 15', 'Description 15', 5, true);

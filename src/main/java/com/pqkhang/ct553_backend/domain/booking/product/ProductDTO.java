@@ -22,6 +22,8 @@ public class ProductDTO {
 
     String description;
 
+    Boolean isActivated;
+
     @NotNull(message = "Item ID is required")
     Integer itemId;
 

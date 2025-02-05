@@ -19,6 +19,8 @@ public class ItemDTO {
     @NotBlank(message = "Name item is required")
     String name;
 
+    Boolean isActivated;
+
     List<ProductDTO> products;
 
     LocalDateTime createdAt;

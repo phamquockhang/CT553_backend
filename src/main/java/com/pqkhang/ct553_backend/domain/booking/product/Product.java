@@ -25,6 +25,7 @@ public class Product extends BaseEntity {
 
     String name;
     String description;
+    Boolean isActivated;
 
     @ManyToOne
     @JoinColumn(name = "item_id", nullable = false)
@@ -32,6 +33,13 @@ public class Product extends BaseEntity {
 
     @OneToMany(mappedBy = "product", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     List<ProductImage> productImages;
+
+    @PrePersist
+    public void prePersist() {
+        if (isActivated == null) {
+            isActivated = true;
+        }
+    }
 
     public String getProductName() {
         return name;

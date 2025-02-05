@@ -24,7 +24,15 @@ public class Item extends BaseEntity {
 
     String name;
 
+    Boolean isActivated;
+
     @OneToMany(mappedBy = "item", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     List<Product> products;
 
+    @PrePersist
+    public void prePersist() {
+        if (isActivated == null) {
+            isActivated = true;
+        }
+    }
 }

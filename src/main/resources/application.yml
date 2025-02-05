@@ -15,8 +15,8 @@ spring:
       hibernate:
         format_sql: true
 
-  jackson:
-    default-property-inclusion: non_null
+#  jackson:
+#    default-property-inclusion: non_null
 
 application:
   security:
