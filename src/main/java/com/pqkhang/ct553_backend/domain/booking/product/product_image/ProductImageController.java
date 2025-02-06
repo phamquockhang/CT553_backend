@@ -27,12 +27,13 @@ public class ProductImageController {
     }
 
     @PostMapping
-    public ApiResponse<Void> createProductImage(@ModelAttribute @Valid ProductImageDTO productImageDTO, @RequestParam("productImageFiles") List<MultipartFile> productImageFiles) {
-        productImageService.createProductImage(productImageDTO, productImageFiles);
-        return ApiResponse.<Void>builder()
+    public ApiResponse<ProductImageDTO> createProductImage(@ModelAttribute @Valid ProductImageDTO productImageDTO, @RequestParam("productImageFiles") List<MultipartFile> productImageFiles) throws ResourceNotFoundException {
+//        productImageService.createProductImage(productImageDTO, productImageFiles);
+        return ApiResponse.<ProductImageDTO>builder()
                 .status(HttpStatus.OK.value())
                 .success(true)
                 .message("Tạo ảnh sản phẩm thành công")
+                .payload(productImageService.createProductImage(productImageDTO, productImageFiles))
                 .build();
     }
 

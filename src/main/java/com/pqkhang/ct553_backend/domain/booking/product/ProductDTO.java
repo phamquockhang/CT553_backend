@@ -18,7 +18,7 @@ public class ProductDTO {
     Integer productId;
 
     @NotBlank(message = "Product name is required")
-    String name;
+    String productName;
 
     String description;
 

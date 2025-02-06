@@ -42,7 +42,7 @@ public class ItemServiceImpl implements ItemService {
                             .map(value -> "%" + value.trim().toLowerCase() + "%")
                             .map(likePattern -> criteriaBuilder.or(
                                     criteriaBuilder.like(
-                                            criteriaBuilder.function("unaccent", String.class, criteriaBuilder.lower(root.get("name"))),
+                                            criteriaBuilder.function("unaccent", String.class, criteriaBuilder.lower(root.get("itemName"))),
                                             likePattern)
                             ))
                             .toArray(Predicate[]::new)
@@ -94,7 +94,7 @@ public class ItemServiceImpl implements ItemService {
     @Override
     @Transactional
     public ItemDTO createItem(ItemDTO itemDTO) throws ResourceNotFoundException {
-        if (itemRepository.existsByName((itemDTO.getName()))) {
+        if (itemRepository.existsByItemName((itemDTO.getItemName()))) {
             throw new ResourceNotFoundException("Tên sản phẩm đã tồn tại");
         } else {
             Item item = itemMapper.toItem(itemDTO);
@@ -108,7 +108,7 @@ public class ItemServiceImpl implements ItemService {
     public ItemDTO updateItem(Integer id, ItemDTO itemDTO) throws ResourceNotFoundException {
         Item item = itemRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Item ID " + id + " is invalid."));
 
-        if (itemDTO.getName().equals(item.getName()) && itemDTO.getIsActivated() == item.getIsActivated()
+        if (itemDTO.getItemName().equals(item.getItemName()) && itemDTO.getIsActivated() == item.getIsActivated()
 //            && itemDTO.getProducts().equals(item.getProducts())
         ) {
             throw new ResourceNotFoundException("Không có thông tin sản phẩm cần cập nhật");
@@ -127,7 +127,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public boolean existsByName(String name) {
-        return itemRepository.existsByName(name);
+        return itemRepository.existsByItemName(name);
     }
 
 }

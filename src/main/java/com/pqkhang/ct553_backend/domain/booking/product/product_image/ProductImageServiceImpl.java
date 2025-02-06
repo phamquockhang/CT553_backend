@@ -71,8 +71,16 @@ public class ProductImageServiceImpl implements ProductImageService {
     }
 
     @Override
-    public void createProductImage(ProductImageDTO productImageDTO, List<MultipartFile> productImageFiles) {
-        convertAndUploadProductImageList(productImageDTO, productImageFiles);
+    public ProductImageDTO createProductImage(ProductImageDTO productImageDTO, List<MultipartFile> productImageFiles) throws ResourceNotFoundException {
+        if (productRepository.findProductByProductId(productImageDTO.getProductId()) == null) {
+            throw new ResourceNotFoundException("Product not found");
+        }
+
+        if (productImageFiles == null || productImageFiles.isEmpty()) {
+            return productImageDTO;
+        }
+
+        return convertAndUploadProductImageList(productImageDTO, productImageFiles);
     }
 
     @Override

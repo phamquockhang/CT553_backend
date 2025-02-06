@@ -23,7 +23,9 @@ public class Product extends BaseEntity {
     @SequenceGenerator(name = "product_id_seq", sequenceName = "products_seq", allocationSize = 1)
     Integer productId;
 
-    String name;
+    @Getter
+    String productName;
+    
     String description;
     Boolean isActivated;
 
@@ -41,7 +43,4 @@ public class Product extends BaseEntity {
         }
     }
 
-    public String getProductName() {
-        return name;
-    }
 }

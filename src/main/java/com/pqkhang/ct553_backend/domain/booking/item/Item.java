@@ -22,7 +22,7 @@ public class Item extends BaseEntity {
     @SequenceGenerator(name = "item_id_seq", sequenceName = "items_seq", allocationSize = 1)
     Integer itemId;
 
-    String name;
+    String itemName;
 
     Boolean isActivated;
 

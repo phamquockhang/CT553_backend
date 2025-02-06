@@ -17,7 +17,7 @@ public class ItemDTO {
     Integer itemId;
 
     @NotBlank(message = "Name item is required")
-    String name;
+    String itemName;
 
     Boolean isActivated;
 

@@ -118,7 +118,7 @@ VALUES (gen_random_uuid(), (SELECT customer_id FROM public.customers WHERE email
         '610201', 'Khóm 6', true);
 
 --ITEM
-INSERT INTO public.items (name, is_activated)
+INSERT INTO public.items (item_name, is_activated)
 VALUES ('Item 1', true),
        ('Item 2', true),
        ('Item 3', true),
@@ -136,7 +136,7 @@ VALUES ('Item 1', true),
        ('Item 15', true);
 
 --PRODUCT
-INSERT INTO public.products (name, description, item_id, is_activated)
+INSERT INTO public.products (product_name, description, item_id, is_activated)
 VALUES ('Product 1', 'Description 1', 1, true),
        ('Product 2', 'Description 2', 1, true),
        ('Product 3', 'Description 3', 1, true),

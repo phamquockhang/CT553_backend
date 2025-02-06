@@ -11,7 +11,7 @@ public interface ProductImageService {
 
     List<ProductImageDTO> getAllProductImagesByProductId(Integer productId);
 
-    void createProductImage(ProductImageDTO productImageDTO, List<MultipartFile> productImageFiles);
+    ProductImageDTO createProductImage(ProductImageDTO productImageDTO, List<MultipartFile> productImageFiles) throws ResourceNotFoundException;
 
     ProductImageDTO updateAllProductImageByProductId(ProductImageDTO productImageDTO, List<MultipartFile> productImageFiles) throws ResourceNotFoundException;
 

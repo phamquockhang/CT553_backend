@@ -23,7 +23,7 @@ public class ItemController {
                 .status(HttpStatus.OK.value())
                 .success(true)
                 .payload(itemService.getItems(params))
-                .message("Lấy tất cả sản phẩm thành công")
+                .message("Lấy tất cả mặt hàng thành công")
                 .build();
     }
 
@@ -33,7 +33,7 @@ public class ItemController {
                 .status(HttpStatus.OK.value())
                 .success(true)
                 .payload(itemService.getAllItems())
-                .message("Lấy tất cả sản phẩm thành công")
+                .message("Lấy tất cả mặt hàng thành công")
                 .build();
     }
 
@@ -43,7 +43,7 @@ public class ItemController {
                 .status(HttpStatus.CREATED.value())
                 .success(true)
                 .payload(itemService.createItem(itemDTO))
-                .message("Tạo sản phẩm thành công")
+                .message("Tạo mặt hàng thành công")
                 .build();
     }
 
@@ -53,7 +53,7 @@ public class ItemController {
                 .status(HttpStatus.OK.value())
                 .success(true)
                 .payload(itemService.updateItem(itemId, itemDTO))
-                .message("Cập nhật sản phẩm thành công")
+                .message("Cập nhật mặt hàng thành công")
                 .build();
     }
 
@@ -63,7 +63,7 @@ public class ItemController {
         return ApiResponse.<String>builder()
                 .status(HttpStatus.OK.value())
                 .success(true)
-                .message("Xóa sản phẩm thành công")
+                .message("Xóa mặt hàng thành công")
                 .build();
     }
 

@@ -8,8 +8,7 @@ public interface ProductImageMapper {
     @Mapping(target = "productId", source = "product.productId")
     ProductImageDTO toProductImageDTO(ProductImage productImage);
 
-    //    @Mapping(target = "product.productId", source = "productId")
+    @Mapping(target = "product.productId", source = "productId")
     ProductImage toProductImage(ProductImageDTO productImageDTO);
 
-//    void updateProductImageFromDTO(ProductImageDTO productImageDTO, @MappingTarget ProductImage productImage);
 }
