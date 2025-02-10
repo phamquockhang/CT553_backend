@@ -107,7 +107,6 @@ public class ItemServiceImpl implements ItemService {
     @Transactional
     public ItemDTO updateItem(Integer id, ItemDTO itemDTO) throws ResourceNotFoundException {
         Item item = itemRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Item ID " + id + " is invalid."));
-
 //        if (itemDTO.getItemName().equals(item.getItemName()) && itemDTO.getIsActivated() == item.getIsActivated()
 //            && itemDTO.getProducts().equals(item.getProducts())
 //        ) {

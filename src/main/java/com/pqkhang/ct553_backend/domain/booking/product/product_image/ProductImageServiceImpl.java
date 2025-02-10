@@ -35,8 +35,7 @@ public class ProductImageServiceImpl implements ProductImageService {
         }).toList();
 
         // upload images to cloudinary and database
-        String productName = productRepository.findProductByProductId(productImageDTO.getProductId()).getProductName();
-//        List<String> productImageUrls = new java.util.ArrayList<>(List.of());
+        String productName = cloudinaryUtils.sanitizeName(productRepository.findProductByProductId(productImageDTO.getProductId()).getProductName());
         int nextIndex = 1;
         String publicId = "CT553/" + productName + " - Img " + nextIndex;
         for (File image : productImages) {
@@ -103,15 +102,18 @@ public class ProductImageServiceImpl implements ProductImageService {
         if (productRepository.findProductByProductId(productImageDTO.getProductId()) == null) {
             throw new ResourceNotFoundException("Product not found");
         }
+
+        List<ProductImage> oldProductImages = productImageRepository.findAllByProduct_ProductId(productImageDTO.getProductId());
         if (productImageFiles == null || productImageFiles.isEmpty() || productImageFiles.stream().allMatch(MultipartFile::isEmpty)) {
-            throw new ResourceNotFoundException("No image files");
-        }
-        if (publicIdOfImageFiles == null || publicIdOfImageFiles.isEmpty()) {
-            throw new ResourceNotFoundException("No public id of image files");
+            for (String publicId : publicIdOfImageFiles) {
+                // check if all publicIdOfImageFiles exist in oldProductImages then skip and return old list
+                if (oldProductImages.stream().noneMatch(image -> image.getPublicId().equals(publicId))) {
+                    return getAllProductImagesByProductId(productImageDTO.getProductId());
+                }
+            }
         }
 
         // delete all old product images in cloudinary and database that have no public id in the public id list
-        List<ProductImage> oldProductImages = productImageRepository.findAllByProduct_ProductId(productImageDTO.getProductId());
         for (ProductImage image : oldProductImages) {
             if (!publicIdOfImageFiles.contains(image.getPublicId())) {
                 System.out.println("Need to delete images: " + publicIdOfImageFiles);
@@ -123,6 +125,10 @@ public class ProductImageServiceImpl implements ProductImageService {
                     throw new RuntimeException(e);
                 }
             }
+        }
+
+        if(productImageFiles == null || productImageFiles.isEmpty() || productImageFiles.stream().allMatch(MultipartFile::isEmpty)) {
+            return getAllProductImagesByProductId(productImageDTO.getProductId());
         }
 
         // convert and upload new product images
