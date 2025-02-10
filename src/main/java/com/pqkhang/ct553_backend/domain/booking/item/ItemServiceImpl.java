@@ -95,7 +95,7 @@ public class ItemServiceImpl implements ItemService {
     @Transactional
     public ItemDTO createItem(ItemDTO itemDTO) throws ResourceNotFoundException {
         if (itemRepository.existsByItemName((itemDTO.getItemName()))) {
-            throw new ResourceNotFoundException("Tên sản phẩm đã tồn tại");
+            throw new ResourceNotFoundException("Tên mặt hàng đã tồn tại");
         } else {
             Item item = itemMapper.toItem(itemDTO);
             itemRepository.save(item);
@@ -108,11 +108,11 @@ public class ItemServiceImpl implements ItemService {
     public ItemDTO updateItem(Integer id, ItemDTO itemDTO) throws ResourceNotFoundException {
         Item item = itemRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Item ID " + id + " is invalid."));
 
-        if (itemDTO.getItemName().equals(item.getItemName()) && itemDTO.getIsActivated() == item.getIsActivated()
+//        if (itemDTO.getItemName().equals(item.getItemName()) && itemDTO.getIsActivated() == item.getIsActivated()
 //            && itemDTO.getProducts().equals(item.getProducts())
-        ) {
-            throw new ResourceNotFoundException("Không có thông tin sản phẩm cần cập nhật");
-        }
+//        ) {
+//            throw new ResourceNotFoundException("Không có thông tin mặt hàng cần cập nhật");
+//        }
 
         itemMapper.updateItemFromDTO(itemDTO, item);
         itemRepository.save(item);

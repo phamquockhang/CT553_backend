@@ -14,6 +14,8 @@ import java.time.LocalDateTime;
 public class ProductImageDTO {
     Integer productImageId;
 
+    String publicId;
+
     String imageUrl;
 
     @NotNull(message = "Product ID is required")

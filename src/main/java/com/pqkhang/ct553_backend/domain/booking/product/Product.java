@@ -29,6 +29,7 @@ public class Product extends BaseEntity {
     String description;
     Boolean isActivated;
 
+    //    @ManyToOne(cascade = CascadeType.PERSIST)
     @ManyToOne
     @JoinColumn(name = "item_id", nullable = false)
     Item item;

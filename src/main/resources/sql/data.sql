@@ -42,19 +42,6 @@ VALUES  ('Get all roles', '/api/v1/roles', 'GET', 'ROLE'),
         ('Update a product', '/api/v1/products/{id}', 'PUT', 'PRODUCT'),
         ('Delete a product', '/api/v1/products/{id}', 'DELETE', 'PRODUCT');
 
---         ('Create a product', '/api/v1/products', 'POST', 'PRODUCT'),
---         ('Update a product', '/api/v1/products', 'PUT', 'PRODUCT'),
---         ('Delete a product', '/api/v1/products', 'DELETE', 'PRODUCT'),
---         ('Create a category', '/api/v1/categories', 'POST', 'CATEGORY'),
---         ('Update a category', '/api/v1/categories', 'PUT', 'CATEGORY'),
---         ('Delete a category', '/api/v1/categories', 'DELETE', 'CATEGORY'),
---         ('Create a order', '/api/v1/orders', 'POST', 'ORDER'),
---         ('Update a order', '/api/v1/orders', 'PUT', 'ORDER'),
---         ('Delete a order', '/api/v1/orders', 'DELETE', 'ORDER'),
---         ('Create a order detail', '/api/v1/order-details', 'POST', 'ORDER_DETAIL'),
---         ('Update a order detail', '/api/v1/order-details', 'PUT', 'ORDER_DETAIL'),
---         ('Delete a order detail', '/api/v1/order-details', 'DELETE', 'ORDER_DETAIL'),
-
 --ROLE_PERMISSION FOR STAFF
 INSERT INTO public.permission_role (role_id, permission_id)
 VALUES (2, 18),

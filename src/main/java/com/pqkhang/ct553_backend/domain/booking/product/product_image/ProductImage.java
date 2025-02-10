@@ -21,6 +21,9 @@ public class ProductImage extends BaseEntity {
     Integer productImageId;
 
     @Column(nullable = false)
+    String publicId;
+
+    @Column(nullable = false)
     String imageUrl;
 
     @ManyToOne

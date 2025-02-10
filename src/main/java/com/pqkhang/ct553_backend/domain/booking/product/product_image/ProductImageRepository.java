@@ -9,4 +9,6 @@ import java.util.List;
 @Repository
 public interface ProductImageRepository extends JpaRepository<ProductImage, Integer>, JpaSpecificationExecutor<ProductImage> {
     List<ProductImage> findAllByProduct_ProductId(Integer productProductId);
+
+    boolean existsByPublicId(String publicId);
 }

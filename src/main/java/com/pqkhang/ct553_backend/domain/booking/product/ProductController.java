@@ -27,6 +27,16 @@ public class ProductController {
                 .build();
     }
 
+    @GetMapping("/{productId}")
+    public ApiResponse<ProductDTO> getProduct(@PathVariable("productId") Integer productId) throws ResourceNotFoundException {
+        return ApiResponse.<ProductDTO>builder()
+                .status(HttpStatus.OK.value())
+                .success(true)
+                .payload(productService.getProductById(productId))
+                .message("Lấy sản phẩm thành công")
+                .build();
+    }
+
     @GetMapping("/all")
     public ApiResponse<List<ProductDTO>> getAllProducts() {
         return ApiResponse.<List<ProductDTO>>builder()

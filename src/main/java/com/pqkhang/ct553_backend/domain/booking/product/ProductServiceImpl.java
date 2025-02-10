@@ -94,13 +94,13 @@ public class ProductServiceImpl implements ProductService {
     @Override
     @Transactional
     public ProductDTO createProduct(ProductDTO productDTO) throws ResourceNotFoundException {
-        if (productRepository.existsByProductName((productDTO.getProductName()))) {
-            throw new ResourceNotFoundException("Tên sản phẩm đã tồn tại");
-        } else {
-            Product product = productMapper.toProduct(productDTO);
-            productRepository.save(product);
-            return productMapper.toProductDTO(product);
-        }
+//        if (productRepository.existsByProductName((productDTO.getProductName()))) {
+//            throw new ResourceNotFoundException("Tên sản phẩm đã tồn tại");
+//        } else {
+        Product product = productMapper.toProduct(productDTO);
+        productRepository.save(product);
+        return productMapper.toProductDTO(product);
+//        }
     }
 
     @Override
@@ -108,9 +108,9 @@ public class ProductServiceImpl implements ProductService {
     public ProductDTO updateProduct(Integer id, ProductDTO productDTO) throws ResourceNotFoundException {
         Product product = productRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Product ID " + id + " is invalid."));
 
-        if (productDTO.getProductName().equals(product.getProductName()) && productDTO.getDescription().equals(product.getDescription())) {
-            throw new ResourceNotFoundException("Không có thông tin sản phẩm cần cập nhật");
-        }
+//        if (productDTO.getProductName().equals(product.getProductName()) && productDTO.getDescription().equals(product.getDescription())) {
+//            throw new ResourceNotFoundException("Không có thông tin sản phẩm cần cập nhật");
+//        }
 
         productMapper.updateProductFromDTO(productDTO, product);
         productRepository.save(product);

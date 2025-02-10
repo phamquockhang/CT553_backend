@@ -27,9 +27,9 @@ public class ProductImageController {
     }
 
     @PostMapping
-    public ApiResponse<ProductImageDTO> createProductImage(@ModelAttribute @Valid ProductImageDTO productImageDTO, @RequestParam("productImageFiles") List<MultipartFile> productImageFiles) throws ResourceNotFoundException {
+    public ApiResponse<List<ProductImageDTO>> createProductImage(@ModelAttribute @Valid ProductImageDTO productImageDTO, @RequestParam("productImageFiles") List<MultipartFile> productImageFiles) throws ResourceNotFoundException {
 //        productImageService.createProductImage(productImageDTO, productImageFiles);
-        return ApiResponse.<ProductImageDTO>builder()
+        return ApiResponse.<List<ProductImageDTO>>builder()
                 .status(HttpStatus.OK.value())
                 .success(true)
                 .message("Tạo ảnh sản phẩm thành công")
@@ -38,12 +38,12 @@ public class ProductImageController {
     }
 
     @PutMapping("/{productId}")
-    public ApiResponse<ProductImageDTO> updateAllProductImageByProductId(@ModelAttribute @Valid ProductImageDTO productImageDTO, @RequestParam("productImageFiles") List<MultipartFile> productImageFiles) throws ResourceNotFoundException {
-        return ApiResponse.<ProductImageDTO>builder()
+    public ApiResponse<List<ProductImageDTO>> updateAllProductImageByProductId(@ModelAttribute @Valid ProductImageDTO productImageDTO, @RequestParam("productImageFiles") List<MultipartFile> productImageFiles, @RequestParam("publicIdOfImageFiles") List<String> publicIdOfImageFiles) throws ResourceNotFoundException {
+        return ApiResponse.<List<ProductImageDTO>>builder()
                 .status(HttpStatus.OK.value())
                 .success(true)
                 .message("Cập nhật ảnh sản phẩm thành công")
-                .payload(productImageService.updateAllProductImageByProductId(productImageDTO, productImageFiles))
+                .payload(productImageService.updateProductImageByProductId(productImageDTO, productImageFiles,publicIdOfImageFiles))
                 .build();
     }
 
