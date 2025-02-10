@@ -15,14 +15,15 @@ import java.io.IOException;
 public class CloudinaryUtils {
     private final Cloudinary cloudinary;
 
-    private String sanitizeFileName(String fileName) {
+    public String sanitizeName(String fileName) {
         // Remove file extension if present
         String nameWithoutExtension = fileName.replaceAll("\\.[^/.]+$", "");
 
         // Replace special characters and spaces with underscores
         // giu nguyen cum " - " de phan biet cac anh cua cung 1 san pham
-//        return nameWithoutExtension.replaceAll("[^a-zA-Z0-9]", "_");
-        return nameWithoutExtension.replaceAll("[^a-zA-Z0-9 -]", "_");
+        // regex for Vietnamese characters
+        return nameWithoutExtension.replaceAll("[^a-zA-Z0-9ăâđêôơưàáảãạằắẳẵặầấẩẫậèéẻẽẹềếểễệìíỉĩịòóỏõọồốổỗộờớởỡợùúủũụừứửữựỳýỷỹỵĂÂĐÊÔƠƯÀÁẢÃẠẰẮẲẴẶẦẤẨẪẬÈÉẺẼẸỀẾỂỄỆÌÍỈĨỊÒÓỎÕỌỒỐỔỖỘỜỚỞỠỢÙÚỦŨỤỪỨỬỮỰỲÝỶỸỴ -]", "_");
+//        return nameWithoutExtension.replaceAll("[^a-zA-Z0-9 -]", "_");
     }
 
     public File convertMultipartFileToFile(MultipartFile file) throws IOException {
@@ -34,7 +35,7 @@ public class CloudinaryUtils {
     }
 
     public String uploadImage(File file, String imageName) {
-        String sanitizedFileName = sanitizeFileName(imageName);
+        String sanitizedFileName = sanitizeName(imageName);
 
         try {
             var uploadResult = cloudinary.uploader().upload(file, ObjectUtils.asMap(
