@@ -28,6 +28,8 @@ public class ProductDTO {
 
     List<ProductImageDTO> productImages;
 
+    BuyingPriceDTO buyingPrice;
+
     LocalDateTime createdAt;
     LocalDateTime updatedAt;
 }

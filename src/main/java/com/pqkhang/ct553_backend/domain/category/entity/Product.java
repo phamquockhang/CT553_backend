@@ -35,6 +35,9 @@ public class Product extends BaseEntity {
     @OneToMany(mappedBy = "product", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     List<ProductImage> productImages;
 
+    @OneToMany(mappedBy = "product", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
+    List<BuyingPrice> buyingPrices;
+
     @PrePersist
     public void prePersist() {
         if (isActivated == null) {

@@ -16,6 +16,10 @@ ALTER TABLE public.scores
 ALTER TABLE public.addresses
     ALTER COLUMN created_at SET DEFAULT CURRENT_TIMESTAMP;
 
+--BUYING_PRICE
+ALTER TABLE public.buying_prices
+    ALTER COLUMN created_at SET DEFAULT CURRENT_TIMESTAMP;
+
 --ROLE
 DROP SEQUENCE IF EXISTS roles_seq CASCADE;
 CREATE SEQUENCE roles_seq
@@ -61,3 +65,4 @@ CREATE SEQUENCE product_images_seq
 ALTER TABLE public.product_images
     ALTER COLUMN product_image_id SET DEFAULT nextval('product_images_seq'),
     ALTER COLUMN created_at SET DEFAULT CURRENT_TIMESTAMP;
+

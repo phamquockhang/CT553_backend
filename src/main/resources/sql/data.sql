@@ -139,3 +139,21 @@ VALUES ('Product 1', 'Description 1', 1, true),
        ('Product 13', 'Description 13', 5, true),
        ('Product 14', 'Description 14', 5, true),
        ('Product 15', 'Description 15', 5, true);
+
+--BUYING_PRICE
+INSERT INTO public.buying_prices (product_id, buying_price_value, buying_price_fluctuation, is_current)
+VALUES (1, 999000, 9000, true),
+       (2, 888000, 8000, true),
+       (3, 3000, 300, true),
+       (4, 4000, 400, true),
+       (5, 5000, 500, true),
+       (6, 6000, 600, true),
+       (7, 7000, 700, true),
+       (8, 8000, 800, true),
+       (9, 9000, 900, true),
+       (10, 10000, 1000, true),
+       (11, 11000, 1100, true),
+       (12, 12000, 1200, true),
+       (13, 13000, 1300, true),
+       (14, 14000, 1400, true),
+       (15, 15000, 1500, true);

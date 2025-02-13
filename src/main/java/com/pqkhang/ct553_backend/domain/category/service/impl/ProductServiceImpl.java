@@ -4,7 +4,9 @@ import com.pqkhang.ct553_backend.app.exception.ResourceNotFoundException;
 import com.pqkhang.ct553_backend.app.response.Meta;
 import com.pqkhang.ct553_backend.app.response.Page;
 import com.pqkhang.ct553_backend.domain.category.dto.ProductDTO;
+import com.pqkhang.ct553_backend.domain.category.entity.BuyingPrice;
 import com.pqkhang.ct553_backend.domain.category.entity.Product;
+import com.pqkhang.ct553_backend.domain.category.mapper.BuyingPriceMapper;
 import com.pqkhang.ct553_backend.domain.category.mapper.ProductMapper;
 import com.pqkhang.ct553_backend.domain.category.repository.ProductRepository;
 import com.pqkhang.ct553_backend.domain.category.service.ProductService;
@@ -24,7 +26,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -35,6 +36,7 @@ public class ProductServiceImpl implements ProductService {
     RequestParamUtils requestParamUtils;
     ProductRepository productRepository;
     ProductMapper productMapper;
+    BuyingPriceMapper buyingPriceMapper;
 
     private Specification<Product> getProductSpec(Map<String, String> params) {
         Specification<Product> spec = Specification.where(null);
@@ -75,18 +77,34 @@ public class ProductServiceImpl implements ProductService {
                 .pages(productPage.getTotalPages())
                 .total(productPage.getTotalElements())
                 .build();
+
         return Page.<ProductDTO>builder()
                 .meta(meta)
-                .data(productPage.getContent().stream()
-                        .map(productMapper::toProductDTO)
-                        .collect(Collectors.toList()))
+                .data(productPage.getContent().stream().map(product -> {
+                            ProductDTO productDTO = productMapper.toProductDTO(product);
+                            productDTO.setBuyingPrice(product.getBuyingPrices().stream()
+                                    .filter(BuyingPrice::getIsCurrent)
+                                    .map(buyingPriceMapper::toBuyingPriceDTO)
+                                    .findFirst()
+                                    .orElse(null));
+                            return productDTO;
+                        }).toList()
+                )
                 .build();
     }
 
     @Override
     public List<ProductDTO> getAllProducts() {
         return productRepository.findAll().stream()
-                .map(productMapper::toProductDTO)
+                .map(product -> {
+                    ProductDTO productDTO = productMapper.toProductDTO(product);
+                    productDTO.setBuyingPrice(product.getBuyingPrices().stream()
+                            .filter(BuyingPrice::getIsCurrent)
+                            .map(buyingPriceMapper::toBuyingPriceDTO)
+                            .findFirst()
+                            .orElse(null));
+                    return productDTO;
+                })
                 .toList();
     }
 
