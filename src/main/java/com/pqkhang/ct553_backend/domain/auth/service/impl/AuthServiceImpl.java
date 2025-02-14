@@ -51,8 +51,9 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public CustomerDTO registerCustomer(CustomerDTO customerDTO) throws ResourceNotFoundException {
-        boolean isEmailExist = this.customerRepository.existsByEmail(customerDTO.getEmail());
-        if (isEmailExist) {
+        boolean isEmailCustomerExist = this.customerRepository.existsByEmail(customerDTO.getEmail());
+        boolean isEmailStaffExist = this.staffRepository.existsByEmail(customerDTO.getEmail());
+        if (isEmailCustomerExist || isEmailStaffExist) {
             throw new DataIntegrityViolationException("Email này đã được sử dụng! Vui lòng chọn email khác.");
         }
 

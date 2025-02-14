@@ -11,6 +11,7 @@ import com.pqkhang.ct553_backend.domain.user.dto.CustomerDTO;
 import com.pqkhang.ct553_backend.domain.user.entity.Customer;
 import com.pqkhang.ct553_backend.domain.user.mapper.CustomerMapper;
 import com.pqkhang.ct553_backend.domain.user.repository.CustomerRepository;
+import com.pqkhang.ct553_backend.domain.user.repository.StaffRepository;
 import com.pqkhang.ct553_backend.domain.user.service.CustomerService;
 import com.pqkhang.ct553_backend.infrastructure.utils.RequestParamUtils;
 import com.pqkhang.ct553_backend.infrastructure.utils.StringUtils;
@@ -40,6 +41,7 @@ import java.util.stream.Collectors;
 public class CustomerServiceImpl implements CustomerService {
 
     CustomerRepository customerRepository;
+    StaffRepository staffRepository;
     CustomerMapper customerMapper;
     PasswordEncoder passwordEncoder;
     RoleRepository roleRepository;
@@ -140,7 +142,8 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     @Transactional
     public CustomerDTO createCustomer(CustomerDTO customerDTO) throws ResourceNotFoundException {
-        if (customerRepository.existsByEmail(customerDTO.getEmail())) {
+        if (customerRepository.existsByEmail(customerDTO.getEmail()) || staffRepository.existsByEmail(customerDTO.getEmail())
+        ) {
             throw new ResourceNotFoundException("Email này đã được sử dụng");
         } else {
             Customer customer = customerMapper.toCustomer(customerDTO);

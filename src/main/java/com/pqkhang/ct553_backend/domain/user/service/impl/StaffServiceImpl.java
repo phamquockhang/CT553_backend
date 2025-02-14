@@ -10,6 +10,7 @@ import com.pqkhang.ct553_backend.domain.auth.repository.RoleRepository;
 import com.pqkhang.ct553_backend.domain.user.dto.StaffDTO;
 import com.pqkhang.ct553_backend.domain.user.entity.Staff;
 import com.pqkhang.ct553_backend.domain.user.mapper.StaffMapper;
+import com.pqkhang.ct553_backend.domain.user.repository.CustomerRepository;
 import com.pqkhang.ct553_backend.domain.user.repository.StaffRepository;
 import com.pqkhang.ct553_backend.domain.user.service.StaffService;
 import com.pqkhang.ct553_backend.infrastructure.utils.RequestParamUtils;
@@ -42,6 +43,7 @@ import java.util.stream.Collectors;
 public class StaffServiceImpl implements StaffService {
 
     StaffRepository staffRepository;
+    CustomerRepository customerRepository;
     StaffMapper staffMapper;
     PasswordEncoder passwordEncoder;
     RoleRepository roleRepository;
@@ -143,7 +145,8 @@ public class StaffServiceImpl implements StaffService {
     @Override
     @Transactional
     public StaffDTO createStaff(StaffDTO staffDTO) throws ResourceNotFoundException {
-        if (staffRepository.existsByEmail(staffDTO.getEmail())) {
+        if (staffRepository.existsByEmail(staffDTO.getEmail()) || customerRepository.existsByEmail(staffDTO.getEmail())
+        ) {
             throw new ResourceNotFoundException("Email already exists");
         } else {
             Staff staff = staffMapper.toStaff(staffDTO);
