@@ -4,12 +4,8 @@ import com.pqkhang.ct553_backend.app.exception.ResourceNotFoundException;
 import com.pqkhang.ct553_backend.app.response.Meta;
 import com.pqkhang.ct553_backend.app.response.Page;
 import com.pqkhang.ct553_backend.domain.category.dto.ItemDTO;
-import com.pqkhang.ct553_backend.domain.category.dto.ProductDTO;
-import com.pqkhang.ct553_backend.domain.category.entity.BuyingPrice;
 import com.pqkhang.ct553_backend.domain.category.entity.Item;
-import com.pqkhang.ct553_backend.domain.category.mapper.BuyingPriceMapper;
 import com.pqkhang.ct553_backend.domain.category.mapper.ItemMapper;
-import com.pqkhang.ct553_backend.domain.category.mapper.ProductMapper;
 import com.pqkhang.ct553_backend.domain.category.repository.ItemRepository;
 import com.pqkhang.ct553_backend.domain.category.service.ItemService;
 import com.pqkhang.ct553_backend.infrastructure.utils.RequestParamUtils;
@@ -39,21 +35,12 @@ public class ItemServiceImpl implements ItemService {
     RequestParamUtils requestParamUtils;
     ItemRepository itemRepository;
     ItemMapper itemMapper;
-    ProductMapper productMapper;
-    BuyingPriceMapper buyingPriceMapper;
+    ProductServiceImpl productService;
 
     private ItemDTO customItemDTOMapper(Item item) {
         ItemDTO itemDTO = itemMapper.toItemDTO(item);
         itemDTO.setProducts(item.getProducts().stream()
-                .map(product -> {
-                    ProductDTO productDTO = productMapper.toProductDTO(product);
-                    productDTO.setBuyingPrice(product.getBuyingPrices().stream()
-                            .filter(BuyingPrice::getIsCurrent)
-                            .map(buyingPriceMapper::toBuyingPriceDTO)
-                            .findFirst()
-                            .orElse(null));
-                    return productDTO;
-                })
+                .map(productService::customProductPriceDTO)
                 .collect(Collectors.toList()));
         return itemDTO;
     }

@@ -6,8 +6,10 @@ import com.pqkhang.ct553_backend.app.response.Page;
 import com.pqkhang.ct553_backend.domain.category.dto.ProductDTO;
 import com.pqkhang.ct553_backend.domain.category.entity.BuyingPrice;
 import com.pqkhang.ct553_backend.domain.category.entity.Product;
+import com.pqkhang.ct553_backend.domain.category.entity.SellingPrice;
 import com.pqkhang.ct553_backend.domain.category.mapper.BuyingPriceMapper;
 import com.pqkhang.ct553_backend.domain.category.mapper.ProductMapper;
+import com.pqkhang.ct553_backend.domain.category.mapper.SellingPriceMapper;
 import com.pqkhang.ct553_backend.domain.category.repository.ProductRepository;
 import com.pqkhang.ct553_backend.domain.category.service.ProductService;
 import com.pqkhang.ct553_backend.infrastructure.utils.RequestParamUtils;
@@ -37,6 +39,22 @@ public class ProductServiceImpl implements ProductService {
     ProductRepository productRepository;
     ProductMapper productMapper;
     BuyingPriceMapper buyingPriceMapper;
+    SellingPriceMapper sellingPriceMapper;
+
+    public ProductDTO customProductPriceDTO(Product product) {
+        ProductDTO productDTO = productMapper.toProductDTO(product);
+        productDTO.setBuyingPrice(product.getBuyingPrices().stream()
+                .filter(BuyingPrice::getIsCurrent)
+                .map(buyingPriceMapper::toBuyingPriceDTO)
+                .findFirst()
+                .orElse(null));
+        productDTO.setSellingPrice(product.getSellingPrices().stream()
+                .filter(SellingPrice::getIsCurrent)
+                .map(sellingPriceMapper::toSellingPriceDTO)
+                .findFirst()
+                .orElse(null));
+        return productDTO;
+    }
 
     private Specification<Product> getProductSpec(Map<String, String> params) {
         Specification<Product> spec = Specification.where(null);
@@ -80,31 +98,14 @@ public class ProductServiceImpl implements ProductService {
 
         return Page.<ProductDTO>builder()
                 .meta(meta)
-                .data(productPage.getContent().stream().map(product -> {
-                            ProductDTO productDTO = productMapper.toProductDTO(product);
-                            productDTO.setBuyingPrice(product.getBuyingPrices().stream()
-                                    .filter(BuyingPrice::getIsCurrent)
-                                    .map(buyingPriceMapper::toBuyingPriceDTO)
-                                    .findFirst()
-                                    .orElse(null));
-                            return productDTO;
-                        }).toList()
-                )
+                .data(productPage.getContent().stream().map(this::customProductPriceDTO).toList())
                 .build();
     }
 
     @Override
     public List<ProductDTO> getAllProducts() {
         return productRepository.findAll().stream()
-                .map(product -> {
-                    ProductDTO productDTO = productMapper.toProductDTO(product);
-                    productDTO.setBuyingPrice(product.getBuyingPrices().stream()
-                            .filter(BuyingPrice::getIsCurrent)
-                            .map(buyingPriceMapper::toBuyingPriceDTO)
-                            .findFirst()
-                            .orElse(null));
-                    return productDTO;
-                })
+                .map(this::customProductPriceDTO)
                 .toList();
     }
 

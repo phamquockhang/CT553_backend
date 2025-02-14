@@ -20,6 +20,10 @@ ALTER TABLE public.addresses
 ALTER TABLE public.buying_prices
     ALTER COLUMN created_at SET DEFAULT CURRENT_TIMESTAMP;
 
+--SELLING_PRICE
+ALTER TABLE public.selling_prices
+    ALTER COLUMN created_at SET DEFAULT CURRENT_TIMESTAMP;
+
 --ROLE
 DROP SEQUENCE IF EXISTS roles_seq CASCADE;
 CREATE SEQUENCE roles_seq

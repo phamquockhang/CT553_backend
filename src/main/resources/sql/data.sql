@@ -157,3 +157,21 @@ VALUES (1, 999000, 9000, true),
        (13, 13000, 1300, true),
        (14, 14000, 1400, true),
        (15, 15000, 1500, true);
+
+--SELLING_PRICE
+INSERT INTO public.selling_prices (product_id, selling_price_value, selling_price_fluctuation, is_current)
+VALUES (1, 1000000, 10000, true),
+       (2, 900000, 9000, true),
+       (3, 3500, 250, true),
+       (4, 4500, 350, true),
+       (5, 5500, 450, true),
+       (6, 6500, 550, true),
+       (7, 7500, 650, true),
+       (8, 8500, 750, true),
+       (9, 9500, 850, true),
+       (10, 10500, 950, true),
+       (11, 11500, 1050, true),
+       (12, 12500, 1150, true),
+       (13, 13500, 1250, true),
+       (14, 14500, 1350, true),
+       (15, 15500, 1450, true);

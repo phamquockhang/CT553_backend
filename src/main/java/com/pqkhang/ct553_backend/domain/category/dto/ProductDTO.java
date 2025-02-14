@@ -30,6 +30,8 @@ public class ProductDTO {
 
     BuyingPriceDTO buyingPrice;
 
+    SellingPriceDTO sellingPrice;
+
     LocalDateTime createdAt;
     LocalDateTime updatedAt;
 }
