@@ -106,72 +106,145 @@ VALUES (gen_random_uuid(), (SELECT customer_id FROM public.customers WHERE email
 
 --ITEM
 INSERT INTO public.items (item_name, is_activated)
-VALUES ('Item 1', true),
-       ('Item 2', true),
-       ('Item 3', true),
-       ('Item 4', true),
-       ('Item 5', true),
-       ('Item 6', true),
-       ('Item 7', true),
-       ('Item 8', true),
-       ('Item 9', true),
-       ('Item 10', true),
-       ('Item 11', true),
-       ('Item 12', true),
-       ('Item 13', true),
-       ('Item 14', true),
-       ('Item 15', true);
+VALUES --Tôm hùm
+       ('Tôm hùm', true),
+
+       --Tôm càng
+       ('Tôm càng', true),
+
+       --Tôm thẻ
+       ('Tôm thẻ', true),
+
+       --Tôm sú
+       ('Tôm sú', true),
+
+       --Cua
+       ('Cua', true);
 
 --PRODUCT
-INSERT INTO public.products (product_name, description, item_id, is_activated)
-VALUES ('Product 1', 'Description 1', 1, true),
-       ('Product 2', 'Description 2', 1, true),
-       ('Product 3', 'Description 3', 1, true),
-       ('Product 4', 'Description 4', 1, true),
-       ('Product 5', 'Description 5', 1, true),
-       ('Product 6', 'Description 6', 2, true),
-       ('Product 7', 'Description 7', 2, true),
-       ('Product 8', 'Description 8', 2, true),
-       ('Product 9', 'Description 9', 3, true),
-       ('Product 10', 'Description 10', 4, true),
-       ('Product 11', 'Description 11', 4, true),
-       ('Product 12', 'Description 12', 4, true),
-       ('Product 13', 'Description 13', 5, true),
-       ('Product 14', 'Description 14', 5, true),
-       ('Product 15', 'Description 15', 5, true);
+INSERT INTO public.products (product_name, product_unit, description, item_id, is_activated)
+VALUES
+    --Tôm hùm
+    ('Tôm hùm Alaska nhỏ', 'con', 'Tôm hùm Alaska nhỏ có trọng lượng từ 450-550g/con', 1, true),
+    ('Tôm hùm Alaska vừa', 'con', 'Tôm hùm Alaska vừa có trọng lượng từ 550-900g/con', 1, true),
+    ('Tôm hùm Alaska lớn', 'con', 'Tôm hùm Alaska lớn có trọng lượng từ 0,9-3kg/con', 1, true),
+    ('Tôm hùm bông vừa', 'con', 'Tôm hùm bông vừa có trọng lượng từ 500-700g/con', 1, true),
+    ('Tôm hùm bông lớn', 'con', 'Tôm hùm bông lớn có trọng lượng từ 700-900g/con', 1, true),
+    ('Tôm hùm xanh', 'kg', 'Tôm hùm xanh tươi sống có trọng lượng từ 300-400g/con', 1, true),
+
+    --Tôm càng
+    ('Tôm càng xanh hàng 2', 'kg', 'Tôm càng xanh hàng 2 có trọng lượng từ 15-24con/kg', 2, true),
+    ('Tôm càng xanh hàng 3', 'kg', 'Tôm càng xanh hàng 3 có trọng lượng từ 25-34con/kg', 2, true),
+    ('Tôm càng xanh hàng 4', 'kg', 'Tôm càng xanh hàng 4 có trọng lượng từ 35-44con/kg', 2, true),
+    ('Tôm càng xanh hàng 5', 'kg', 'Tôm càng xanh hàng 5 có trọng lượng từ 45-54con/kg', 2, true),
+
+    --Tôm thẻ
+    ('Tôm thẻ hàng 3', 'kg', 'Tôm thẻ hàng 3 có trọng lượng từ 25-34con/kg', 3, true),
+    ('Tôm thẻ hàng 4', 'kg', 'Tôm thẻ hàng 4 có trọng lượng từ 35-44con/kg', 3, true),
+    ('Tôm thẻ hàng 5', 'kg', 'Tôm thẻ hàng 5 có trọng lượng từ 45-54con/kg', 3, true),
+    ('Tôm thẻ hàng 6', 'kg', 'Tôm thẻ hàng 6 có trọng lượng từ 55-64con/kg', 3, true),
+
+    --Tôm sú
+    ('Tôm sú hàng 2', 'kg', 'Tôm sú hàng 2 có trọng lượng từ 15-24con/kg', 4, true),
+    ('Tôm sú hàng 3', 'kg', 'Tôm sú hàng 3 có trọng lượng từ 25-34con/kg', 4, true),
+    ('Tôm sú hàng 4', 'kg', 'Tôm sú hàng 4 có trọng lượng từ 35-44con/kg', 4, true),
+    ('Tôm sú hàng 5', 'kg', 'Tôm sú hàng 5 có trọng lượng từ 45-54con/kg', 4, true),
+
+    --Cua
+    ('Cua gạch nhỏ', 'con', 'Cua gạch nhỏ có trọng lượng từ 250-350g/con', 5, true),
+    ('Cua gạch vừa', 'con', 'Cua gạch vừa có trọng lượng từ 350-550g/con', 5, true),
+    ('Cua gạch lớn', 'con', 'Cua gạch lớn có trọng lượng từ 550-800g/con', 5, true),
+    ('Cua tứ nhỏ', 'con', 'Cua tứ nhỏ có trọng lượng từ 250-350g/con', 5, true),
+    ('Cua tứ vừa', 'con', 'Cua tứ vừa có trọng lượng từ 350-550g/con', 5, true),
+    ('Cua tứ lớn', 'con', 'Cua tứ lớn có trọng lượng từ 550-800g/con', 5, true),
+    ('Cua thịt nhỏ', 'con', 'Cua thịt nhỏ có trọng lượng từ 250-350g/con', 5, true),
+    ('Cua thịt vừa', 'con', 'Cua thịt vừa có trọng lượng từ 350-550g/con', 5, true),
+    ('Cua thịt lớn', 'con', 'Cua thịt lớn có trọng lượng từ 550-800g/con', 5, true);
 
 --BUYING_PRICE
 INSERT INTO public.buying_prices (product_id, buying_price_value, buying_price_fluctuation, is_current)
-VALUES (1, 999000, 9000, true),
-       (2, 888000, 8000, true),
-       (3, 3000, 300, true),
-       (4, 4000, 400, true),
-       (5, 5000, 500, true),
-       (6, 6000, 600, true),
-       (7, 7000, 700, true),
-       (8, 8000, 800, true),
-       (9, 9000, 900, true),
-       (10, 10000, 1000, true),
-       (11, 11000, 1100, true),
-       (12, 12000, 1200, true),
-       (13, 13000, 1300, true),
-       (14, 14000, 1400, true),
-       (15, 15000, 1500, true);
+VALUES
+    --Tôm hùm
+    (1, 900000,0, true),
+    (2, 1150000,0, true),
+    (3, 1300000,0, true),
+
+    (4, 1250000,0, true),
+    (5, 1750000,0, true),
+
+    (6, 1050000,0, true),
+
+    --Tôm càng
+    (7, 270000,5000, true),
+    (8, 220000,3000, true),
+    (9, 195000,3000, true),
+    (10, 150000,2000, true),
+
+    --Tôm thẻ
+    (11, 220000,2000, true),
+    (12, 180000,2000, true),
+    (13, 150000,1000, true),
+    (14, 120000,1000, true),
+
+    --Tôm sú
+    (15, 230000,3000, true),
+    (16, 200000,2000, true),
+    (17, 180000,1000, true),
+    (18, 160000,1000, true),
+
+    --Cua
+    (19, 290000,0, true),
+    (20, 390000,0, true),
+    (21, 590000,0, true),
+
+    (22, 150000,0, true),
+    (23, 200000,0, true),
+    (24, 250000,0, true),
+
+    (25, 150000,0, true),
+    (26, 200000,0, true),
+    (27, 250000,0, true);
 
 --SELLING_PRICE
 INSERT INTO public.selling_prices (product_id, selling_price_value, selling_price_fluctuation, is_current)
-VALUES (1, 1000000, 10000, true),
-       (2, 900000, 9000, true),
-       (3, 3500, 250, true),
-       (4, 4500, 350, true),
-       (5, 5500, 450, true),
-       (6, 6500, 550, true),
-       (7, 7500, 650, true),
-       (8, 8500, 750, true),
-       (9, 9500, 850, true),
-       (10, 10500, 950, true),
-       (11, 11500, 1050, true),
-       (12, 12500, 1150, true),
-       (13, 13500, 1250, true),
-       (14, 14500, 1350, true),
-       (15, 15500, 1450, true);
+VALUES
+    --Tôm hùm
+    (1, 599000,0, true),
+    (2, 1069000,0, true),
+    (3, 1490000,0, true),
+
+    (4, 745000,0, true),
+    (5, 1189000,0, true),
+
+    (6, 1299000,0, true),
+
+    --Tôm càng
+    (7, 299000,0, true),
+    (8, 249000,0, true),
+    (9, 229000,0, true),
+    (10, 209000,0, true),
+
+    --Tôm thẻ
+    (11, 249000,0, true),
+    (12, 199000,0, true),
+    (13, 179000,0, true),
+    (14, 159000,0, true),
+
+    --Tôm sú
+    (15, 269000,0, true),
+    (16, 229000,0, true),
+    (17, 199000,0, true),
+    (18, 179000,0, true),
+
+    --Cua
+    (19, 99000,0, true),
+    (20, 150000,0, true),
+    (21, 409000,0, true),
+
+    (22, 69000,0, true),
+    (23, 109000,0, true),
+    (24, 209000,0, true),
+
+    (25, 79000,0, true),
+    (26, 129000,0, true),
+    (27, 329000,0, true);

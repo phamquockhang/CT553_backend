@@ -19,6 +19,9 @@ public class ProductDTO {
     @NotBlank(message = "Product name is required")
     String productName;
 
+    @NotBlank(message = "Product unit is required")
+    String productUnit;
+
     String description;
 
     Boolean isActivated;

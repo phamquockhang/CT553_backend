@@ -24,6 +24,7 @@ public class Product extends BaseEntity {
     @Getter
     String productName;
 
+    String productUnit;
     String description;
     Boolean isActivated;
 
