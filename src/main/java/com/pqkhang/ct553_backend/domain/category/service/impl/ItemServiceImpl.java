@@ -5,11 +5,14 @@ import com.pqkhang.ct553_backend.app.response.Meta;
 import com.pqkhang.ct553_backend.app.response.Page;
 import com.pqkhang.ct553_backend.domain.category.dto.ItemDTO;
 import com.pqkhang.ct553_backend.domain.category.entity.Item;
+import com.pqkhang.ct553_backend.domain.category.entity.Product;
 import com.pqkhang.ct553_backend.domain.category.mapper.ItemMapper;
 import com.pqkhang.ct553_backend.domain.category.repository.ItemRepository;
 import com.pqkhang.ct553_backend.domain.category.service.ItemService;
 import com.pqkhang.ct553_backend.infrastructure.utils.RequestParamUtils;
 import com.pqkhang.ct553_backend.infrastructure.utils.StringUtils;
+import jakarta.persistence.criteria.Join;
+import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Predicate;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -47,20 +50,26 @@ public class ItemServiceImpl implements ItemService {
 
     private Specification<Item> getItemSpec(Map<String, String> params) {
         Specification<Item> spec = Specification.where(null);
-        if (params.containsKey("query")) {
+        if (params.containsKey("query") && !params.get("query").isBlank()) {
             String searchValue = params.get("query").trim().toLowerCase();
             String[] searchValues = searchValue.split(",");
-            spec = spec.or((root, query, criteriaBuilder) -> criteriaBuilder.or(
+            spec = spec.or((root, query, criteriaBuilder) -> {
+                Join<Item, Product> productJoin = root.join("products", JoinType.LEFT);
+                return criteriaBuilder.or(
                     Arrays.stream(searchValues)
                             .map(stringUtils::normalizeString)
                             .map(value -> "%" + value.trim().toLowerCase() + "%")
                             .map(likePattern -> criteriaBuilder.or(
                                     criteriaBuilder.like(
                                             criteriaBuilder.function("unaccent", String.class, criteriaBuilder.lower(root.get("itemName"))),
+                                            likePattern),
+                                    criteriaBuilder.like(
+                                            criteriaBuilder.function("unaccent", String.class, criteriaBuilder.lower(productJoin.get("productName"))),
                                             likePattern)
                             ))
                             .toArray(Predicate[]::new)
-            ));
+                );
+            });
         }
         return spec;
     }
