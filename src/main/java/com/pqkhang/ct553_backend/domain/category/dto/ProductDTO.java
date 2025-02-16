@@ -35,6 +35,8 @@ public class ProductDTO {
 
     SellingPriceDTO sellingPrice;
 
+    WeightDTO weight;
+
     LocalDateTime createdAt;
     LocalDateTime updatedAt;
 }

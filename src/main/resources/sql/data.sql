@@ -248,3 +248,42 @@ VALUES
     (25, 79000,0, true),
     (26, 129000,0, true),
     (27, 329000,0, true);
+
+--WEIGHT
+INSERT INTO public.weights (product_id, weight_value, is_current)
+VALUES --Tôm hùm
+       (1, 52.9, true),
+       (2, 75.23, true),
+       (3, 103.4, true),
+       (4, 100.5, true),
+       (5, 150.5, true),
+       (6, 350.5, true),
+
+       --Tôm càng
+       (7, 20.5, true),
+       (8, 30.5, true),
+       (9, 40.5, true),
+       (10, 50.5, true),
+
+       --Tôm thẻ
+       (11, 30.5, true),
+       (12, 40.5, true),
+       (13, 50.5, true),
+       (14, 60.5, true),
+
+       --Tôm sú
+       (15, 20.5, true),
+       (16, 30.5, true),
+       (17, 40.5, true),
+       (18, 50.5, true),
+
+       --Cua
+       (19, 20.5, true),
+       (20, 30.5, true),
+       (21, 40.5, true),
+       (22, 20.5, true),
+       (23, 30.5, true),
+       (24, 40.5, true),
+       (25, 20.5, true),
+       (26, 30.5, true),
+       (27, 40.5, true);

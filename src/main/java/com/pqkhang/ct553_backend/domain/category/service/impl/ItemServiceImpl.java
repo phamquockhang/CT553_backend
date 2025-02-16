@@ -43,7 +43,7 @@ public class ItemServiceImpl implements ItemService {
     private ItemDTO customItemDTOMapper(Item item) {
         ItemDTO itemDTO = itemMapper.toItemDTO(item);
         itemDTO.setProducts(item.getProducts().stream()
-                .map(productService::customProductPriceDTO)
+                .map(productService::customProductDTO)
                 .collect(Collectors.toList()));
         return itemDTO;
     }

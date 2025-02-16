@@ -7,9 +7,11 @@ import com.pqkhang.ct553_backend.domain.category.dto.ProductDTO;
 import com.pqkhang.ct553_backend.domain.category.entity.BuyingPrice;
 import com.pqkhang.ct553_backend.domain.category.entity.Product;
 import com.pqkhang.ct553_backend.domain.category.entity.SellingPrice;
+import com.pqkhang.ct553_backend.domain.category.entity.Weight;
 import com.pqkhang.ct553_backend.domain.category.mapper.BuyingPriceMapper;
 import com.pqkhang.ct553_backend.domain.category.mapper.ProductMapper;
 import com.pqkhang.ct553_backend.domain.category.mapper.SellingPriceMapper;
+import com.pqkhang.ct553_backend.domain.category.mapper.WeightMapper;
 import com.pqkhang.ct553_backend.domain.category.repository.ProductRepository;
 import com.pqkhang.ct553_backend.domain.category.service.ProductService;
 import com.pqkhang.ct553_backend.infrastructure.utils.RequestParamUtils;
@@ -40,8 +42,9 @@ public class ProductServiceImpl implements ProductService {
     ProductMapper productMapper;
     BuyingPriceMapper buyingPriceMapper;
     SellingPriceMapper sellingPriceMapper;
+    WeightMapper weightMapper;
 
-    public ProductDTO customProductPriceDTO(Product product) {
+    public ProductDTO customProductDTO(Product product) {
         ProductDTO productDTO = productMapper.toProductDTO(product);
         productDTO.setBuyingPrice(product.getBuyingPrices().stream()
                 .filter(BuyingPrice::getIsCurrent)
@@ -51,6 +54,11 @@ public class ProductServiceImpl implements ProductService {
         productDTO.setSellingPrice(product.getSellingPrices().stream()
                 .filter(SellingPrice::getIsCurrent)
                 .map(sellingPriceMapper::toSellingPriceDTO)
+                .findFirst()
+                .orElse(null));
+        productDTO.setWeight(product.getWeights().stream()
+                .filter(Weight::getIsCurrent)
+                .map(weightMapper::toWeightDTO)
                 .findFirst()
                 .orElse(null));
         return productDTO;
@@ -67,7 +75,7 @@ public class ProductServiceImpl implements ProductService {
                             .map(value -> "%" + value.trim().toLowerCase() + "%")
                             .map(likePattern -> criteriaBuilder.or(
                                     criteriaBuilder.like(
-                                            criteriaBuilder.function("unaccent", String.class, criteriaBuilder.lower(root.get("name"))),
+                                            criteriaBuilder.function("unaccent", String.class, criteriaBuilder.lower(root.get("productName"))),
                                             likePattern)
                             ))
                             .toArray(Predicate[]::new)
@@ -98,14 +106,14 @@ public class ProductServiceImpl implements ProductService {
 
         return Page.<ProductDTO>builder()
                 .meta(meta)
-                .data(productPage.getContent().stream().map(this::customProductPriceDTO).toList())
+                .data(productPage.getContent().stream().map(this::customProductDTO).toList())
                 .build();
     }
 
     @Override
     public List<ProductDTO> getAllProducts() {
         return productRepository.findAll().stream()
-                .map(this::customProductPriceDTO)
+                .map(this::customProductDTO)
                 .toList();
     }
 
