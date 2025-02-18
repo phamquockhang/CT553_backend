@@ -3,11 +3,13 @@ package com.pqkhang.ct553_backend.domain.category.service.impl;
 import com.pqkhang.ct553_backend.app.exception.ResourceNotFoundException;
 import com.pqkhang.ct553_backend.app.response.Meta;
 import com.pqkhang.ct553_backend.app.response.Page;
+import com.pqkhang.ct553_backend.domain.category.dto.GeneralizedItemDTO;
 import com.pqkhang.ct553_backend.domain.category.dto.ItemDTO;
 import com.pqkhang.ct553_backend.domain.category.entity.Item;
 import com.pqkhang.ct553_backend.domain.category.entity.Product;
 import com.pqkhang.ct553_backend.domain.category.mapper.ItemMapper;
 import com.pqkhang.ct553_backend.domain.category.repository.ItemRepository;
+import com.pqkhang.ct553_backend.domain.category.repository.ProductRepository;
 import com.pqkhang.ct553_backend.domain.category.service.ItemService;
 import com.pqkhang.ct553_backend.infrastructure.utils.RequestParamUtils;
 import com.pqkhang.ct553_backend.infrastructure.utils.StringUtils;
@@ -39,6 +41,7 @@ public class ItemServiceImpl implements ItemService {
     ItemRepository itemRepository;
     ItemMapper itemMapper;
     ProductServiceImpl productService;
+    ProductRepository productRepository;
 
     private ItemDTO customItemDTOMapper(Item item) {
         ItemDTO itemDTO = itemMapper.toItemDTO(item);
@@ -75,7 +78,13 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public Page<ItemDTO> getItems(Map<String, String> params) throws ResourceNotFoundException {
+    public ItemDTO getItem(Integer itemId) throws ResourceNotFoundException {
+        Item item = itemRepository.findById(itemId).orElseThrow(() -> new ResourceNotFoundException("Item ID " + itemId + " is invalid."));
+        return customItemDTOMapper(item);
+    }
+
+    @Override
+    public Page<GeneralizedItemDTO> getItems(Map<String, String> params) throws ResourceNotFoundException {
         int page = Integer.parseInt(params.getOrDefault("page", "1"));
         int pageSize = Integer.parseInt(params.getOrDefault("pageSize", "10"));
         Specification<Item> spec = getItemSpec(params);
@@ -93,32 +102,27 @@ public class ItemServiceImpl implements ItemService {
                 .pages(itemPage.getTotalPages())
                 .total(itemPage.getTotalElements())
                 .build();
-        return Page.<ItemDTO>builder()
+        return Page.<GeneralizedItemDTO>builder()
                 .meta(meta)
                 .data(itemPage.getContent().stream()
-                        .map(this::customItemDTOMapper)
+                        .map(itemMapper::toGeneralizedItemDTO)
                         .collect(Collectors.toList()))
                 .build();
     }
 
     @Override
-    public List<ItemDTO> getAllItems() {
+    public List<GeneralizedItemDTO> getAllItems() {
         return itemRepository.findAll().stream()
-                .map(this::customItemDTOMapper)
+                .map(itemMapper::toGeneralizedItemDTO)
                 .toList();
-    }
-
-    @Override
-    public ItemDTO getItemById(Integer id) {
-        Item item = itemRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Item ID " + id + " is invalid."));
-        return itemMapper.toItemDTO(item);
     }
 
     @Override
     @Transactional
     public ItemDTO createItem(ItemDTO itemDTO) throws ResourceNotFoundException {
-        if (itemRepository.existsByItemName((itemDTO.getItemName()))) {
-            throw new ResourceNotFoundException("Tên mặt hàng đã tồn tại");
+        Item oldItem = itemRepository.findByItemName(itemDTO.getItemName());
+        if (oldItem != null) {
+            return itemMapper.toItemDTO(oldItem);
         } else {
             Item item = itemMapper.toItem(itemDTO);
             itemRepository.save(item);
@@ -130,15 +134,30 @@ public class ItemServiceImpl implements ItemService {
     @Transactional
     public ItemDTO updateItem(Integer id, ItemDTO itemDTO) throws ResourceNotFoundException {
         Item item = itemRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Item ID " + id + " is invalid."));
-//        if (itemDTO.getItemName().equals(item.getItemName()) && itemDTO.getIsActivated() == item.getIsActivated()
-//            && itemDTO.getProducts().equals(item.getProducts())
-//        ) {
-//            throw new ResourceNotFoundException("Không có thông tin mặt hàng cần cập nhật");
+//        if (itemRepository.existsByItemName(itemDTO.getItemName()) && !itemDTO.getItemName().equals(item.getItemName())) {
+//            throw new ResourceNotFoundException("Tên mặt hàng đã tồn tại");
 //        }
 
-        itemMapper.updateItemFromDTO(itemDTO, item);
-        itemRepository.save(item);
-        return itemMapper.toItemDTO(item);
+//        itemMapper.updateItemFromDTO(itemDTO, item);
+//        itemRepository.save(item);
+//        return itemMapper.toItemDTO(item);
+
+        Item existingItem = itemRepository.findByItemName(itemDTO.getItemName());
+
+        if (existingItem != null && !existingItem.getItemId().equals(item.getItemId())) {
+            // Chuyển các sản phẩm của mặt hàng hiện tại sang mặt hàng đã tồn tại
+            item.getProducts().forEach(product -> {
+                product.setItem(existingItem);
+                productRepository.save(product);
+            });
+            // Xóa mặt hàng hiện tại
+            itemRepository.delete(item);
+            return itemMapper.toItemDTO(existingItem);
+        } else {
+            itemMapper.updateItemFromDTO(itemDTO, item);
+            itemRepository.save(item);
+            return itemMapper.toItemDTO(item);
+        }
     }
 
     @Override
@@ -146,11 +165,5 @@ public class ItemServiceImpl implements ItemService {
         Item item = itemRepository.findById(itemId).orElseThrow(() -> new ResourceNotFoundException("Item ID " + itemId + " is invalid."));
         itemRepository.delete(item);
     }
-
-    @Override
-    public boolean existsByName(String name) {
-        return itemRepository.existsByItemName(name);
-    }
-
 }
 
