@@ -23,5 +23,4 @@ public interface ProductService {
 
     void deleteProduct(Integer productId) throws ResourceNotFoundException;
 
-    boolean existsByName(String name);
 }

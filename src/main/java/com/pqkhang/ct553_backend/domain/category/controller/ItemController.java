@@ -3,6 +3,7 @@ package com.pqkhang.ct553_backend.domain.category.controller;
 import com.pqkhang.ct553_backend.app.exception.ResourceNotFoundException;
 import com.pqkhang.ct553_backend.app.response.ApiResponse;
 import com.pqkhang.ct553_backend.app.response.Page;
+import com.pqkhang.ct553_backend.domain.category.dto.GeneralizedItemDTO;
 import com.pqkhang.ct553_backend.domain.category.dto.ItemDTO;
 import com.pqkhang.ct553_backend.domain.category.service.ItemService;
 import lombok.RequiredArgsConstructor;
@@ -19,9 +20,19 @@ public class ItemController {
 
     private final ItemService itemService;
 
+    @GetMapping("/{id}")
+    public ApiResponse<ItemDTO> getItem(@PathVariable("id") Integer itemId) throws ResourceNotFoundException {
+        return ApiResponse.<ItemDTO>builder()
+                .status(HttpStatus.OK.value())
+                .success(true)
+                .payload(itemService.getItem(itemId))
+                .message("Lấy mặt hàng thành công")
+                .build();
+    }
+
     @GetMapping
-    public ApiResponse<Page<ItemDTO>> getItems(@RequestParam Map<String, String> params) throws ResourceNotFoundException {
-        return ApiResponse.<Page<ItemDTO>>builder()
+    public ApiResponse<Page<GeneralizedItemDTO>> getItems(@RequestParam Map<String, String> params) throws ResourceNotFoundException {
+        return ApiResponse.<Page<GeneralizedItemDTO>>builder()
                 .status(HttpStatus.OK.value())
                 .success(true)
                 .payload(itemService.getItems(params))
@@ -30,8 +41,8 @@ public class ItemController {
     }
 
     @GetMapping("/all")
-    public ApiResponse<List<ItemDTO>> getAllItems() {
-        return ApiResponse.<List<ItemDTO>>builder()
+    public ApiResponse<List<GeneralizedItemDTO>> getAllItems() {
+        return ApiResponse.<List<GeneralizedItemDTO>>builder()
                 .status(HttpStatus.OK.value())
                 .success(true)
                 .payload(itemService.getAllItems())

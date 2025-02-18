@@ -155,10 +155,5 @@ public class ProductServiceImpl implements ProductService {
         productRepository.delete(product);
     }
 
-    @Override
-    public boolean existsByName(String name) {
-        return productRepository.existsByProductName(name);
-    }
-
 }
 
