@@ -19,6 +19,16 @@ public class ProductController {
 
     private final ProductService productService;
 
+    @GetMapping("/{productId}")
+    public ApiResponse<ProductDTO> getProduct(@PathVariable("productId") Integer productId) throws ResourceNotFoundException {
+        return ApiResponse.<ProductDTO>builder()
+                .status(HttpStatus.OK.value())
+                .success(true)
+                .payload(productService.getProduct(productId))
+                .message("Lấy sản phẩm thành công")
+                .build();
+    }
+
     @GetMapping
     public ApiResponse<Page<ProductDTO>> getProducts(@RequestParam Map<String, String> params) throws ResourceNotFoundException {
         return ApiResponse.<Page<ProductDTO>>builder()
@@ -26,16 +36,6 @@ public class ProductController {
                 .success(true)
                 .payload(productService.getProducts(params))
                 .message("Lấy tất cả sản phẩm thành công")
-                .build();
-    }
-
-    @GetMapping("/{productId}")
-    public ApiResponse<ProductDTO> getProduct(@PathVariable("productId") Integer productId) throws ResourceNotFoundException {
-        return ApiResponse.<ProductDTO>builder()
-                .status(HttpStatus.OK.value())
-                .success(true)
-                .payload(productService.getProductById(productId))
-                .message("Lấy sản phẩm thành công")
                 .build();
     }
 

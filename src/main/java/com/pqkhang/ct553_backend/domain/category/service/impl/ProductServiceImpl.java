@@ -1,6 +1,7 @@
 package com.pqkhang.ct553_backend.domain.category.service.impl;
 
 import com.pqkhang.ct553_backend.app.exception.ResourceNotFoundException;
+import com.pqkhang.ct553_backend.app.request.SearchCriteria;
 import com.pqkhang.ct553_backend.app.response.Meta;
 import com.pqkhang.ct553_backend.app.response.Page;
 import com.pqkhang.ct553_backend.domain.category.dto.ProductDTO;
@@ -64,6 +65,12 @@ public class ProductServiceImpl implements ProductService {
         return productDTO;
     }
 
+    @Override
+    public ProductDTO getProduct(Integer productId) throws ResourceNotFoundException {
+        Product product = productRepository.findById(productId).orElseThrow(() -> new ResourceNotFoundException("Product ID " + productId + " is invalid."));
+        return customProductDTO(product);
+    }
+
     private Specification<Product> getProductSpec(Map<String, String> params) {
         Specification<Product> spec = Specification.where(null);
         if (params.containsKey("query")) {
@@ -81,6 +88,21 @@ public class ProductServiceImpl implements ProductService {
                             .toArray(Predicate[]::new)
             ));
         }
+        List<SearchCriteria> activeCriteria = requestParamUtils.getSearchCriteria(params, "isActivated");
+        Specification<Product> productSpec = Specification.where(null);
+        for (SearchCriteria criteria : activeCriteria) {
+            productSpec = productSpec.or(((root, query, criteriaBuilder) ->
+                    criteriaBuilder.equal(root.get("isActivated"), Boolean.parseBoolean(criteria.getValue().toString()))));
+        }
+
+        List<SearchCriteria> itemCriteria = requestParamUtils.getSearchCriteria(params, "itemId");
+        Specification<Product> itemSpec = Specification.where(null);
+        for (SearchCriteria criteria : itemCriteria) {
+            itemSpec = itemSpec.or(((root, query, criteriaBuilder) ->
+                    criteriaBuilder.equal(root.get("item").get("itemId"), Integer.parseInt(criteria.getValue().toString()))));
+        }
+        spec = spec.and(productSpec).and(itemSpec);
+
         return spec;
     }
 
@@ -118,32 +140,17 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ProductDTO getProductById(Integer id) {
-        Product product = productRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Product ID " + id + " is invalid."));
-        return productMapper.toProductDTO(product);
-    }
-
-    @Override
     @Transactional
     public ProductDTO createProduct(ProductDTO productDTO) throws ResourceNotFoundException {
-//        if (productRepository.existsByProductName((productDTO.getProductName()))) {
-//            throw new ResourceNotFoundException("Tên sản phẩm đã tồn tại");
-//        } else {
         Product product = productMapper.toProduct(productDTO);
         productRepository.save(product);
         return productMapper.toProductDTO(product);
-//        }
     }
 
     @Override
     @Transactional
     public ProductDTO updateProduct(Integer id, ProductDTO productDTO) throws ResourceNotFoundException {
         Product product = productRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Product ID " + id + " is invalid."));
-
-//        if (productDTO.getProductName().equals(product.getProductName()) && productDTO.getDescription().equals(product.getDescription())) {
-//            throw new ResourceNotFoundException("Không có thông tin sản phẩm cần cập nhật");
-//        }
-
         productMapper.updateProductFromDTO(productDTO, product);
         productRepository.save(product);
         return productMapper.toProductDTO(product);

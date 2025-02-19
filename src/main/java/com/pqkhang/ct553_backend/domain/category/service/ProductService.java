@@ -11,11 +11,11 @@ import java.util.Map;
 
 @Service
 public interface ProductService {
+    ProductDTO getProduct(Integer productId) throws ResourceNotFoundException;
+
     Page<ProductDTO> getProducts(Map<String, String> params) throws ResourceNotFoundException;
 
     List<ProductDTO> getAllProducts();
-
-    ProductDTO getProductById(Integer ProductId) throws ResourceNotFoundException;
 
     ProductDTO createProduct(@Valid ProductDTO productDTO) throws ResourceNotFoundException;
 
