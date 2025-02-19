@@ -1,6 +1,7 @@
 package com.pqkhang.ct553_backend.domain.category.service.impl;
 
 import com.pqkhang.ct553_backend.app.exception.ResourceNotFoundException;
+import com.pqkhang.ct553_backend.app.request.SearchCriteria;
 import com.pqkhang.ct553_backend.app.response.Meta;
 import com.pqkhang.ct553_backend.app.response.Page;
 import com.pqkhang.ct553_backend.domain.category.dto.GeneralizedItemDTO;
@@ -74,6 +75,14 @@ public class ItemServiceImpl implements ItemService {
                 );
             });
         }
+        List<SearchCriteria> activeCriteria = requestParamUtils.getSearchCriteria(params, "isActivated");
+        Specification<Item> itemSpec = Specification.where(null);
+        for (SearchCriteria criteria : activeCriteria) {
+            itemSpec = itemSpec.or(((root, query, criteriaBuilder) ->
+                    criteriaBuilder.equal(root.get("isActivated"), Boolean.parseBoolean(criteria.getValue().toString()))));
+        }
+        spec = spec.and(itemSpec);
+
         return spec;
     }
 
