@@ -12,10 +12,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/auth")
@@ -54,6 +51,14 @@ public class AuthController {
                 .build();
     }
 
+    @PostMapping("/refresh-token")
+    public ApiResponse<AuthResponse> refreshAccessToken(@CookieValue("refresh_token") String refreshToken) {
+        return ApiResponse.<AuthResponse>builder()
+                .status(HttpStatus.OK.value())
+                .payload(authService.refreshAccessToken(refreshToken))
+                .build();
+    }
+
 //    @GetMapping("/verify")
 //    public ApiResponse<UserDTO> verifyUser(@RequestParam("token") String token) throws ResourceNotFoundException {
 //        UserDTO userDTO = authService.verifyUser(token);
@@ -67,13 +72,6 @@ public class AuthController {
 //
 
 //
-//    @PostMapping("/refresh-token")
-//    public ApiResponse<AuthResponse> refreshAccessToken(@CookieValue("refresh_token") String refreshToken) {
-//        return ApiResponse.<AuthResponse>builder()
-//                .status(HttpStatus.OK.value())
-//                .payload(authService.refreshAccessToken(refreshToken))
-//                .build();
-//    }
 //
 //
 //    @GetMapping("/success")

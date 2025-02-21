@@ -27,6 +27,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.stereotype.Service;
 
@@ -117,7 +118,6 @@ public class AuthServiceImpl implements AuthService {
                 .build();
     }
 
-
     @Override
     public void logout(HttpServletResponse httpServletResponse) throws ResourceNotFoundException {
         String email = auditAware.getCurrentAuditor().orElse("");
@@ -134,18 +134,28 @@ public class AuthServiceImpl implements AuthService {
         httpServletResponse.addCookie(refreshTokenCookie);
     }
 
-//    @Override
-//    public AuthResponse refreshAccessToken(String refreshToken) {
-//        Jwt jwtRefreshToken = jwtDecoder.decode(refreshToken);
-//        String username = jwtUtils.getUsername(jwtRefreshToken);
-//        User user = userRepository.findByEmail(username)
-//                .orElseThrow(() -> new RuntimeException("User not found"));
-//
-//        return AuthResponse.builder()
-//                .accessToken(jwtUtils.generateAccessToken(user))
-//                .build();
-//    }
-//
+    @Override
+    public AuthResponse refreshAccessToken(String refreshToken) {
+        Jwt jwtRefreshToken = jwtDecoder.decode(refreshToken);
+        String username = jwtUtils.getUsername(jwtRefreshToken);
+        Customer customer = customerRepository.findCustomerByEmail(username).orElse(null);
+        Staff staff = staffRepository.findStaffByEmail(username).orElse(null);
+
+        if (customer == null && staff == null) {
+            throw new RuntimeException("User not found");
+        }
+        if (customer != null && !customer.getIsActivated()) {
+            throw new RuntimeException("Tài khoản khách hàng chưa kích hoạt!");
+        }
+        if (staff != null && !staff.getIsActivated()) {
+            throw new RuntimeException("Tài khoản nhân viên chưa kích hoạt!");
+        }
+
+        return AuthResponse.builder()
+                .accessToken(jwtUtils.generateAccessToken(customer != null ? customer : staff))
+                .build();
+    }
+
 //    @Override
 //    public void logout(HttpServletResponse response) throws ResourceNotFoundException {
 //        String email = auditAware.getCurrentAuditor().orElse("");

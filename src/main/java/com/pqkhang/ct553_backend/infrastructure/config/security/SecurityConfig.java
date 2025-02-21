@@ -56,7 +56,7 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(corsConfig -> corsConfig.configurationSource(request -> {
                     CorsConfiguration config = new CorsConfiguration();
-                    config.setAllowedOrigins(List.of("http://localhost:5173", "http://localhost:5000", "http://localhost:5173/"));
+                    config.setAllowedOrigins(List.of("http://localhost:1108", "http://localhost:5000", "http://localhost:1108/"));
                     config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
                     config.setAllowCredentials(true);
                     config.setAllowedHeaders(List.of("Authorization", "Content-Type", "Accept", "siteUrl"));
@@ -65,6 +65,7 @@ public class SecurityConfig {
                 }))
                 .authorizeHttpRequests(requests -> requests
                         .requestMatchers("/", "/api/v1/auth/**",
+                                "/api/v1/items/**", "/api/v1/products/**",
                                 "/oauth2/**").permitAll()
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

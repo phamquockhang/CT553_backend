@@ -14,12 +14,12 @@ public interface AuthService {
 
     void logout(HttpServletResponse httpServletResponse) throws ResourceNotFoundException;
 
+    AuthResponse refreshAccessToken(String refreshToken);
 //    AuthResponse loginCustomer(@Valid AuthRequest authRequest, HttpServletResponse response);
-//    AuthResponse loginStaff(@Valid AuthRequest authRequest, HttpServletResponse response);
-
-//    AuthResponse login(AuthRequest authRequest, HttpServletResponse response);
 //
-//    AuthResponse refreshAccessToken(String refreshToken);
+//    AuthResponse loginStaff(@Valid AuthRequest authRequest, HttpServletResponse response);
+//
+//    AuthResponse login(AuthRequest authRequest, HttpServletResponse response);
 //
 //    void logout(HttpServletResponse httpServletResponse) throws ResourceNotFoundException;
 //
@@ -30,6 +30,4 @@ public interface AuthService {
 //    void forgotPassword(String email, String siteUrl) throws ResourceNotFoundException, MessagingException, UnsupportedEncodingException;
 //
 //    void resetPassword(String token, String newPassword) throws ResourceNotFoundException;
-//
-//    void verifyResetToken(String token) throws ResourceNotFoundException;
 }
