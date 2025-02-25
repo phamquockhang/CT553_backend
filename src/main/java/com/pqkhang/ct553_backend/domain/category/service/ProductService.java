@@ -13,6 +13,8 @@ import java.util.Map;
 public interface ProductService {
     ProductDTO getProduct(Integer productId) throws ResourceNotFoundException;
 
+    Page<ProductDTO> getProductsByItemId(Integer itemId, Map<String, String> params) throws ResourceNotFoundException;
+
     Page<ProductDTO> getProducts(Map<String, String> params) throws ResourceNotFoundException;
 
     List<ProductDTO> getAllProducts();

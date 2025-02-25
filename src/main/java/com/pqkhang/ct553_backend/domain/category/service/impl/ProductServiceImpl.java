@@ -133,6 +133,32 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    public Page<ProductDTO> getProductsByItemId(Integer itemId, Map<String, String> params) throws ResourceNotFoundException {
+        int page = Integer.parseInt(params.getOrDefault("page", "1"));
+        int pageSize = Integer.parseInt(params.getOrDefault("pageSize", "10"));
+        Specification<Product> spec = getProductSpec(params);
+        List<Sort.Order> sortOrders = requestParamUtils.toSortOrders(params, Product.class);
+        Pageable pageable = PageRequest.of(page - 1, pageSize, Sort.by(sortOrders));
+        org.springframework.data.domain.Page<Product> productPage = productRepository.findAll(spec, pageable);
+
+        if (productPage.isEmpty()) {
+            throw new ResourceNotFoundException("No product found!");
+        }
+
+        Meta meta = Meta.builder()
+                .page(pageable.getPageNumber() + 1)
+                .pageSize(pageable.getPageSize())
+                .pages(productPage.getTotalPages())
+                .total(productPage.getTotalElements())
+                .build();
+
+        return Page.<ProductDTO>builder()
+                .meta(meta)
+                .data(productPage.getContent().stream().map(this::customProductDTO).toList())
+                .build();
+    }
+
+    @Override
     public List<ProductDTO> getAllProducts() {
         return productRepository.findAll().stream()
                 .map(this::customProductDTO)
@@ -152,6 +178,8 @@ public class ProductServiceImpl implements ProductService {
     public ProductDTO updateProduct(Integer id, ProductDTO productDTO) throws ResourceNotFoundException {
         Product product = productRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Product ID " + id + " is invalid."));
         productMapper.updateProductFromDTO(productDTO, product);
+        product.setUpdatedAt(stringUtils.getCurrentDateTime());
+
         productRepository.save(product);
         return productMapper.toProductDTO(product);
     }
