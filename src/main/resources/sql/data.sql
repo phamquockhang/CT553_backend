@@ -1,0 +1,289 @@
+--ROLE
+INSERT INTO public.roles (name, description)
+VALUES ('MANAGER', 'Quản lý'),
+       ('STAFF', 'Nhân viên'),
+       ('CUSTOMER', 'Khách hàng');
+
+--PERMISSION
+INSERT INTO public.permissions (name, api_path, method, module)
+VALUES  ('Get all roles', '/api/v1/roles', 'GET', 'ROLE'),
+        ('Get a role', '/api/v1/roles/{id}', 'GET', 'ROLE'),
+        ('Create a role', '/api/v1/roles', 'POST', 'ROLE'),
+        ('Update a role', '/api/v1/roles/{id}', 'PUT', 'ROLE'),
+        ('Delete a role', '/api/v1/roles/{id}', 'DELETE', 'ROLE'),
+
+        ('Get all permissions', '/api/v1/permissions', 'GET', 'PERMISSION'),
+        ('Get a permission', '/api/v1/permissions/{id}', 'GET', 'PERMISSION'),
+        ('Create a permission', '/api/v1/permissions', 'POST', 'PERMISSION'),
+        ('Update a permission', '/api/v1/permissions/{id}', 'PUT', 'PERMISSION'),
+        ('Delete a permission', '/api/v1/permissions/{id}', 'DELETE', 'PERMISSION'),
+
+        ('Get all staffs', '/api/v1/staffs', 'GET', 'STAFF'),
+        ('Get a staff', '/api/v1/staffs/{id}', 'GET', 'STAFF'),
+        ('Create a staff', '/api/v1/staffs', 'POST', 'STAFF'),
+        ('Update a staff', '/api/v1/staffs/{id}', 'PUT', 'STAFF'),
+        ('Delete a staff', '/api/v1/staffs/{id}', 'DELETE', 'STAFF'),
+
+        ('Get all customers', '/api/v1/customers', 'GET', 'CUSTOMER'),
+        ('Get a item', '/api/v1/customers/{id}', 'GET', 'CUSTOMER'),
+        ('Create a item', '/api/v1/customers', 'POST', 'CUSTOMER'),
+        ('Update a item', '/api/v1/customers/{id}', 'PUT', 'CUSTOMER'),
+        ('Delete a item', '/api/v1/customers/{id}', 'DELETE', 'CUSTOMER'),
+
+        ('Get all items', '/api/v1/items', 'GET', 'ITEM'),
+        ('Get a item', '/api/v1/items/{id}', 'GET', 'ITEM'),
+        ('Create a item', '/api/v1/items', 'POST', 'ITEM'),
+        ('Update a item', '/api/v1/items/{id}', 'PUT', 'ITEM'),
+        ('Delete a item', '/api/v1/items/{id}', 'DELETE', 'ITEM'),
+
+        ('Get all products', '/api/v1/products', 'GET', 'PRODUCT'),
+        ('Get a product', '/api/v1/products/{id}', 'GET', 'PRODUCT'),
+        ('Create a product', '/api/v1/products', 'POST', 'PRODUCT'),
+        ('Update a product', '/api/v1/products/{id}', 'PUT', 'PRODUCT'),
+        ('Delete a product', '/api/v1/products/{id}', 'DELETE', 'PRODUCT');
+
+--ROLE_PERMISSION FOR STAFF
+INSERT INTO public.permission_role (role_id, permission_id)
+VALUES (2, 18),
+       (2, 19);
+
+--ROLE_PERMISSION FOR CUSTOMER
+-- INSERT INTO public.permission_role (role_id, permission_id)
+-- VALUES (3, 6);
+
+--CUSTOMER
+INSERT INTO public.customers (customer_id, email, gender, first_name, last_name, password, role_id, is_activated, dob)
+VALUES (gen_random_uuid(), 'customer1@gmail.com', 'MALE', 'CUSTOMER', 'I am',
+        '$2a$10$MEo.Zw55GDOEVwKtOnJ/TuKNrWVAjluxnWqH96ecqAKUwkFwAVkra', 3, true, '1999-01-01'),
+       (gen_random_uuid(), 'customer2@gmail.com', 'FEMALE', 'CUSTOMER', 'I am',
+        '$2a$10$MEo.Zw55GDOEVwKtOnJ/TuKNrWVAjluxnWqH96ecqAKUwkFwAVkra', 3, true, '1999-01-02'),
+       (gen_random_uuid(), 'customer3@gmail.com', 'FEMALE', 'CUSTOMER', 'I am',
+        '$2a$10$MEo.Zw55GDOEVwKtOnJ/TuKNrWVAjluxnWqH96ecqAKUwkFwAVkra', 3, true, '1999-01-03'),
+       (gen_random_uuid(), 'customer4@gmail.com', 'MALE', 'CUSTOMER', 'I am',
+        '$2a$10$MEo.Zw55GDOEVwKtOnJ/TuKNrWVAjluxnWqH96ecqAKUwkFwAVkra', 3, true, '1999-01-04');
+
+--MANAGER
+INSERT INTO public.staffs (staff_id, email, gender, first_name, last_name, password, role_id, is_activated, dob)
+VALUES (gen_random_uuid(), 'manager@gmail.com', 'MALE', 'MANAGER', 'I am',
+        '$2a$10$MEo.Zw55GDOEVwKtOnJ/TuKNrWVAjluxnWqH96ecqAKUwkFwAVkra', 1, true, '2003-08-11');
+
+--STAFF
+INSERT INTO public.staffs (staff_id, email, gender, first_name, last_name, password, role_id, is_activated, dob)
+VALUES (gen_random_uuid(), 'staff1@gmail.com', 'FEMALE', 'STAFF', 'I am',
+        '$2a$10$MEo.Zw55GDOEVwKtOnJ/TuKNrWVAjluxnWqH96ecqAKUwkFwAVkra', 2, true, '1999-12-01'),
+       (gen_random_uuid(), 'staff2@gmail.com', 'FEMALE', 'STAFF', 'I am',
+        '$2a$10$MEo.Zw55GDOEVwKtOnJ/TuKNrWVAjluxnWqH96ecqAKUwkFwAVkra', 2, true, '1999-12-02'),
+       (gen_random_uuid(), 'staff3@gmail.com', 'MALE', 'STAFF', 'I am',
+        '$2a$10$MEo.Zw55GDOEVwKtOnJ/TuKNrWVAjluxnWqH96ecqAKUwkFwAVkra', 2, true, '1999-12-03'),
+       (gen_random_uuid(), 'staff4@gmail.com', 'MALE', 'STAFF', 'I am',
+        '$2a$10$MEo.Zw55GDOEVwKtOnJ/TuKNrWVAjluxnWqH96ecqAKUwkFwAVkra', 2, true, '1999-12-04'),
+       (gen_random_uuid(), 'staff5@gmail.com', 'MALE', 'STAFF', 'I am',
+        '$2a$10$MEo.Zw55GDOEVwKtOnJ/TuKNrWVAjluxnWqH96ecqAKUwkFwAVkra', 2, true, '1999-12-05'),
+       (gen_random_uuid(), 'staff6@gmail.com', 'MALE', 'STAFF', 'I am',
+        '$2a$10$MEo.Zw55GDOEVwKtOnJ/TuKNrWVAjluxnWqH96ecqAKUwkFwAVkra', 2, true, '1999-12-06'),
+       (gen_random_uuid(), 'staff7@gmail.com', 'MALE', 'STAFF', 'I am',
+        '$2a$10$MEo.Zw55GDOEVwKtOnJ/TuKNrWVAjluxnWqH96ecqAKUwkFwAVkra', 2, true, '1999-12-07'),
+       (gen_random_uuid(), 'staff8@gmail.com', 'MALE', 'STAFF', 'I am',
+        '$2a$10$MEo.Zw55GDOEVwKtOnJ/TuKNrWVAjluxnWqH96ecqAKUwkFwAVkra', 2, true, '1999-12-08'),
+       (gen_random_uuid(), 'staff9@gmail.com', 'MALE', 'STAFF', 'I am',
+        '$2a$10$MEo.Zw55GDOEVwKtOnJ/TuKNrWVAjluxnWqH96ecqAKUwkFwAVkra', 2, true, '1999-12-09'),
+       (gen_random_uuid(), 'staff10@gmail.com', 'MALE', 'STAFF', 'I am',
+        '$2a$10$MEo.Zw55GDOEVwKtOnJ/TuKNrWVAjluxnWqH96ecqAKUwkFwAVkra', 2, true, '1999-12-10');
+
+--SCORE
+INSERT INTO public.scores (score_id, customer_id, change_amount, new_value, is_current)
+VALUES (gen_random_uuid(), (SELECT customer_id FROM public.customers WHERE email = 'customer1@gmail.com'), 100, 100, true),
+       (gen_random_uuid(), (SELECT customer_id FROM public.customers WHERE email = 'customer2@gmail.com'), 200, 200, true),
+       (gen_random_uuid(), (SELECT customer_id FROM public.customers WHERE email = 'customer3@gmail.com'), 30, 30, true);
+--        (gen_random_uuid(), (SELECT customer_id FROM public.customers WHERE email = 'customer1@gmail.com'), -10, 90, true);
+
+--ADDRESS
+INSERT INTO public.addresses (address_id, customer_id, province_id, district_id, ward_code, description, is_default)
+VALUES (gen_random_uuid(), (SELECT customer_id FROM public.customers WHERE email = 'customer1@gmail.com'), 252, 1782,
+        '610201', 'Khóm 5', true),
+       (gen_random_uuid(), (SELECT customer_id FROM public.customers WHERE email = 'customer2@gmail.com'), 252, 1782,
+        '610201', 'Khóm 6', true);
+
+--ITEM
+INSERT INTO public.items (item_name, is_activated)
+VALUES --Tôm hùm
+       ('Tôm hùm', true),
+
+       --Tôm càng
+       ('Tôm càng', true),
+
+       --Tôm thẻ
+       ('Tôm thẻ', true),
+
+       --Tôm sú
+       ('Tôm sú', true),
+
+       --Cua
+       ('Cua', true);
+
+--PRODUCT
+INSERT INTO public.products (product_name, product_unit, description, item_id, is_activated)
+VALUES
+    --Tôm hùm
+    ('Tôm hùm Alaska nhỏ', 'con', 'Tôm hùm Alaska nhỏ có trọng lượng từ 450-550g/con', 1, true),
+    ('Tôm hùm Alaska vừa', 'con', 'Tôm hùm Alaska vừa có trọng lượng từ 550-900g/con', 1, true),
+    ('Tôm hùm Alaska lớn', 'con', 'Tôm hùm Alaska lớn có trọng lượng từ 0,9-3kg/con', 1, true),
+    ('Tôm hùm bông vừa', 'con', 'Tôm hùm bông vừa có trọng lượng từ 500-700g/con', 1, true),
+    ('Tôm hùm bông lớn', 'con', 'Tôm hùm bông lớn có trọng lượng từ 700-900g/con', 1, true),
+    ('Tôm hùm xanh', 'kg', 'Tôm hùm xanh tươi sống có trọng lượng từ 300-400g/con', 1, true),
+
+    --Tôm càng
+    ('Tôm càng xanh hàng 2', 'kg', 'Tôm càng xanh hàng 2 có trọng lượng từ 15-24con/kg', 2, true),
+    ('Tôm càng xanh hàng 3', 'kg', 'Tôm càng xanh hàng 3 có trọng lượng từ 25-34con/kg', 2, true),
+    ('Tôm càng xanh hàng 4', 'kg', 'Tôm càng xanh hàng 4 có trọng lượng từ 35-44con/kg', 2, true),
+    ('Tôm càng xanh hàng 5', 'kg', 'Tôm càng xanh hàng 5 có trọng lượng từ 45-54con/kg', 2, true),
+
+    --Tôm thẻ
+    ('Tôm thẻ hàng 3', 'kg', 'Tôm thẻ hàng 3 có trọng lượng từ 25-34con/kg', 3, true),
+    ('Tôm thẻ hàng 4', 'kg', 'Tôm thẻ hàng 4 có trọng lượng từ 35-44con/kg', 3, true),
+    ('Tôm thẻ hàng 5', 'kg', 'Tôm thẻ hàng 5 có trọng lượng từ 45-54con/kg', 3, true),
+    ('Tôm thẻ hàng 6', 'kg', 'Tôm thẻ hàng 6 có trọng lượng từ 55-64con/kg', 3, true),
+
+    --Tôm sú
+    ('Tôm sú hàng 2', 'kg', 'Tôm sú hàng 2 có trọng lượng từ 15-24con/kg', 4, true),
+    ('Tôm sú hàng 3', 'kg', 'Tôm sú hàng 3 có trọng lượng từ 25-34con/kg', 4, true),
+    ('Tôm sú hàng 4', 'kg', 'Tôm sú hàng 4 có trọng lượng từ 35-44con/kg', 4, true),
+    ('Tôm sú hàng 5', 'kg', 'Tôm sú hàng 5 có trọng lượng từ 45-54con/kg', 4, true),
+
+    --Cua
+    ('Cua gạch nhỏ', 'con', 'Cua gạch nhỏ có trọng lượng từ 250-350g/con', 5, true),
+    ('Cua gạch vừa', 'con', 'Cua gạch vừa có trọng lượng từ 350-550g/con', 5, true),
+    ('Cua gạch lớn', 'con', 'Cua gạch lớn có trọng lượng từ 550-800g/con', 5, true),
+    ('Cua tứ nhỏ', 'con', 'Cua tứ nhỏ có trọng lượng từ 250-350g/con', 5, true),
+    ('Cua tứ vừa', 'con', 'Cua tứ vừa có trọng lượng từ 350-550g/con', 5, true),
+    ('Cua tứ lớn', 'con', 'Cua tứ lớn có trọng lượng từ 550-800g/con', 5, true),
+    ('Cua thịt nhỏ', 'con', 'Cua thịt nhỏ có trọng lượng từ 250-350g/con', 5, true),
+    ('Cua thịt vừa', 'con', 'Cua thịt vừa có trọng lượng từ 350-550g/con', 5, true),
+    ('Cua thịt lớn', 'con', 'Cua thịt lớn có trọng lượng từ 550-800g/con', 5, true);
+
+--BUYING_PRICE
+INSERT INTO public.buying_prices (product_id, buying_price_value, buying_price_fluctuation, is_current)
+VALUES
+    --Tôm hùm
+    (1, 900000,0, true),
+    (2, 1150000,0, true),
+    (3, 1300000,0, true),
+
+    (4, 1250000,0, true),
+    (5, 1750000,0, true),
+
+    (6, 1050000,0, true),
+
+    --Tôm càng
+    (7, 270000,5000, true),
+    (8, 220000,3000, true),
+    (9, 195000,3000, true),
+    (10, 150000,2000, true),
+
+    --Tôm thẻ
+    (11, 220000,2000, true),
+    (12, 180000,2000, true),
+    (13, 150000,1000, true),
+    (14, 120000,1000, true),
+
+    --Tôm sú
+    (15, 230000,3000, true),
+    (16, 200000,2000, true),
+    (17, 180000,1000, true),
+    (18, 160000,1000, true),
+
+    --Cua
+    (19, 290000,0, true),
+    (20, 390000,0, true),
+    (21, 590000,0, true),
+
+    (22, 150000,0, true),
+    (23, 200000,0, true),
+    (24, 250000,0, true),
+
+    (25, 150000,0, true),
+    (26, 200000,0, true),
+    (27, 250000,0, true);
+
+--SELLING_PRICE
+INSERT INTO public.selling_prices (product_id, selling_price_value, selling_price_fluctuation, is_current)
+VALUES
+    --Tôm hùm
+    (1, 599000,0, true),
+    (2, 1069000,0, true),
+    (3, 1490000,0, true),
+
+    (4, 745000,0, true),
+    (5, 1189000,0, true),
+
+    (6, 1299000,0, true),
+
+    --Tôm càng
+    (7, 299000,0, true),
+    (8, 249000,0, true),
+    (9, 229000,0, true),
+    (10, 209000,0, true),
+
+    --Tôm thẻ
+    (11, 249000,0, true),
+    (12, 199000,0, true),
+    (13, 179000,0, true),
+    (14, 159000,0, true),
+
+    --Tôm sú
+    (15, 269000,0, true),
+    (16, 229000,0, true),
+    (17, 199000,0, true),
+    (18, 179000,0, true),
+
+    --Cua
+    (19, 99000,0, true),
+    (20, 150000,0, true),
+    (21, 409000,0, true),
+
+    (22, 69000,0, true),
+    (23, 109000,0, true),
+    (24, 209000,0, true),
+
+    (25, 79000,0, true),
+    (26, 129000,0, true),
+    (27, 329000,0, true);
+
+--WEIGHT
+INSERT INTO public.weights (product_id, weight_value, is_current)
+VALUES --Tôm hùm
+       (1, 52.9, true),
+       (2, 75.23, true),
+       (3, 103.4, true),
+       (4, 100.5, true),
+       (5, 150.5, true),
+       (6, 350.5, true),
+
+       --Tôm càng
+       (7, 20.5, true),
+       (8, 30.5, true),
+       (9, 40.5, true),
+       (10, 50.5, true),
+
+       --Tôm thẻ
+       (11, 30.5, true),
+       (12, 40.5, true),
+       (13, 50.5, true),
+       (14, 60.5, true),
+
+       --Tôm sú
+       (15, 20.5, true),
+       (16, 30.5, true),
+       (17, 40.5, true),
+       (18, 50.5, true),
+
+       --Cua
+       (19, 20.5, true),
+       (20, 30.5, true),
+       (21, 40.5, true),
+       (22, 20.5, true),
+       (23, 30.5, true),
+       (24, 40.5, true),
+       (25, 20.5, true),
+       (26, 30.5, true),
+       (27, 40.5, true);

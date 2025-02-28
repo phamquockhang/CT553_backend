@@ -1,0 +1,76 @@
+CREATE EXTENSION IF NOT EXISTS unaccent;
+
+--CUSTOMER
+ALTER TABLE public.customers
+    ALTER COLUMN created_at SET DEFAULT CURRENT_TIMESTAMP;
+
+--STAFF
+ALTER TABLE public.staffs
+    ALTER COLUMN created_at SET DEFAULT CURRENT_TIMESTAMP;
+
+--SCORE
+ALTER TABLE public.scores
+    ALTER COLUMN created_at SET DEFAULT CURRENT_TIMESTAMP;
+
+--ADDRESS
+ALTER TABLE public.addresses
+    ALTER COLUMN created_at SET DEFAULT CURRENT_TIMESTAMP;
+
+--BUYING_PRICE
+ALTER TABLE public.buying_prices
+    ALTER COLUMN created_at SET DEFAULT CURRENT_TIMESTAMP;
+
+--SELLING_PRICE
+ALTER TABLE public.selling_prices
+    ALTER COLUMN created_at SET DEFAULT CURRENT_TIMESTAMP;
+
+--WEIGHT
+ALTER TABLE public.weights
+    ALTER COLUMN created_at SET DEFAULT CURRENT_TIMESTAMP;
+
+--ROLE
+DROP SEQUENCE IF EXISTS roles_seq CASCADE;
+CREATE SEQUENCE roles_seq
+    START WITH 1
+    INCREMENT BY 1;
+ALTER TABLE public.roles
+    ALTER COLUMN role_id SET DEFAULT nextval('roles_seq'),
+    ALTER COLUMN is_activated SET DEFAULT true,
+    ALTER COLUMN created_at SET DEFAULT CURRENT_TIMESTAMP;
+
+--PERMISSION
+DROP SEQUENCE IF EXISTS permissions_seq CASCADE;
+CREATE SEQUENCE permissions_seq
+    START WITH 1
+    INCREMENT BY 1;
+ALTER TABLE public.permissions
+    ALTER COLUMN permission_id SET DEFAULT nextval('permissions_seq'),
+    ALTER COLUMN created_at SET DEFAULT CURRENT_TIMESTAMP;
+
+--ITEM
+DROP SEQUENCE IF EXISTS items_seq CASCADE;
+CREATE SEQUENCE items_seq
+    START WITH 1
+    INCREMENT BY 1;
+ALTER TABLE public.items
+    ALTER COLUMN item_id SET DEFAULT nextval('items_seq'),
+    ALTER COLUMN created_at SET DEFAULT CURRENT_TIMESTAMP;
+
+--PRODUCT
+DROP SEQUENCE IF EXISTS products_seq CASCADE;
+CREATE SEQUENCE products_seq
+    START WITH 1
+    INCREMENT BY 1;
+ALTER TABLE public.products
+    ALTER COLUMN product_id SET DEFAULT nextval('products_seq'),
+    ALTER COLUMN created_at SET DEFAULT CURRENT_TIMESTAMP;
+
+--PRODUCT_IMAGE
+DROP SEQUENCE IF EXISTS product_images_seq CASCADE;
+CREATE SEQUENCE product_images_seq
+    START WITH 1
+    INCREMENT BY 1;
+ALTER TABLE public.product_images
+    ALTER COLUMN product_image_id SET DEFAULT nextval('product_images_seq'),
+    ALTER COLUMN created_at SET DEFAULT CURRENT_TIMESTAMP;
+
