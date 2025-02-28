@@ -33,14 +33,14 @@ public class DataSourceConfig {
 
     @PostConstruct
     public void initialize() {
-        ResourceDatabasePopulator schemaPopulator = new ResourceDatabasePopulator();
-        schemaPopulator.addScript(new ClassPathResource("sql/schema.sql"));
-        schemaPopulator.execute(dataSource);
-
-        jdbcTemplate.execute(PERMISSIONS_AFTER_INSERT_TRIGGER);
-
-        ResourceDatabasePopulator dataPopulator = new ResourceDatabasePopulator();
-        dataPopulator.addScript(new ClassPathResource("sql/data.sql"));
-        dataPopulator.execute(dataSource);
+//        ResourceDatabasePopulator schemaPopulator = new ResourceDatabasePopulator();
+//        schemaPopulator.addScript(new ClassPathResource("sql/schema.sql"));
+//        schemaPopulator.execute(dataSource);
+//
+//        jdbcTemplate.execute(PERMISSIONS_AFTER_INSERT_TRIGGER);
+//
+//        ResourceDatabasePopulator dataPopulator = new ResourceDatabasePopulator();
+//        dataPopulator.addScript(new ClassPathResource("sql/data.sql"));
+//        dataPopulator.execute(dataSource);
     }
 }
