@@ -25,10 +25,10 @@ VALUES  ('Get all roles', '/api/v1/roles', 'GET', 'ROLE'),
         ('Delete a staff', '/api/v1/staffs/{id}', 'DELETE', 'STAFF'),
 
         ('Get all customers', '/api/v1/customers', 'GET', 'CUSTOMER'),
-        ('Get a item', '/api/v1/customers/{id}', 'GET', 'CUSTOMER'),
-        ('Create a item', '/api/v1/customers', 'POST', 'CUSTOMER'),
-        ('Update a item', '/api/v1/customers/{id}', 'PUT', 'CUSTOMER'),
-        ('Delete a item', '/api/v1/customers/{id}', 'DELETE', 'CUSTOMER'),
+        ('Get a customer', '/api/v1/customers/{id}', 'GET', 'CUSTOMER'),
+        ('Create a customer', '/api/v1/customers', 'POST', 'CUSTOMER'),
+        ('Update a customer', '/api/v1/customers/{id}', 'PUT', 'CUSTOMER'),
+        ('Delete a customer', '/api/v1/customers/{id}', 'DELETE', 'CUSTOMER'),
 
         ('Get all items', '/api/v1/items', 'GET', 'ITEM'),
         ('Get a item', '/api/v1/items/{id}', 'GET', 'ITEM'),
@@ -287,3 +287,17 @@ VALUES --Tôm hùm
        (25, 20.5, true),
        (26, 30.5, true),
        (27, 40.5, true);
+
+--CART
+INSERT INTO public.carts (customer_id)
+VALUES ((SELECT customer_id FROM public.customers WHERE email = 'customer1@gmail.com')),
+       ((SELECT customer_id FROM public.customers WHERE email = 'customer2@gmail.com')),
+       ((SELECT customer_id FROM public.customers WHERE email = 'customer3@gmail.com'));
+
+--CART_DETAIL
+INSERT INTO public.cart_details (cart_id, product_id, quantity)
+VALUES ((SELECT cart_id FROM public.carts WHERE customer_id = (SELECT customer_id FROM public.customers WHERE email = 'customer1@gmail.com')), 1, 5),
+       ((SELECT cart_id FROM public.carts WHERE customer_id = (SELECT customer_id FROM public.customers WHERE email = 'customer1@gmail.com')), 2, 4),
+       ((SELECT cart_id FROM public.carts WHERE customer_id = (SELECT customer_id FROM public.customers WHERE email = 'customer1@gmail.com')), 3, 3),
+       ((SELECT cart_id FROM public.carts WHERE customer_id = (SELECT customer_id FROM public.customers WHERE email = 'customer1@gmail.com')), 4, 2),
+       ((SELECT cart_id FROM public.carts WHERE customer_id = (SELECT customer_id FROM public.customers WHERE email = 'customer1@gmail.com')), 5, 1);

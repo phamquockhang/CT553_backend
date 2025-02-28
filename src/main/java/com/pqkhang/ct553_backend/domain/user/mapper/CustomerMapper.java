@@ -2,6 +2,7 @@ package com.pqkhang.ct553_backend.domain.user.mapper;
 
 import com.pqkhang.ct553_backend.app.exception.ResourceNotFoundException;
 import com.pqkhang.ct553_backend.domain.auth.mapper.RoleMapper;
+import com.pqkhang.ct553_backend.domain.booking.cart.mapper.CartMapper;
 import com.pqkhang.ct553_backend.domain.user.dto.CustomerDTO;
 import com.pqkhang.ct553_backend.domain.user.entity.Customer;
 import com.pqkhang.ct553_backend.domain.user.enums.GenderEnum;
@@ -9,7 +10,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 
-@Mapper(componentModel = "spring", uses = {RoleMapper.class, AddressMapper.class, ScoreMapper.class})
+@Mapper(componentModel = "spring", uses = {RoleMapper.class, AddressMapper.class, ScoreMapper.class, CartMapper.class})
 public interface CustomerMapper {
     @Mapping(target = "password", ignore = true)
     CustomerDTO toCustomerDTO(Customer Customer);
