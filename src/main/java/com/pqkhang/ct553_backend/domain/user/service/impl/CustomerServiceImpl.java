@@ -9,7 +9,9 @@ import com.pqkhang.ct553_backend.domain.auth.entity.Role;
 import com.pqkhang.ct553_backend.domain.auth.repository.RoleRepository;
 import com.pqkhang.ct553_backend.domain.user.dto.CustomerDTO;
 import com.pqkhang.ct553_backend.domain.user.entity.Customer;
+import com.pqkhang.ct553_backend.domain.user.entity.Score;
 import com.pqkhang.ct553_backend.domain.user.mapper.CustomerMapper;
+import com.pqkhang.ct553_backend.domain.user.mapper.ScoreMapper;
 import com.pqkhang.ct553_backend.domain.user.repository.CustomerRepository;
 import com.pqkhang.ct553_backend.domain.user.repository.StaffRepository;
 import com.pqkhang.ct553_backend.domain.user.service.CustomerService;
@@ -47,6 +49,18 @@ public class CustomerServiceImpl implements CustomerService {
     RoleRepository roleRepository;
     RequestParamUtils requestParamUtils;
     StringUtils stringUtils;
+    ScoreMapper scoreMapper;
+
+    public CustomerDTO customCustomerDTO(Customer customer) {
+        CustomerDTO customerDTO = customerMapper.toCustomerDTO(customer);
+        customerDTO.setScore(customer.getScores().stream()
+                .filter(Score::getIsCurrent)
+                .map(scoreMapper::toScoreDTO)
+                .findFirst()
+                .orElse(null));
+
+        return customerDTO;
+    }
 
     private Specification<Customer> getCustomerSpec(Map<String, String> params) {
         Specification<Customer> spec = Specification.where(null);
@@ -110,7 +124,7 @@ public class CustomerServiceImpl implements CustomerService {
         return Page.<CustomerDTO>builder()
                 .meta(meta)
                 .data(customerPage.getContent().stream()
-                        .map(customerMapper::toCustomerDTO)
+                        .map(this::customCustomerDTO)
                         .collect(Collectors.toList()))
                 .build();
     }
@@ -118,14 +132,14 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public List<CustomerDTO> getAllCustomers() {
         return customerRepository.findAll().stream()
-                .map(customerMapper::toCustomerDTO)
+                .map(this::customCustomerDTO)
                 .toList();
     }
 
     @Override
     public CustomerDTO getCustomerById(UUID id) {
         Customer customer = customerRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Customer ID " + id + " is invalid."));
-        return customerMapper.toCustomerDTO(customer);
+        return customCustomerDTO(customer);
     }
 
     @Override

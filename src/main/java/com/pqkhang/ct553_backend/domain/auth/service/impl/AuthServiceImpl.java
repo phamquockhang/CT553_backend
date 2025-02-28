@@ -46,8 +46,6 @@ public class AuthServiceImpl implements AuthService {
     StaffRepository staffRepository;
     StaffMapper staffMapper;
     JwtDecoder jwtDecoder;
-
-
     AuditAwareImpl auditAware;
 
     @Override

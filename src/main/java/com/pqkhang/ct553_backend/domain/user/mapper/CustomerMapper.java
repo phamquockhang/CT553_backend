@@ -9,7 +9,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 
-@Mapper(componentModel = "spring", uses = {RoleMapper.class})
+@Mapper(componentModel = "spring", uses = {RoleMapper.class, AddressMapper.class, ScoreMapper.class})
 public interface CustomerMapper {
     @Mapping(target = "password", ignore = true)
     CustomerDTO toCustomerDTO(Customer Customer);
@@ -19,10 +19,9 @@ public interface CustomerMapper {
     @Mapping(target = "password", ignore = true)
     @Mapping(target = "role.permissions", ignore = true)
     default void updateCustomerFromDTO(CustomerDTO CustomerDTO, @MappingTarget Customer Customer) throws ResourceNotFoundException {
-
-        if (CustomerDTO.getLastName().equals(Customer.getLastName()) && CustomerDTO.getFirstName().equals(Customer.getFirstName()) && CustomerDTO.getDob().equals(Customer.getDob()) && CustomerDTO.getGender().equals(Customer.getGender().toString()) && CustomerDTO.getIsActivated().equals(Customer.getIsActivated())) {
-            throw new ResourceNotFoundException("Không có thông tin nào thay đổi!");
-        }
+//        if (CustomerDTO.getLastName().equals(Customer.getLastName()) && CustomerDTO.getFirstName().equals(Customer.getFirstName()) && CustomerDTO.getDob().equals(Customer.getDob()) && CustomerDTO.getGender().equals(Customer.getGender().toString()) && CustomerDTO.getIsActivated().equals(Customer.getIsActivated())) {
+//            throw new ResourceNotFoundException("Không có thông tin nào thay đổi!");
+//        }
 
         Customer.setUpdatedAt(CustomerDTO.getUpdatedAt());
         Customer.setLastName(CustomerDTO.getLastName());
