@@ -8,13 +8,16 @@ import com.pqkhang.ct553_backend.domain.auth.entity.Role;
 import com.pqkhang.ct553_backend.domain.auth.repository.PermissionRepository;
 import com.pqkhang.ct553_backend.domain.auth.repository.RoleRepository;
 import com.pqkhang.ct553_backend.domain.auth.service.AuthService;
+import com.pqkhang.ct553_backend.domain.booking.cart.service.CartService;
 import com.pqkhang.ct553_backend.domain.user.dto.CustomerDTO;
+import com.pqkhang.ct553_backend.domain.user.dto.ScoreDTO;
 import com.pqkhang.ct553_backend.domain.user.entity.Customer;
 import com.pqkhang.ct553_backend.domain.user.entity.Staff;
 import com.pqkhang.ct553_backend.domain.user.mapper.CustomerMapper;
 import com.pqkhang.ct553_backend.domain.user.mapper.StaffMapper;
 import com.pqkhang.ct553_backend.domain.user.repository.CustomerRepository;
 import com.pqkhang.ct553_backend.domain.user.repository.StaffRepository;
+import com.pqkhang.ct553_backend.domain.user.service.ScoreService;
 import com.pqkhang.ct553_backend.infrastructure.audit.AuditAwareImpl;
 import com.pqkhang.ct553_backend.infrastructure.utils.JwtUtils;
 import jakarta.servlet.http.Cookie;
@@ -47,6 +50,8 @@ public class AuthServiceImpl implements AuthService {
     StaffMapper staffMapper;
     JwtDecoder jwtDecoder;
     AuditAwareImpl auditAware;
+    ScoreService scoreService;
+    CartService cartService;
 
     @Override
     public CustomerDTO registerCustomer(CustomerDTO customerDTO) throws ResourceNotFoundException {
@@ -68,6 +73,15 @@ public class AuthServiceImpl implements AuthService {
 //        }
 
         customer.setRole(role);
+
+        customerRepository.save(customer);
+        ScoreDTO scoreDTO = new ScoreDTO();
+        scoreDTO.setChangeAmount(0);
+        scoreService.createScore(customer.getCustomerId(), scoreDTO);
+
+        cartService.createCartByCustomerId(customer.getCustomerId());
+
+
         return customerMapper.toCustomerDTO(customerRepository.save(customer));
     }
 

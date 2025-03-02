@@ -9,5 +9,4 @@ public interface ScoreMapper {
     ScoreDTO toScoreDTO(Score Score);
 
     Score toScore(ScoreDTO ScoreDTO);
-
 }

@@ -18,11 +18,11 @@ public class CartController {
     private final CartService cartService;
 
     @PostMapping("/{customerId}")
-    public ApiResponse<CartDTO> createCartByCustomerId(@PathVariable("customerId") UUID customerId, @RequestBody CartDTO cartDTO) throws ResourceNotFoundException {
+    public ApiResponse<CartDTO> createCartByCustomerId(@PathVariable("customerId") UUID customerId) throws ResourceNotFoundException {
         return ApiResponse.<CartDTO>builder()
                 .status(HttpStatus.OK.value())
                 .success(true)
-                .payload(cartService.createCartByCustomerId(customerId, cartDTO))
+                .payload(cartService.createCartByCustomerId(customerId))
                 .message("Tạo giỏ hàng thành công")
                 .build();
     }

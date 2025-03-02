@@ -23,14 +23,14 @@ public class CartServiceImpl implements CartService {
     CartMapper cartMapper;
 
     @Override
-    public CartDTO createCartByCustomerId(UUID customerId, CartDTO cartDTO) throws ResourceNotFoundException {
+    public CartDTO createCartByCustomerId(UUID customerId) throws ResourceNotFoundException {
         Customer customer = customerRepository.findById(customerId)
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy khách hàng với id: " + customerId));
 
         if (customer.getCart() != null) {
             return cartMapper.toCartDTO(customer.getCart());
         } else {
-            Cart cart = cartMapper.toCart(cartDTO);
+            Cart cart = new Cart();
             cart.setCustomer(Customer.builder().customerId(customerId).build());
             customer.setCart(cart);
 

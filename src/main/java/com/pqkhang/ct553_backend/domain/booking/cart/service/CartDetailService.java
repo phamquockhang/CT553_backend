@@ -13,4 +13,8 @@ public interface CartDetailService {
     List<CartDetailDTO> createCartDetail(@Valid CartDetailInfoDTO cartDetailInfoDTO) throws ResourceNotFoundException;
 
     List<CartDetailDTO> getCartDetailByCartId(Integer cartId) throws ResourceNotFoundException;
+
+    List<CartDetailDTO> updateCartDetail(@Valid CartDetailDTO cartDetailDTO) throws ResourceNotFoundException;
+
+    void deleteCartDetail(Integer cartDetailId) throws ResourceNotFoundException;
 }

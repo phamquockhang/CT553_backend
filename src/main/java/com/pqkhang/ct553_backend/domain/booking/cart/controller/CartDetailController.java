@@ -39,4 +39,23 @@ public class CartDetailController {
                 .build();
     }
 
+    @PutMapping
+    public ApiResponse<List<CartDetailDTO>> updateCartDetail(@RequestBody CartDetailDTO cartDetailDTO) throws ResourceNotFoundException {
+        return ApiResponse.<List<CartDetailDTO>>builder()
+                .status(HttpStatus.OK.value())
+                .success(true)
+                .payload(cartDetailService.updateCartDetail(cartDetailDTO))
+                .message("Cập nhật chi tiết giỏ hàng thành công")
+                .build();
+    }
+
+    @DeleteMapping("/{cartDetailId}")
+    public ApiResponse<Void> deleteCartDetail(@PathVariable("cartDetailId") Integer cartDetailId) throws ResourceNotFoundException {
+        cartDetailService.deleteCartDetail(cartDetailId);
+        return ApiResponse.<Void>builder()
+                .status(HttpStatus.OK.value())
+                .success(true)
+                .message("Xóa chi tiết giỏ hàng thành công")
+                .build();
+    }
 }

@@ -20,7 +20,7 @@ public class CartDetail extends BaseEntity {
     @SequenceGenerator(name = "cart_detail_id_seq", sequenceName = "cart_details_seq", allocationSize = 1)
     Integer cartDetailId;
 
-    Integer quantity;
+    Double quantity;
 
     @ManyToOne
     @JoinColumn(name = "cart_id", nullable = false)
