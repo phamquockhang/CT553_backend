@@ -39,6 +39,16 @@ public class ProductController {
                 .build();
     }
 
+    @GetMapping("/public")
+    public ApiResponse<Page<ProductDTO>> getProductsPublicApi(@RequestParam Map<String, String> params) throws ResourceNotFoundException {
+        return ApiResponse.<Page<ProductDTO>>builder()
+                .status(HttpStatus.OK.value())
+                .success(true)
+                .payload(productService.getProductsPublicApi(params))
+                .message("Lấy tất cả sản phẩm thành công")
+                .build();
+    }
+
     @GetMapping("/all")
     public ApiResponse<List<ProductDTO>> getAllProducts() {
         return ApiResponse.<List<ProductDTO>>builder()
