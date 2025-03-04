@@ -1,0 +1,155 @@
+package com.pqkhang.ct553_backend.domain.booking.order.service.impl;
+
+import com.pqkhang.ct553_backend.app.exception.ResourceNotFoundException;
+import com.pqkhang.ct553_backend.app.response.Meta;
+import com.pqkhang.ct553_backend.app.response.Page;
+import com.pqkhang.ct553_backend.domain.booking.order.dto.OrderAndOrderDetailDTO;
+import com.pqkhang.ct553_backend.domain.booking.order.dto.OrderDTO;
+import com.pqkhang.ct553_backend.domain.booking.order.entity.Order;
+import com.pqkhang.ct553_backend.domain.booking.order.enums.StatusEnum;
+import com.pqkhang.ct553_backend.domain.booking.order.mapper.OrderMapper;
+import com.pqkhang.ct553_backend.domain.booking.order.repository.OrderRepository;
+import com.pqkhang.ct553_backend.domain.booking.order.service.OrderService;
+import com.pqkhang.ct553_backend.domain.booking.order.utils.OrderUtils;
+import com.pqkhang.ct553_backend.domain.user.entity.Customer;
+import com.pqkhang.ct553_backend.domain.user.repository.CustomerRepository;
+import com.pqkhang.ct553_backend.infrastructure.utils.RequestParamUtils;
+import com.pqkhang.ct553_backend.infrastructure.utils.StringUtils;
+import jakarta.persistence.criteria.Predicate;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.stereotype.Service;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
+@Service
+@RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PACKAGE, makeFinal = true)
+public class OrderServiceImpl implements OrderService {
+
+    CustomerRepository customerRepository;
+    OrderMapper orderMapper;
+    OrderRepository orderRepository;
+    RequestParamUtils requestParamUtils;
+
+    private static final String DEFAULT_PAGE = "1";
+    private static final String DEFAULT_PAGE_SIZE = "10";
+    private final StringUtils stringUtils;
+
+    private Pageable createPageable(Map<String, String> params) {
+        int page = Integer.parseInt(params.getOrDefault("page", DEFAULT_PAGE));
+        int pageSize = Integer.parseInt(params.getOrDefault("pageSize", DEFAULT_PAGE_SIZE));
+        List<Sort.Order> sortOrders = requestParamUtils.toSortOrders(params, Order.class);
+        return PageRequest.of(page - 1, pageSize, Sort.by(sortOrders));
+    }
+
+    private Specification<Order> buildSearchSpec(Map<String, String> params) {
+        return Specification.where(buildQuerySpec_OrderId(params)).and(buildStatusSpec(params)).and(buildCustomerSpec(params));
+    }
+
+    private Specification<Order> buildQuerySpec_OrderId(Map<String, String> params) {
+        return params.containsKey("query") ? (root, query, cb) -> {
+            String[] searchValues = params.get("query").trim().toLowerCase().split(",");
+            Predicate[] predicates = Arrays.stream(searchValues).map(stringUtils::normalizeString).map(value -> "%" + value.trim() + "%").map(pattern -> cb.like(cb.function("unaccent", String.class, cb.lower(root.get("orderId"))), pattern)).toArray(Predicate[]::new);
+            return cb.or(predicates);
+        } : null;
+    }
+
+    private Specification<Order> buildStatusSpec(Map<String, String> params) {
+        return requestParamUtils.getSearchCriteria(params, "status").stream()
+                .map(criteria -> (Specification<Order>) (root, query, cb) ->
+                        cb.equal(root.get("status"), StatusEnum.valueOf(criteria.getValue().toString().toUpperCase())))
+                .reduce(Specification::or)
+                .orElse(null);
+    }
+
+    private Specification<Order> buildCustomerSpec(Map<String, String> params) {
+        return requestParamUtils.getSearchCriteria(params, "customerId")
+                .stream()
+                .map(criteria -> (Specification<Order>) (root, query, cb) ->
+                        cb.equal(root.get("customer").get("customerId"), UUID.fromString(criteria.getValue().toString()))
+                )
+                .reduce(Specification::or)
+                .orElse(null);
+    }
+
+    private Page<OrderDTO> buildOrderPage(org.springframework.data.domain.Page<Order> orderPage, Pageable pageable) throws ResourceNotFoundException {
+        if (orderPage.isEmpty()) {
+            throw new ResourceNotFoundException("No order found!");
+        }
+        Meta meta = Meta.builder()
+                .page(pageable.getPageNumber() + 1)
+                .pageSize(pageable.getPageSize())
+                .pages(orderPage.getTotalPages())
+                .total(orderPage.getTotalElements())
+                .build();
+        return Page.<OrderDTO>builder()
+                .meta(meta)
+                .data(orderPage.getContent()
+                        .stream().map(orderMapper::toOrderDTO)
+                        .collect(Collectors.toList())
+                )
+                .build();
+    }
+
+    @Override
+    public OrderDTO createOrderByCustomerId(OrderAndOrderDetailDTO orderAndOrderDetailDTO) throws ResourceNotFoundException {
+        UUID customerId = orderAndOrderDetailDTO.getCustomerId();
+        OrderDTO orderDTO = orderAndOrderDetailDTO.getOrder();
+//        OrderDetailDTO orderDetailDTO = orderAndOrderDetailDTO.getOrderDetailDTO();
+
+        customerRepository.findById(customerId).orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy khách hàng với id: " + customerId));
+
+        Order order = orderMapper.toOrder(orderDTO);
+        order.setOrderId(OrderUtils.generateOrderId());
+        order.setStatus(StatusEnum.PENDING);
+        order.setCustomer(Customer.builder().customerId(customerId).build());
+        orderRepository.save(order);
+
+        return orderMapper.toOrderDTO(order);
+    }
+
+    @Override
+    public OrderDTO updateOrder(OrderDTO orderDTO) throws ResourceNotFoundException {
+        Order order = orderRepository.findById(orderDTO.getOrderId()).orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy đơn hàng với id: " + orderDTO.getOrderId()));
+
+        order.setStatus(StatusEnum.valueOf(orderDTO.getStatus().toUpperCase()));
+        orderRepository.save(order);
+        return orderMapper.toOrderDTO(order);
+    }
+
+    @Override
+    public OrderDTO getOrder(String orderId) throws ResourceNotFoundException {
+        Order order = orderRepository.findById(orderId).orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy đơn hàng với id: " + orderId));
+        return orderMapper.toOrderDTO(order);
+    }
+
+    @Override
+    public List<OrderDTO> getAllOrders() {
+        return orderRepository.findAll().stream().map(orderMapper::toOrderDTO).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<OrderDTO> getAllOrdersByCustomerId(UUID customerId) throws ResourceNotFoundException {
+        customerRepository.findById(customerId).orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy khách hàng với id: " + customerId));
+
+        return orderRepository.findAllByCustomer_CustomerId(customerId).stream().map(orderMapper::toOrderDTO).toList();
+    }
+
+    @Override
+    public Page<OrderDTO> getOrders(Map<String, String> params) throws ResourceNotFoundException {
+        Pageable pageable = createPageable(params);
+        Specification<Order> spec = buildSearchSpec(params);
+        return buildOrderPage(orderRepository.findAll(spec, pageable), pageable);
+    }
+}
+

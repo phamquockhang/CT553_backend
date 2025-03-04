@@ -2,6 +2,7 @@ package com.pqkhang.ct553_backend.domain.user.entity;
 
 import com.pqkhang.ct553_backend.domain.auth.entity.Role;
 import com.pqkhang.ct553_backend.domain.booking.cart.entity.Cart;
+import com.pqkhang.ct553_backend.domain.booking.order.entity.Order;
 import com.pqkhang.ct553_backend.domain.common.entity.BaseEntity;
 import com.pqkhang.ct553_backend.domain.user.enums.GenderEnum;
 import jakarta.persistence.*;
@@ -56,6 +57,9 @@ public class Customer extends BaseEntity implements UserDetails {
 
     @OneToOne(mappedBy = "customer", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     Cart cart;
+
+    @OneToMany(mappedBy = "customer", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
+    List<Order> orders;
 
     @PrePersist
     public void prePersist() {
