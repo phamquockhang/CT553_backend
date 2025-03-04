@@ -7,7 +7,9 @@ import com.pqkhang.ct553_backend.app.response.Page;
 import com.pqkhang.ct553_backend.domain.auth.dto.request.ChangePasswordRequest;
 import com.pqkhang.ct553_backend.domain.auth.entity.Role;
 import com.pqkhang.ct553_backend.domain.auth.repository.RoleRepository;
+import com.pqkhang.ct553_backend.domain.booking.cart.service.CartService;
 import com.pqkhang.ct553_backend.domain.user.dto.CustomerDTO;
+import com.pqkhang.ct553_backend.domain.user.dto.ScoreDTO;
 import com.pqkhang.ct553_backend.domain.user.entity.Customer;
 import com.pqkhang.ct553_backend.domain.user.entity.Score;
 import com.pqkhang.ct553_backend.domain.user.mapper.CustomerMapper;
@@ -15,6 +17,7 @@ import com.pqkhang.ct553_backend.domain.user.mapper.ScoreMapper;
 import com.pqkhang.ct553_backend.domain.user.repository.CustomerRepository;
 import com.pqkhang.ct553_backend.domain.user.repository.StaffRepository;
 import com.pqkhang.ct553_backend.domain.user.service.CustomerService;
+import com.pqkhang.ct553_backend.domain.user.service.ScoreService;
 import com.pqkhang.ct553_backend.infrastructure.utils.RequestParamUtils;
 import com.pqkhang.ct553_backend.infrastructure.utils.StringUtils;
 import jakarta.persistence.criteria.Predicate;
@@ -50,6 +53,8 @@ public class CustomerServiceImpl implements CustomerService {
     RequestParamUtils requestParamUtils;
     StringUtils stringUtils;
     ScoreMapper scoreMapper;
+    private final ScoreService scoreService;
+    private final CartService cartService;
 
     public CustomerDTO customCustomerDTO(Customer customer) {
         CustomerDTO customerDTO = customerMapper.toCustomerDTO(customer);
@@ -148,7 +153,7 @@ public class CustomerServiceImpl implements CustomerService {
         if (authentication != null) {
             Customer customer = customerRepository.findCustomerByEmail(authentication.getName())
                     .orElseThrow(() -> new IllegalArgumentException("Customer not found: " + authentication.getName()));
-            return customerMapper.toCustomerDTO(customer);
+            return customCustomerDTO(customer);
         }
         return null;
     }
@@ -168,6 +173,15 @@ public class CustomerServiceImpl implements CustomerService {
             customer.setRole(role);
 
             customerRepository.save(customer);
+
+            ScoreDTO scoreDTO = new ScoreDTO();
+            scoreDTO.setChangeAmount(0);
+            scoreService.createScore(customer.getCustomerId(), scoreDTO);
+
+            cartService.createCartByCustomerId(customer.getCustomerId());
+
+            customerRepository.save(customer);
+
             return customerMapper.toCustomerDTO(customer);
         }
     }

@@ -1,5 +1,6 @@
 package com.pqkhang.ct553_backend.domain.category.entity;
 
+import com.pqkhang.ct553_backend.domain.booking.cart.entity.CartDetail;
 import com.pqkhang.ct553_backend.domain.common.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
@@ -44,6 +45,9 @@ public class Product extends BaseEntity {
 
     @OneToMany(mappedBy = "product", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     List<Weight> weights;
+
+    @OneToMany(mappedBy = "product", fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
+    List<CartDetail> cartDetails;
 
     @PrePersist
     public void prePersist() {

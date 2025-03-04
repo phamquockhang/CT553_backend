@@ -11,6 +11,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
@@ -43,6 +44,7 @@ public class ScoreServiceImpl implements ScoreService {
     }
 
     @Override
+    @Transactional
     public ScoreDTO createScore(UUID customerId, ScoreDTO scoreDTO) {
         Score newScore = scoreMapper.toScore(scoreDTO);
         Score currentScore = scoreRepository.findByCustomer_CustomerIdAndIsCurrent(customerId, true);

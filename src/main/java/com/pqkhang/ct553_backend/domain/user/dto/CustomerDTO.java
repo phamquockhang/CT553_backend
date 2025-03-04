@@ -1,6 +1,7 @@
 package com.pqkhang.ct553_backend.domain.user.dto;
 
 import com.pqkhang.ct553_backend.domain.auth.dto.RoleDTO;
+import com.pqkhang.ct553_backend.domain.booking.cart.dto.CartDTO;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -36,6 +37,8 @@ public class CustomerDTO {
     List<AddressDTO> addresses;
 
     ScoreDTO score;
+
+    CartDTO cart;
 
     LocalDateTime createdAt;
     LocalDateTime updatedAt;

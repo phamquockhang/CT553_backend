@@ -74,3 +74,20 @@ ALTER TABLE public.product_images
     ALTER COLUMN product_image_id SET DEFAULT nextval('product_images_seq'),
     ALTER COLUMN created_at SET DEFAULT CURRENT_TIMESTAMP;
 
+--CART
+DROP SEQUENCE IF EXISTS carts_seq CASCADE;
+CREATE SEQUENCE carts_seq
+    START WITH 1
+    INCREMENT BY 1;
+ALTER TABLE public.carts
+    ALTER COLUMN cart_id SET DEFAULT nextval('carts_seq'),
+    ALTER COLUMN created_at SET DEFAULT CURRENT_TIMESTAMP;
+
+--CART_DETAIL
+DROP SEQUENCE IF EXISTS cart_details_seq CASCADE;
+CREATE SEQUENCE cart_details_seq
+    START WITH 1
+    INCREMENT BY 1;
+ALTER TABLE public.cart_details
+    ALTER COLUMN cart_detail_id SET DEFAULT nextval('cart_details_seq'),
+    ALTER COLUMN created_at SET DEFAULT CURRENT_TIMESTAMP;
