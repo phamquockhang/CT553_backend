@@ -3,12 +3,12 @@ package com.pqkhang.ct553_backend.domain.booking.order.service.impl;
 import com.pqkhang.ct553_backend.app.exception.ResourceNotFoundException;
 import com.pqkhang.ct553_backend.app.response.Meta;
 import com.pqkhang.ct553_backend.app.response.Page;
-import com.pqkhang.ct553_backend.domain.booking.order.dto.OrderAndOrderDetailDTO;
 import com.pqkhang.ct553_backend.domain.booking.order.dto.OrderDTO;
 import com.pqkhang.ct553_backend.domain.booking.order.entity.Order;
 import com.pqkhang.ct553_backend.domain.booking.order.enums.StatusEnum;
 import com.pqkhang.ct553_backend.domain.booking.order.mapper.OrderMapper;
 import com.pqkhang.ct553_backend.domain.booking.order.repository.OrderRepository;
+import com.pqkhang.ct553_backend.domain.booking.order.service.OrderDetailService;
 import com.pqkhang.ct553_backend.domain.booking.order.service.OrderService;
 import com.pqkhang.ct553_backend.domain.booking.order.utils.OrderUtils;
 import com.pqkhang.ct553_backend.domain.user.entity.Customer;
@@ -40,6 +40,7 @@ public class OrderServiceImpl implements OrderService {
     OrderMapper orderMapper;
     OrderRepository orderRepository;
     RequestParamUtils requestParamUtils;
+    OrderDetailService orderDetailService;
 
     private static final String DEFAULT_PAGE = "1";
     private static final String DEFAULT_PAGE_SIZE = "10";
@@ -102,19 +103,23 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public OrderDTO createOrderByCustomerId(OrderAndOrderDetailDTO orderAndOrderDetailDTO) throws ResourceNotFoundException {
-        UUID customerId = orderAndOrderDetailDTO.getCustomerId();
-        OrderDTO orderDTO = orderAndOrderDetailDTO.getOrder();
-//        OrderDetailDTO orderDetailDTO = orderAndOrderDetailDTO.getOrderDetailDTO();
+    public OrderDTO createOrderByCustomerId(OrderDTO orderDTO) throws ResourceNotFoundException {
+        UUID customerId = UUID.fromString(orderDTO.getCustomerId());
 
-        customerRepository.findById(customerId).orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy khách hàng với id: " + customerId));
+        customerRepository.findById(customerId).orElseThrow(() ->
+                new ResourceNotFoundException("Không tìm thấy khách hàng với id: " + customerId));
 
         Order order = orderMapper.toOrder(orderDTO);
-        order.setOrderId(OrderUtils.generateOrderId());
+        String newOrderId = OrderUtils.generateOrderId();
+        order.setOrderId(newOrderId);
         order.setStatus(StatusEnum.PENDING);
         order.setCustomer(Customer.builder().customerId(customerId).build());
+        order.setOrderDetails(null);
         orderRepository.save(order);
 
+        order.setOrderDetails(orderDetailService.createOrderDetail(newOrderId, orderDTO.getOrderDetails()));
+
+        orderRepository.save(order);
         return orderMapper.toOrderDTO(order);
     }
 

@@ -3,7 +3,6 @@ package com.pqkhang.ct553_backend.domain.booking.order.controller;
 import com.pqkhang.ct553_backend.app.exception.ResourceNotFoundException;
 import com.pqkhang.ct553_backend.app.response.ApiResponse;
 import com.pqkhang.ct553_backend.app.response.Page;
-import com.pqkhang.ct553_backend.domain.booking.order.dto.OrderAndOrderDetailDTO;
 import com.pqkhang.ct553_backend.domain.booking.order.dto.OrderDTO;
 import com.pqkhang.ct553_backend.domain.booking.order.service.OrderService;
 import lombok.RequiredArgsConstructor;
@@ -22,11 +21,11 @@ public class OrderController {
     private final OrderService orderService;
 
     @PostMapping
-    public ApiResponse<OrderDTO> createOrderByCustomerId(@RequestBody OrderAndOrderDetailDTO orderAndOrderDetailDTO) throws ResourceNotFoundException {
+    public ApiResponse<OrderDTO> createOrderByCustomerId(@RequestBody OrderDTO orderDTO) throws ResourceNotFoundException {
         return ApiResponse.<OrderDTO>builder()
                 .status(HttpStatus.OK.value())
                 .success(true)
-                .payload(orderService.createOrderByCustomerId(orderAndOrderDetailDTO))
+                .payload(orderService.createOrderByCustomerId(orderDTO))
                 .message("Tạo đơn hàng thành công")
                 .build();
     }
@@ -37,7 +36,7 @@ public class OrderController {
                 .status(HttpStatus.OK.value())
                 .success(true)
                 .payload(orderService.updateOrder(orderDTO))
-                .message("Cập nhật đơn hàng thành công")
+                .message("Cập nhật trạng thái đơn hàng thành công")
                 .build();
     }
 

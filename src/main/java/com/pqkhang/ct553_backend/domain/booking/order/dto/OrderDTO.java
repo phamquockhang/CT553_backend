@@ -19,5 +19,9 @@ public class OrderDTO {
 
     BigDecimal totalAmount;
 
+    String customerId;
+
+    List<OrderDetailDTO> orderDetails;
+
     LocalDateTime createdAt;
 }

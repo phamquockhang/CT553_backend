@@ -3,12 +3,12 @@ package com.pqkhang.ct553_backend.domain.booking.order.entity;
 import com.pqkhang.ct553_backend.domain.booking.order.enums.StatusEnum;
 import com.pqkhang.ct553_backend.domain.common.entity.BaseEntity;
 import com.pqkhang.ct553_backend.domain.user.entity.Customer;
-import com.pqkhang.ct553_backend.domain.user.enums.GenderEnum;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Getter
 @Setter
@@ -31,7 +31,7 @@ public class Order extends BaseEntity {
     @JoinColumn(name = "customer_id", nullable = false)
     Customer customer;
 
-//    @OneToMany(mappedBy = "cart", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
-//    List<CartDetail> cartDetails;
+    @OneToMany(mappedBy = "order", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
+    List<OrderDetail> orderDetails;
 
 }
