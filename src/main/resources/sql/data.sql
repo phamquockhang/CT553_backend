@@ -159,7 +159,13 @@ VALUES
     ('Cua tứ lớn', 'con', 'Cua tứ lớn có trọng lượng từ 550-800g/con', 5, true),
     ('Cua thịt nhỏ', 'con', 'Cua thịt nhỏ có trọng lượng từ 250-350g/con', 5, true),
     ('Cua thịt vừa', 'con', 'Cua thịt vừa có trọng lượng từ 350-550g/con', 5, true),
-    ('Cua thịt lớn', 'con', 'Cua thịt lớn có trọng lượng từ 550-800g/con', 5, true);
+    ('Cua thịt lớn', 'con', 'Cua thịt lớn có trọng lượng từ 550-800g/con', 5, true),
+
+    ('Cua test 1','kg','Test description description description description description description description description description description description description description description description description',5,true),
+    ('Cua test 2','kg','Test description description description description description description description description description description description description description description description description',5,true),
+    ('Cua test 3','kg','Test description description description description description description description description description description description description description description description description',5,true),
+    ('Cua test 4','kg','Test description description description description description description description description description description description description description description description description',5,true),
+    ('Cua test 5','kg','Test description description description description description description description description description description description description description description description description',5,true);
 
 --BUYING_PRICE
 INSERT INTO public.buying_prices (product_id, buying_price_value, buying_price_fluctuation, is_current)
@@ -203,7 +209,13 @@ VALUES
 
     (25, 150000,0, true),
     (26, 200000,0, true),
-    (27, 250000,0, true);
+    (27, 250000,0, true),
+
+    (28, 150000,0, true),
+    (29, 200000,0, true),
+    (30, 250000,0, true),
+    (31, 300000,0, true),
+    (32, 350000,0, true);
 
 --SELLING_PRICE
 INSERT INTO public.selling_prices (product_id, selling_price_value, selling_price_fluctuation, is_current)
@@ -247,7 +259,13 @@ VALUES
 
     (25, 79000,0, true),
     (26, 129000,0, true),
-    (27, 329000,0, true);
+    (27, 329000,0, true),
+
+    (28, 199000,0, true),
+    (29, 299000,0, true),
+    (30, 399000,0, true),
+    (31, 499000,0, true),
+    (32, 599000,0, true);
 
 --WEIGHT
 INSERT INTO public.weights (product_id, weight_value, is_current)
@@ -286,7 +304,13 @@ VALUES --Tôm hùm
        (24, 40.5, true),
        (25, 20.5, true),
        (26, 30.5, true),
-       (27, 40.5, true);
+       (27, 40.5, true),
+
+         (28, 205.3, true),
+         (29, 309.5, true),
+         (30, 400.5, true),
+         (31, 50.5, true),
+         (32, 6.5, true);
 
 --CART
 INSERT INTO public.carts (customer_id)

@@ -28,7 +28,7 @@ public class RequestParamUtils {
                 Sort.Order order = new Sort.Order(Sort.Direction.fromString(direction), field.trim());
                 sortOrders.add(order);
             }
-            Sort.Order updatedAtOrder = new Sort.Order(Sort.Direction.fromString("asc"), "updatedAt");
+            Sort.Order updatedAtOrder = new Sort.Order(Sort.Direction.ASC, "updatedAt");
             Sort.Order idOrder = new Sort.Order(Sort.Direction.ASC, idFieldName);
             sortOrders.addAll(List.of(updatedAtOrder, idOrder));
         }
