@@ -1,6 +1,7 @@
 package com.pqkhang.ct553_backend.domain.booking.order.entity;
 
-import com.pqkhang.ct553_backend.domain.booking.order.enums.StatusEnum;
+import com.pqkhang.ct553_backend.domain.booking.order.enums.OrderStatusEnum;
+import com.pqkhang.ct553_backend.domain.booking.order.enums.PaymentStatusEnum;
 import com.pqkhang.ct553_backend.domain.common.entity.BaseEntity;
 import com.pqkhang.ct553_backend.domain.user.entity.Customer;
 import jakarta.persistence.*;
@@ -22,10 +23,26 @@ public class Order extends BaseEntity {
     @Id
     String orderId;
 
-    @Enumerated(EnumType.STRING)
-    StatusEnum status;
+    String name;
+
+    String phone;
+
+    String email;
+
+    String address;
+
+    String note;
 
     BigDecimal totalAmount;
+
+    @Enumerated(EnumType.STRING)
+    PaymentStatusEnum paymentStatus;
+
+    @OneToMany(mappedBy = "order", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
+    List<OrderStatus> orderStatuses;
+
+    @Enumerated(EnumType.STRING)
+    OrderStatusEnum orderStatus;
 
     @ManyToOne
     @JoinColumn(name = "customer_id", nullable = false)
@@ -33,5 +50,4 @@ public class Order extends BaseEntity {
 
     @OneToMany(mappedBy = "order", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     List<OrderDetail> orderDetails;
-
 }

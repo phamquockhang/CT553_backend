@@ -5,11 +5,12 @@ import com.pqkhang.ct553_backend.app.response.Meta;
 import com.pqkhang.ct553_backend.app.response.Page;
 import com.pqkhang.ct553_backend.domain.booking.order.dto.OrderDTO;
 import com.pqkhang.ct553_backend.domain.booking.order.entity.Order;
-import com.pqkhang.ct553_backend.domain.booking.order.enums.StatusEnum;
+import com.pqkhang.ct553_backend.domain.booking.order.enums.OrderStatusEnum;
 import com.pqkhang.ct553_backend.domain.booking.order.mapper.OrderMapper;
 import com.pqkhang.ct553_backend.domain.booking.order.repository.OrderRepository;
 import com.pqkhang.ct553_backend.domain.booking.order.service.OrderDetailService;
 import com.pqkhang.ct553_backend.domain.booking.order.service.OrderService;
+import com.pqkhang.ct553_backend.domain.booking.order.service.OrderStatusService;
 import com.pqkhang.ct553_backend.domain.booking.order.utils.OrderUtils;
 import com.pqkhang.ct553_backend.domain.user.entity.Customer;
 import com.pqkhang.ct553_backend.domain.user.repository.CustomerRepository;
@@ -41,10 +42,11 @@ public class OrderServiceImpl implements OrderService {
     OrderRepository orderRepository;
     RequestParamUtils requestParamUtils;
     OrderDetailService orderDetailService;
+    OrderStatusService orderStatusService;
+    StringUtils stringUtils;
 
     private static final String DEFAULT_PAGE = "1";
     private static final String DEFAULT_PAGE_SIZE = "10";
-    private final StringUtils stringUtils;
 
     private Pageable createPageable(Map<String, String> params) {
         int page = Integer.parseInt(params.getOrDefault("page", DEFAULT_PAGE));
@@ -67,8 +69,7 @@ public class OrderServiceImpl implements OrderService {
 
     private Specification<Order> buildStatusSpec(Map<String, String> params) {
         return requestParamUtils.getSearchCriteria(params, "status").stream()
-                .map(criteria -> (Specification<Order>) (root, query, cb) ->
-                        cb.equal(root.get("status"), StatusEnum.valueOf(criteria.getValue().toString().toUpperCase())))
+                .map(criteria -> (Specification<Order>) (root, query, cb) -> cb.equal(root.get("status"), OrderStatusEnum.valueOf(criteria.getValue().toString().toUpperCase())))
                 .reduce(Specification::or)
                 .orElse(null);
     }
@@ -96,14 +97,29 @@ public class OrderServiceImpl implements OrderService {
         return Page.<OrderDTO>builder()
                 .meta(meta)
                 .data(orderPage.getContent()
-                        .stream().map(orderMapper::toOrderDTO)
+                        .stream().map(this::toOverViewOrderDTO)
                         .collect(Collectors.toList())
                 )
                 .build();
     }
 
+    private OrderDTO toOverViewOrderDTO(Order order) {
+        OrderDTO orderDTO = orderMapper.toOrderDTO(order);
+
+        orderDTO.setCustomerId(null);
+        orderDTO.setName(null);
+        orderDTO.setPhone(null);
+        orderDTO.setEmail(null);
+        orderDTO.setAddress(null);
+        orderDTO.setNote(null);
+        orderDTO.setOrderDetails(null);
+        orderDTO.setOrderStatuses(null);
+
+        return orderDTO;
+    }
+
     @Override
-    public OrderDTO createOrderByCustomerId(OrderDTO orderDTO) throws ResourceNotFoundException {
+    public void createOrderByCustomerId(OrderDTO orderDTO) throws ResourceNotFoundException {
         UUID customerId = UUID.fromString(orderDTO.getCustomerId());
 
         customerRepository.findById(customerId).orElseThrow(() ->
@@ -112,24 +128,28 @@ public class OrderServiceImpl implements OrderService {
         Order order = orderMapper.toOrder(orderDTO);
         String newOrderId = OrderUtils.generateOrderId();
         order.setOrderId(newOrderId);
-        order.setStatus(StatusEnum.PENDING);
         order.setCustomer(Customer.builder().customerId(customerId).build());
+        order.setOrderStatus(OrderStatusEnum.PENDING);
+        order.setOrderStatuses(null);
         order.setOrderDetails(null);
         orderRepository.save(order);
 
         order.setOrderDetails(orderDetailService.createOrderDetail(newOrderId, orderDTO.getOrderDetails()));
+        order.setOrderStatuses(orderStatusService.createOrderStatus(newOrderId, OrderStatusEnum.PENDING));
+        order.setUpdatedAt(null);
 
         orderRepository.save(order);
-        return orderMapper.toOrderDTO(order);
     }
 
-    @Override
-    public OrderDTO updateOrder(OrderDTO orderDTO) throws ResourceNotFoundException {
-        Order order = orderRepository.findById(orderDTO.getOrderId()).orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy đơn hàng với id: " + orderDTO.getOrderId()));
 
-        order.setStatus(StatusEnum.valueOf(orderDTO.getStatus().toUpperCase()));
+    @Override
+    public void updateOrderStatus(String orderId, OrderStatusEnum orderStatusEnum) throws ResourceNotFoundException {
+        Order order = orderRepository.findById(orderId).orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy đơn hàng với id: " + orderId));
+
+        orderStatusService.createOrderStatus(orderId, orderStatusEnum);
+        order.setOrderStatus(orderStatusEnum);
+
         orderRepository.save(order);
-        return orderMapper.toOrderDTO(order);
     }
 
     @Override
@@ -140,14 +160,14 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<OrderDTO> getAllOrders() {
-        return orderRepository.findAll().stream().map(orderMapper::toOrderDTO).collect(Collectors.toList());
+        return orderRepository.findAll().stream().map(this::toOverViewOrderDTO).collect(Collectors.toList());
     }
 
     @Override
     public List<OrderDTO> getAllOrdersByCustomerId(UUID customerId) throws ResourceNotFoundException {
         customerRepository.findById(customerId).orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy khách hàng với id: " + customerId));
 
-        return orderRepository.findAllByCustomer_CustomerId(customerId).stream().map(orderMapper::toOrderDTO).toList();
+        return orderRepository.findAllByCustomer_CustomerId(customerId).stream().map(this::toOverViewOrderDTO).toList();
     }
 
     @Override

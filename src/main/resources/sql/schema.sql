@@ -99,3 +99,12 @@ CREATE SEQUENCE order_details_seq
     INCREMENT BY 1;
 ALTER TABLE public.order_details
     ALTER COLUMN order_detail_id SET DEFAULT nextval('order_details_seq');
+
+--ORDER_STATUS
+DROP SEQUENCE IF EXISTS order_statuses_seq CASCADE;
+CREATE SEQUENCE order_statuses_seq
+    START WITH 1
+    INCREMENT BY 1;
+ALTER TABLE public.order_statuses
+    ALTER COLUMN order_status_id SET DEFAULT nextval('order_statuses_seq'),
+    ALTER COLUMN created_at SET DEFAULT CURRENT_TIMESTAMP;

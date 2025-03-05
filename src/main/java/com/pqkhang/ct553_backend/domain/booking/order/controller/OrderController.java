@@ -4,7 +4,10 @@ import com.pqkhang.ct553_backend.app.exception.ResourceNotFoundException;
 import com.pqkhang.ct553_backend.app.response.ApiResponse;
 import com.pqkhang.ct553_backend.app.response.Page;
 import com.pqkhang.ct553_backend.domain.booking.order.dto.OrderDTO;
+import com.pqkhang.ct553_backend.domain.booking.order.dto.OrderStatusDTO;
+import com.pqkhang.ct553_backend.domain.booking.order.enums.OrderStatusEnum;
 import com.pqkhang.ct553_backend.domain.booking.order.service.OrderService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -21,21 +24,23 @@ public class OrderController {
     private final OrderService orderService;
 
     @PostMapping
-    public ApiResponse<OrderDTO> createOrderByCustomerId(@RequestBody OrderDTO orderDTO) throws ResourceNotFoundException {
-        return ApiResponse.<OrderDTO>builder()
+    public ApiResponse<Void> createOrderByCustomerId(@Valid @RequestBody OrderDTO orderDTO) throws ResourceNotFoundException {
+        orderService.createOrderByCustomerId(orderDTO);
+        return ApiResponse.<Void>builder()
                 .status(HttpStatus.OK.value())
                 .success(true)
-                .payload(orderService.createOrderByCustomerId(orderDTO))
                 .message("Tạo đơn hàng thành công")
                 .build();
     }
 
-    @PutMapping
-    public ApiResponse<OrderDTO> updateOrder(@RequestBody OrderDTO orderDTO) throws ResourceNotFoundException {
-        return ApiResponse.<OrderDTO>builder()
+    @PutMapping("/{orderId}")
+    public ApiResponse<Void> updateOrderStatus(@PathVariable("orderId") String orderId, @RequestBody OrderStatusDTO orderStatusDTO) throws ResourceNotFoundException {
+        OrderStatusEnum orderStatusEnum = OrderStatusEnum.valueOf(orderStatusDTO.getStatus()); // transform orderStatus from String to OrderStatusEnum
+
+        orderService.updateOrderStatus(orderId, orderStatusEnum);
+        return ApiResponse.<Void>builder()
                 .status(HttpStatus.OK.value())
                 .success(true)
-                .payload(orderService.updateOrder(orderDTO))
                 .message("Cập nhật trạng thái đơn hàng thành công")
                 .build();
     }
