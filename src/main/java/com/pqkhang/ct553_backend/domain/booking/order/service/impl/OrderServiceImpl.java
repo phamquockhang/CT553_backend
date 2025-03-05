@@ -6,6 +6,7 @@ import com.pqkhang.ct553_backend.app.response.Page;
 import com.pqkhang.ct553_backend.domain.booking.order.dto.OrderDTO;
 import com.pqkhang.ct553_backend.domain.booking.order.entity.Order;
 import com.pqkhang.ct553_backend.domain.booking.order.enums.OrderStatusEnum;
+import com.pqkhang.ct553_backend.domain.booking.order.enums.PaymentStatusEnum;
 import com.pqkhang.ct553_backend.domain.booking.order.mapper.OrderMapper;
 import com.pqkhang.ct553_backend.domain.booking.order.repository.OrderRepository;
 import com.pqkhang.ct553_backend.domain.booking.order.service.OrderDetailService;
@@ -56,7 +57,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     private Specification<Order> buildSearchSpec(Map<String, String> params) {
-        return Specification.where(buildQuerySpec_OrderId(params)).and(buildStatusSpec(params)).and(buildCustomerSpec(params));
+        return Specification.where(buildQuerySpec_OrderId(params)).and(buildPaymentStatusSpec(params)).and(buildOrderStatusSpec(params));
     }
 
     private Specification<Order> buildQuerySpec_OrderId(Map<String, String> params) {
@@ -67,18 +68,20 @@ public class OrderServiceImpl implements OrderService {
         } : null;
     }
 
-    private Specification<Order> buildStatusSpec(Map<String, String> params) {
-        return requestParamUtils.getSearchCriteria(params, "status").stream()
-                .map(criteria -> (Specification<Order>) (root, query, cb) -> cb.equal(root.get("status"), OrderStatusEnum.valueOf(criteria.getValue().toString().toUpperCase())))
+    private Specification<Order> buildPaymentStatusSpec(Map<String, String> params) {
+        return requestParamUtils.getSearchCriteria(params, "paymentStatus").stream()
+                .map(criteria -> (Specification<Order>) (root, query, cb) ->
+                        cb.equal(root.get("paymentStatus"), PaymentStatusEnum.valueOf(criteria.getValue().toString().toUpperCase()))
+                )
                 .reduce(Specification::or)
                 .orElse(null);
     }
 
-    private Specification<Order> buildCustomerSpec(Map<String, String> params) {
-        return requestParamUtils.getSearchCriteria(params, "customerId")
+    private Specification<Order> buildOrderStatusSpec(Map<String, String> params) {
+        return requestParamUtils.getSearchCriteria(params, "orderStatus")
                 .stream()
                 .map(criteria -> (Specification<Order>) (root, query, cb) ->
-                        cb.equal(root.get("customer").get("customerId"), UUID.fromString(criteria.getValue().toString()))
+                        cb.equal(root.get("orderStatus"), OrderStatusEnum.valueOf(criteria.getValue().toString().toUpperCase()))
                 )
                 .reduce(Specification::or)
                 .orElse(null);

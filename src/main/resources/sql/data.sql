@@ -40,12 +40,24 @@ VALUES ('Get all roles', '/api/v1/roles', 'GET', 'ROLE'),
        ('Get a product', '/api/v1/products/{id}', 'GET', 'PRODUCT'),
        ('Create a product', '/api/v1/products', 'POST', 'PRODUCT'),
        ('Update a product', '/api/v1/products/{id}', 'PUT', 'PRODUCT'),
-       ('Delete a product', '/api/v1/products/{id}', 'DELETE', 'PRODUCT');
+       ('Delete a product', '/api/v1/products/{id}', 'DELETE', 'PRODUCT'),
+
+       ('Get all orders', '/api/v1/orders', 'GET', 'ORDER'),
+       ('Get a order', '/api/v1/orders/{id}', 'GET', 'ORDER'),
+       ('Create a order', '/api/v1/orders', 'POST', 'ORDER'),
+       ('Update a order', '/api/v1/orders/{id}', 'PUT', 'ORDER');
 
 --ROLE_PERMISSION FOR STAFF
 INSERT INTO public.permission_role (role_id, permission_id)
 VALUES (2, 18),
-       (2, 19);
+       (2, 21),
+       (2, 22),
+       (2, 26),
+       (2, 27),
+       (2, 31),
+       (2, 32),
+       (2, 33),
+       (2, 34);
 
 --ROLE_PERMISSION FOR CUSTOMER
 -- INSERT INTO public.permission_role (role_id, permission_id)
