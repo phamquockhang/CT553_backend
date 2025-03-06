@@ -17,13 +17,13 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "orders")
+@Table(name = "selling_orders")
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Order extends BaseEntity {
+public class SellingOrder extends BaseEntity {
     @Id
-    String orderId;
+    String sellingOrderId;
 
-    String name;
+    String customerName;
 
     String phone;
 
@@ -35,10 +35,12 @@ public class Order extends BaseEntity {
 
     BigDecimal totalAmount;
 
+    Integer earnedScore;
+
     @Enumerated(EnumType.STRING)
     PaymentStatusEnum paymentStatus;
 
-    @OneToMany(mappedBy = "order", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
+    @OneToMany(mappedBy = "sellingOrder", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     List<OrderStatus> orderStatuses;
 
     @Enumerated(EnumType.STRING)
@@ -48,6 +50,6 @@ public class Order extends BaseEntity {
     @JoinColumn(name = "customer_id", nullable = false)
     Customer customer;
 
-    @OneToMany(mappedBy = "order", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
-    List<OrderDetail> orderDetails;
+    @OneToMany(mappedBy = "sellingOrder", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
+    List<SellingOrderDetail> sellingOrderDetails;
 }

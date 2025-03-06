@@ -9,5 +9,5 @@ import java.util.List;
 
 @Repository
 public interface OrderStatusRepository extends JpaRepository<OrderStatus, Integer>, JpaSpecificationExecutor<OrderStatus> {
-    List<OrderStatus> findAllByOrder_OrderId(String orderId);
+    List<OrderStatus> findAllBySellingOrder_SellingOrderId(String orderId);
 }

@@ -3,10 +3,10 @@ package com.pqkhang.ct553_backend.domain.booking.order.controller;
 import com.pqkhang.ct553_backend.app.exception.ResourceNotFoundException;
 import com.pqkhang.ct553_backend.app.response.ApiResponse;
 import com.pqkhang.ct553_backend.app.response.Page;
-import com.pqkhang.ct553_backend.domain.booking.order.dto.OrderDTO;
+import com.pqkhang.ct553_backend.domain.booking.order.dto.SellingOrderDTO;
 import com.pqkhang.ct553_backend.domain.booking.order.dto.OrderStatusDTO;
 import com.pqkhang.ct553_backend.domain.booking.order.enums.OrderStatusEnum;
-import com.pqkhang.ct553_backend.domain.booking.order.service.OrderService;
+import com.pqkhang.ct553_backend.domain.booking.order.service.SellingOrderService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -17,15 +17,15 @@ import java.util.Map;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/v1/orders")
+@RequestMapping("/api/v1/selling_orders")
 @RequiredArgsConstructor
-public class OrderController {
+public class SellingOrderController {
 
-    private final OrderService orderService;
+    private final SellingOrderService sellingOrderService;
 
     @PostMapping
-    public ApiResponse<Void> createOrderByCustomerId(@Valid @RequestBody OrderDTO orderDTO) throws ResourceNotFoundException {
-        orderService.createOrderByCustomerId(orderDTO);
+    public ApiResponse<Void> createSellingOrder(@Valid @RequestBody SellingOrderDTO sellingOrderDTO) throws ResourceNotFoundException {
+        sellingOrderService.createSellingOrder(sellingOrderDTO);
         return ApiResponse.<Void>builder()
                 .status(HttpStatus.OK.value())
                 .success(true)
@@ -33,11 +33,11 @@ public class OrderController {
                 .build();
     }
 
-    @PutMapping("/{orderId}")
-    public ApiResponse<Void> updateOrderStatus(@PathVariable("orderId") String orderId, @RequestBody OrderStatusDTO orderStatusDTO) throws ResourceNotFoundException {
+    @PutMapping("/{sellingOrderId}")
+    public ApiResponse<Void> updateSellingOrderStatus(@PathVariable("sellingOrderId") String sellingOrderId, @RequestBody OrderStatusDTO orderStatusDTO) throws ResourceNotFoundException {
         OrderStatusEnum orderStatusEnum = OrderStatusEnum.valueOf(orderStatusDTO.getStatus()); // transform orderStatus from String to OrderStatusEnum
 
-        orderService.updateOrderStatus(orderId, orderStatusEnum);
+        sellingOrderService.updateSellingOrderStatus(sellingOrderId, orderStatusEnum);
         return ApiResponse.<Void>builder()
                 .status(HttpStatus.OK.value())
                 .success(true)
@@ -46,41 +46,41 @@ public class OrderController {
     }
 
     @GetMapping("/all")
-    public ApiResponse<List<OrderDTO>> getAllOrders() {
-        return ApiResponse.<List<OrderDTO>>builder()
+    public ApiResponse<List<SellingOrderDTO>> getAllSellingOrders() {
+        return ApiResponse.<List<SellingOrderDTO>>builder()
                 .status(HttpStatus.CREATED.value())
                 .success(true)
-                .payload(orderService.getAllOrders())
+                .payload(sellingOrderService.getAllSellingOrders())
                 .message("Lấy thông tin tất cả đơn hàng thành công")
                 .build();
     }
 
     @GetMapping("/customer/{customerId}")
-    public ApiResponse<List<OrderDTO>> getAllOrdersByCustomerId(@PathVariable("customerId") UUID customerId) throws ResourceNotFoundException {
-        return ApiResponse.<List<OrderDTO>>builder()
+    public ApiResponse<List<SellingOrderDTO>> getAllSellingOrdersByCustomerId(@PathVariable("customerId") UUID customerId) throws ResourceNotFoundException {
+        return ApiResponse.<List<SellingOrderDTO>>builder()
                 .status(HttpStatus.CREATED.value())
                 .success(true)
-                .payload(orderService.getAllOrdersByCustomerId(customerId))
+                .payload(sellingOrderService.getAllSellingOrdersByCustomerId(customerId))
                 .message("Lấy thông tin tất cả đơn hàng của khách hàng thành công")
                 .build();
     }
 
-    @GetMapping("/{orderId}")
-    public ApiResponse<OrderDTO> getOrder(@PathVariable("orderId") String orderId) throws ResourceNotFoundException {
-        return ApiResponse.<OrderDTO>builder()
+    @GetMapping("/{sellingOrderId}")
+    public ApiResponse<SellingOrderDTO> getSellingOrder(@PathVariable("sellingOrderId") String sellingOrderId) throws ResourceNotFoundException {
+        return ApiResponse.<SellingOrderDTO>builder()
                 .status(HttpStatus.CREATED.value())
                 .success(true)
-                .payload(orderService.getOrder(orderId))
+                .payload(sellingOrderService.getSellingOrder(sellingOrderId))
                 .message("Lấy thông tin đơn hàng thành công")
                 .build();
     }
 
     @GetMapping
-    public ApiResponse<Page<OrderDTO>> getOrders(@RequestParam Map<String, String> params) throws ResourceNotFoundException {
-        return ApiResponse.<Page<OrderDTO>>builder()
+    public ApiResponse<Page<SellingOrderDTO>> getSellingOrders(@RequestParam Map<String, String> params) throws ResourceNotFoundException {
+        return ApiResponse.<Page<SellingOrderDTO>>builder()
                 .status(HttpStatus.CREATED.value())
                 .success(true)
-                .payload(orderService.getOrders(params))
+                .payload(sellingOrderService.getSellingOrders(params))
                 .message("Lấy thông tin tất cả đơn hàng thành công")
                 .build();
     }

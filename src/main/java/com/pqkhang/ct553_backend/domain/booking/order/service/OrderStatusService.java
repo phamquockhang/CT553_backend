@@ -9,5 +9,5 @@ import java.util.List;
 
 @Service
 public interface OrderStatusService {
-    List<OrderStatus> createOrderStatus(String orderId, OrderStatusEnum orderStatus) throws ResourceNotFoundException;
+    List<OrderStatus> createOrderStatus(String sellingOrderId, OrderStatusEnum orderStatus) throws ResourceNotFoundException;
 }

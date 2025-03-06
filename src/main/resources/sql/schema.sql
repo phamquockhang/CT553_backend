@@ -92,13 +92,13 @@ ALTER TABLE public.cart_details
     ALTER COLUMN cart_detail_id SET DEFAULT nextval('cart_details_seq'),
     ALTER COLUMN created_at SET DEFAULT CURRENT_TIMESTAMP;
 
---ORDER_DETAIL
-DROP SEQUENCE IF EXISTS order_details_seq CASCADE;
-CREATE SEQUENCE order_details_seq
+--SELLING_ORDER_DETAIL
+DROP SEQUENCE IF EXISTS selling_order_details_seq CASCADE;
+CREATE SEQUENCE selling_order_details_seq
     START WITH 1
     INCREMENT BY 1;
-ALTER TABLE public.order_details
-    ALTER COLUMN order_detail_id SET DEFAULT nextval('order_details_seq');
+ALTER TABLE public.selling_order_details
+    ALTER COLUMN selling_order_detail_id SET DEFAULT nextval('selling_order_details_seq');
 
 --ORDER_STATUS
 DROP SEQUENCE IF EXISTS order_statuses_seq CASCADE;
