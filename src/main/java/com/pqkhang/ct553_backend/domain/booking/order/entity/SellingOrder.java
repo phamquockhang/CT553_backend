@@ -35,6 +35,8 @@ public class SellingOrder extends BaseEntity {
 
     BigDecimal totalAmount;
 
+    Integer usedScore;
+
     Integer earnedScore;
 
     @Enumerated(EnumType.STRING)

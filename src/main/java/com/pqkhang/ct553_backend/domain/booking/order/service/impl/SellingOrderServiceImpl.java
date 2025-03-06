@@ -13,8 +13,11 @@ import com.pqkhang.ct553_backend.domain.booking.order.service.OrderStatusService
 import com.pqkhang.ct553_backend.domain.booking.order.service.SellingOrderDetailService;
 import com.pqkhang.ct553_backend.domain.booking.order.service.SellingOrderService;
 import com.pqkhang.ct553_backend.domain.booking.order.utils.OrderUtils;
+import com.pqkhang.ct553_backend.domain.user.dto.ScoreCalculator;
+import com.pqkhang.ct553_backend.domain.user.dto.ScoreDTO;
 import com.pqkhang.ct553_backend.domain.user.entity.Customer;
 import com.pqkhang.ct553_backend.domain.user.repository.CustomerRepository;
+import com.pqkhang.ct553_backend.domain.user.service.ScoreService;
 import com.pqkhang.ct553_backend.infrastructure.utils.RequestParamUtils;
 import com.pqkhang.ct553_backend.infrastructure.utils.StringUtils;
 import jakarta.persistence.criteria.Predicate;
@@ -48,6 +51,7 @@ public class SellingOrderServiceImpl implements SellingOrderService {
 
     private static final String DEFAULT_PAGE = "1";
     private static final String DEFAULT_PAGE_SIZE = "10";
+    private final ScoreService scoreService;
 
     private Pageable createPageable(Map<String, String> params) {
         int page = Integer.parseInt(params.getOrDefault("page", DEFAULT_PAGE));
@@ -115,40 +119,64 @@ public class SellingOrderServiceImpl implements SellingOrderService {
         sellingOrderDTO.setEmail(null);
         sellingOrderDTO.setAddress(null);
         sellingOrderDTO.setNote(null);
+        sellingOrderDTO.setUsedScore(null);
+        sellingOrderDTO.setEarnedScore(null);
         sellingOrderDTO.setSellingOrderDetails(null);
         sellingOrderDTO.setOrderStatuses(null);
 
         return sellingOrderDTO;
     }
 
-    @Override
-    public void createSellingOrder(SellingOrderDTO sellingOrderDTO) throws ResourceNotFoundException {
-        if (!sellingOrderDTO.getCustomerId().isEmpty()) {
-            UUID customerId = UUID.fromString(sellingOrderDTO.getCustomerId());
-            customerRepository.findById(customerId).orElseThrow(() ->
-                    new ResourceNotFoundException("Không tìm thấy khách hàng với id: " + customerId));
+    private void processCustomerScore(SellingOrderDTO sellingOrderDTO, SellingOrder sellingOrder, UUID customerId) {
+        if (customerId == null) {
+            return;
         }
 
-        OrderStatusEnum orderStatusEnum = OrderStatusEnum.valueOf(sellingOrderDTO.getOrderStatus()); // transform orderStatus from String to OrderStatusEnum
+        int convertedScore = ScoreCalculator.convertMoneyToScores(sellingOrderDTO.getTotalAmount());
+        int deductedScore = sellingOrderDTO.getUsedScore() != null ? -sellingOrderDTO.getUsedScore() : 0;
+        int finalScore = convertedScore + deductedScore;
+
+        sellingOrder.setEarnedScore(convertedScore);
+
+        if (finalScore != 0) {
+            ScoreDTO newScoreDTO = ScoreDTO.builder()
+                    .changeAmount(finalScore)
+                    .build();
+            scoreService.createScore(customerId, newScoreDTO);
+        }
+    }
+
+    @Override
+    public void createSellingOrder(SellingOrderDTO sellingOrderDTO) throws ResourceNotFoundException {
+        UUID customerId;
+
+        if (sellingOrderDTO.getCustomerId() != null && !sellingOrderDTO.getCustomerId().isEmpty()) {
+            customerId = UUID.fromString(sellingOrderDTO.getCustomerId());
+            customerRepository.findById(customerId).orElseThrow(() ->
+                    new ResourceNotFoundException("Không tìm thấy khách hàng với id: " + customerId));
+        } else {
+            customerId = null;
+        }
+
+        // Chuyển đổi orderStatus từ String sang Enum
+        OrderStatusEnum orderStatusEnum = OrderStatusEnum.valueOf(sellingOrderDTO.getOrderStatus());
+
         SellingOrder sellingOrder = sellingOrderMapper.toSellingOrder(sellingOrderDTO);
         String newSellingOrderId = OrderUtils.generateOrderId();
         sellingOrder.setSellingOrderId(newSellingOrderId);
         sellingOrder.setOrderStatus(orderStatusEnum);
+        sellingOrder.setCustomer(customerId != null ? Customer.builder().customerId(customerId).build() : null);
 
-        if (sellingOrderDTO.getCustomerId() == null || sellingOrderDTO.getCustomerId().isEmpty()) {
-            sellingOrder.setCustomer(null);
-        } else {
-            UUID customerId = UUID.fromString(sellingOrderDTO.getCustomerId());
-            sellingOrder.setCustomer(Customer.builder().customerId(customerId).build());
-        }
+        // Tính toán điểm tích lũy
+        processCustomerScore(sellingOrderDTO, sellingOrder, customerId);
 
         sellingOrder.setOrderStatuses(null);
         sellingOrder.setSellingOrderDetails(null);
         sellingOrderRepository.save(sellingOrder);
 
+        // Tạo chi tiết đơn hàng và trạng thái đơn hàng
         sellingOrder.setSellingOrderDetails(sellingOrderDetailService.createSellingOrderDetail(newSellingOrderId, sellingOrderDTO.getSellingOrderDetails()));
         sellingOrder.setOrderStatuses(orderStatusService.createOrderStatus(newSellingOrderId, orderStatusEnum));
-//        sellingOrder.setUpdatedAt(null);
 
         sellingOrderRepository.save(sellingOrder);
     }

@@ -31,6 +31,8 @@ public class SellingOrderDTO {
 
     BigDecimal totalAmount;
 
+    Integer usedScore;
+
     Integer earnedScore;
 
     @NotBlank(message = "Payment status is required")
