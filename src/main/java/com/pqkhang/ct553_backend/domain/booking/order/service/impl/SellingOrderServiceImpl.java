@@ -128,7 +128,8 @@ public class SellingOrderServiceImpl implements SellingOrderService {
     }
 
     private void processCustomerScore(SellingOrderDTO sellingOrderDTO, SellingOrder sellingOrder, UUID customerId) {
-        if (customerId == null) {
+        PaymentStatusEnum paymentStatus = PaymentStatusEnum.valueOf(sellingOrderDTO.getPaymentStatus());
+        if (customerId == null || paymentStatus.equals(PaymentStatusEnum.UNPAID)) {
             return;
         }
 
@@ -161,6 +162,7 @@ public class SellingOrderServiceImpl implements SellingOrderService {
         // Chuyển đổi orderStatus từ String sang Enum
         OrderStatusEnum orderStatusEnum = OrderStatusEnum.valueOf(sellingOrderDTO.getOrderStatus());
 
+
         SellingOrder sellingOrder = sellingOrderMapper.toSellingOrder(sellingOrderDTO);
         String newSellingOrderId = OrderUtils.generateOrderId();
         sellingOrder.setSellingOrderId(newSellingOrderId);
@@ -183,11 +185,22 @@ public class SellingOrderServiceImpl implements SellingOrderService {
 
 
     @Override
-    public void updateSellingOrderStatus(String sellingOrderId, OrderStatusEnum orderStatusEnum) throws ResourceNotFoundException {
+    public void updateSellingOrderStatus(String sellingOrderId, OrderStatusEnum newOrderStatus, PaymentStatusEnum newPaymentStatus) throws ResourceNotFoundException {
         SellingOrder sellingOrder = sellingOrderRepository.findById(sellingOrderId).orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy đơn hàng với id: " + sellingOrderId));
 
-        orderStatusService.createOrderStatus(sellingOrderId, orderStatusEnum);
-        sellingOrder.setOrderStatus(orderStatusEnum);
+        OrderStatusEnum oldOrderStatus = sellingOrder.getOrderStatus();
+        if (!oldOrderStatus.equals(newOrderStatus)) {
+            orderStatusService.createOrderStatus(sellingOrderId, newOrderStatus);
+            sellingOrder.setOrderStatus(newOrderStatus);
+        }
+
+        sellingOrder.setPaymentStatus(newPaymentStatus);
+
+        if (sellingOrder.getCustomer() != null) {
+            if (newPaymentStatus.equals(PaymentStatusEnum.PAID)) {
+                processCustomerScore(sellingOrderMapper.toSellingOrderDTO(sellingOrder), sellingOrder, sellingOrder.getCustomer().getCustomerId());
+            }
+        }
 
         sellingOrderRepository.save(sellingOrder);
     }

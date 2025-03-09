@@ -4,8 +4,8 @@ import com.pqkhang.ct553_backend.app.exception.ResourceNotFoundException;
 import com.pqkhang.ct553_backend.app.response.ApiResponse;
 import com.pqkhang.ct553_backend.app.response.Page;
 import com.pqkhang.ct553_backend.domain.booking.order.dto.SellingOrderDTO;
-import com.pqkhang.ct553_backend.domain.booking.order.dto.OrderStatusDTO;
 import com.pqkhang.ct553_backend.domain.booking.order.enums.OrderStatusEnum;
+import com.pqkhang.ct553_backend.domain.booking.order.enums.PaymentStatusEnum;
 import com.pqkhang.ct553_backend.domain.booking.order.service.SellingOrderService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -34,10 +34,12 @@ public class SellingOrderController {
     }
 
     @PutMapping("/{sellingOrderId}")
-    public ApiResponse<Void> updateSellingOrderStatus(@PathVariable("sellingOrderId") String sellingOrderId, @RequestBody OrderStatusDTO orderStatusDTO) throws ResourceNotFoundException {
-        OrderStatusEnum orderStatusEnum = OrderStatusEnum.valueOf(orderStatusDTO.getStatus()); // transform orderStatus from String to OrderStatusEnum
+    public ApiResponse<Void> updateSellingOrderStatus(@PathVariable("sellingOrderId") String sellingOrderId, @RequestBody SellingOrderDTO sellingOrderDTO) throws ResourceNotFoundException {
+        // transform orderStatus and paymentStatus from String to Enum
+        OrderStatusEnum orderStatusEnum = OrderStatusEnum.valueOf(sellingOrderDTO.getOrderStatus());
+        PaymentStatusEnum paymentStatusEnum = PaymentStatusEnum.valueOf(sellingOrderDTO.getPaymentStatus());
 
-        sellingOrderService.updateSellingOrderStatus(sellingOrderId, orderStatusEnum);
+        sellingOrderService.updateSellingOrderStatus(sellingOrderId, orderStatusEnum, paymentStatusEnum);
         return ApiResponse.<Void>builder()
                 .status(HttpStatus.OK.value())
                 .success(true)
