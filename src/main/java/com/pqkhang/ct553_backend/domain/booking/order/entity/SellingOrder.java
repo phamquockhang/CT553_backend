@@ -49,7 +49,7 @@ public class SellingOrder extends BaseEntity {
     OrderStatusEnum orderStatus;
 
     @ManyToOne
-    @JoinColumn(name = "customer_id", nullable = false)
+    @JoinColumn(name = "customer_id", nullable = true)
     Customer customer;
 
     @OneToMany(mappedBy = "sellingOrder", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)

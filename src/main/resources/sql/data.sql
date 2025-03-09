@@ -115,9 +115,13 @@ VALUES (gen_random_uuid(), (SELECT customer_id FROM public.customers WHERE email
 --ADDRESS
 INSERT INTO public.addresses (address_id, customer_id, province_id, district_id, ward_code, description, is_default)
 VALUES (gen_random_uuid(), (SELECT customer_id FROM public.customers WHERE email = 'customer1@gmail.com'), 252, 1782,
-        '610201', 'Khóm 5', true),
+        '610201', 'Khóm 1', true),
        (gen_random_uuid(), (SELECT customer_id FROM public.customers WHERE email = 'customer2@gmail.com'), 252, 1782,
-        '610201', 'Khóm 6', true);
+        '610201', 'Khóm 2', true),
+       (gen_random_uuid(), (SELECT customer_id FROM public.customers WHERE email = 'customer3@gmail.com'), 252, 1782,
+        '610201', 'Khóm 3', true),
+       (gen_random_uuid(), (SELECT customer_id FROM public.customers WHERE email = 'customer4@gmail.com'), 252, 1782,
+        '610201', 'Khóm 4', true);
 
 --ITEM
 INSERT INTO public.items (item_name, is_activated)
