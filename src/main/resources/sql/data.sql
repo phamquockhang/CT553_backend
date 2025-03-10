@@ -6,46 +6,58 @@ VALUES ('MANAGER', 'Quản lý'),
 
 --PERMISSION
 INSERT INTO public.permissions (name, api_path, method, module)
-VALUES  ('Get all roles', '/api/v1/roles', 'GET', 'ROLE'),
-        ('Get a role', '/api/v1/roles/{id}', 'GET', 'ROLE'),
-        ('Create a role', '/api/v1/roles', 'POST', 'ROLE'),
-        ('Update a role', '/api/v1/roles/{id}', 'PUT', 'ROLE'),
-        ('Delete a role', '/api/v1/roles/{id}', 'DELETE', 'ROLE'),
+VALUES ('Get all roles', '/api/v1/roles', 'GET', 'ROLE'),
+       ('Get a role', '/api/v1/roles/{id}', 'GET', 'ROLE'),
+       ('Create a role', '/api/v1/roles', 'POST', 'ROLE'),
+       ('Update a role', '/api/v1/roles/{id}', 'PUT', 'ROLE'),
+       ('Delete a role', '/api/v1/roles/{id}', 'DELETE', 'ROLE'),
 
-        ('Get all permissions', '/api/v1/permissions', 'GET', 'PERMISSION'),
-        ('Get a permission', '/api/v1/permissions/{id}', 'GET', 'PERMISSION'),
-        ('Create a permission', '/api/v1/permissions', 'POST', 'PERMISSION'),
-        ('Update a permission', '/api/v1/permissions/{id}', 'PUT', 'PERMISSION'),
-        ('Delete a permission', '/api/v1/permissions/{id}', 'DELETE', 'PERMISSION'),
+       ('Get all permissions', '/api/v1/permissions', 'GET', 'PERMISSION'),
+       ('Get a permission', '/api/v1/permissions/{id}', 'GET', 'PERMISSION'),
+       ('Create a permission', '/api/v1/permissions', 'POST', 'PERMISSION'),
+       ('Update a permission', '/api/v1/permissions/{id}', 'PUT', 'PERMISSION'),
+       ('Delete a permission', '/api/v1/permissions/{id}', 'DELETE', 'PERMISSION'),
 
-        ('Get all staffs', '/api/v1/staffs', 'GET', 'STAFF'),
-        ('Get a staff', '/api/v1/staffs/{id}', 'GET', 'STAFF'),
-        ('Create a staff', '/api/v1/staffs', 'POST', 'STAFF'),
-        ('Update a staff', '/api/v1/staffs/{id}', 'PUT', 'STAFF'),
-        ('Delete a staff', '/api/v1/staffs/{id}', 'DELETE', 'STAFF'),
+       ('Get all staffs', '/api/v1/staffs', 'GET', 'STAFF'),
+       ('Get a staff', '/api/v1/staffs/{id}', 'GET', 'STAFF'),
+       ('Create a staff', '/api/v1/staffs', 'POST', 'STAFF'),
+       ('Update a staff', '/api/v1/staffs/{id}', 'PUT', 'STAFF'),
+       ('Delete a staff', '/api/v1/staffs/{id}', 'DELETE', 'STAFF'),
 
-        ('Get all customers', '/api/v1/customers', 'GET', 'CUSTOMER'),
-        ('Get a customer', '/api/v1/customers/{id}', 'GET', 'CUSTOMER'),
-        ('Create a customer', '/api/v1/customers', 'POST', 'CUSTOMER'),
-        ('Update a customer', '/api/v1/customers/{id}', 'PUT', 'CUSTOMER'),
-        ('Delete a customer', '/api/v1/customers/{id}', 'DELETE', 'CUSTOMER'),
+       ('Get all customers', '/api/v1/customers', 'GET', 'CUSTOMER'),
+       ('Get a customer', '/api/v1/customers/{id}', 'GET', 'CUSTOMER'),
+       ('Create a customer', '/api/v1/customers', 'POST', 'CUSTOMER'),
+       ('Update a customer', '/api/v1/customers/{id}', 'PUT', 'CUSTOMER'),
+       ('Delete a customer', '/api/v1/customers/{id}', 'DELETE', 'CUSTOMER'),
 
-        ('Get all items', '/api/v1/items', 'GET', 'ITEM'),
-        ('Get a item', '/api/v1/items/{id}', 'GET', 'ITEM'),
-        ('Create a item', '/api/v1/items', 'POST', 'ITEM'),
-        ('Update a item', '/api/v1/items/{id}', 'PUT', 'ITEM'),
-        ('Delete a item', '/api/v1/items/{id}', 'DELETE', 'ITEM'),
+       ('Get all items', '/api/v1/items', 'GET', 'ITEM'),
+       ('Get a item', '/api/v1/items/{id}', 'GET', 'ITEM'),
+       ('Create a item', '/api/v1/items', 'POST', 'ITEM'),
+       ('Update a item', '/api/v1/items/{id}', 'PUT', 'ITEM'),
+       ('Delete a item', '/api/v1/items/{id}', 'DELETE', 'ITEM'),
 
-        ('Get all products', '/api/v1/products', 'GET', 'PRODUCT'),
-        ('Get a product', '/api/v1/products/{id}', 'GET', 'PRODUCT'),
-        ('Create a product', '/api/v1/products', 'POST', 'PRODUCT'),
-        ('Update a product', '/api/v1/products/{id}', 'PUT', 'PRODUCT'),
-        ('Delete a product', '/api/v1/products/{id}', 'DELETE', 'PRODUCT');
+       ('Get all products', '/api/v1/products', 'GET', 'PRODUCT'),
+       ('Get a product', '/api/v1/products/{id}', 'GET', 'PRODUCT'),
+       ('Create a product', '/api/v1/products', 'POST', 'PRODUCT'),
+       ('Update a product', '/api/v1/products/{id}', 'PUT', 'PRODUCT'),
+       ('Delete a product', '/api/v1/products/{id}', 'DELETE', 'PRODUCT'),
+
+       ('Get all orders', '/api/v1/orders', 'GET', 'ORDER'),
+       ('Get a order', '/api/v1/orders/{id}', 'GET', 'ORDER'),
+       ('Create a order', '/api/v1/orders', 'POST', 'ORDER'),
+       ('Update a order', '/api/v1/orders/{id}', 'PUT', 'ORDER');
 
 --ROLE_PERMISSION FOR STAFF
 INSERT INTO public.permission_role (role_id, permission_id)
 VALUES (2, 18),
-       (2, 19);
+       (2, 21),
+       (2, 22),
+       (2, 26),
+       (2, 27),
+       (2, 31),
+       (2, 32),
+       (2, 33),
+       (2, 34);
 
 --ROLE_PERMISSION FOR CUSTOMER
 -- INSERT INTO public.permission_role (role_id, permission_id)
@@ -92,17 +104,24 @@ VALUES (gen_random_uuid(), 'staff1@gmail.com', 'FEMALE', 'STAFF', 'I am',
 
 --SCORE
 INSERT INTO public.scores (score_id, customer_id, change_amount, new_value, is_current)
-VALUES (gen_random_uuid(), (SELECT customer_id FROM public.customers WHERE email = 'customer1@gmail.com'), 100, 100, true),
-       (gen_random_uuid(), (SELECT customer_id FROM public.customers WHERE email = 'customer2@gmail.com'), 200, 200, true),
-       (gen_random_uuid(), (SELECT customer_id FROM public.customers WHERE email = 'customer3@gmail.com'), 30, 30, true);
+VALUES (gen_random_uuid(), (SELECT customer_id FROM public.customers WHERE email = 'customer1@gmail.com'), 100, 100,
+        true),
+       (gen_random_uuid(), (SELECT customer_id FROM public.customers WHERE email = 'customer2@gmail.com'), 200, 200,
+        true),
+       (gen_random_uuid(), (SELECT customer_id FROM public.customers WHERE email = 'customer3@gmail.com'), 30, 30,
+        true);
 --        (gen_random_uuid(), (SELECT customer_id FROM public.customers WHERE email = 'customer1@gmail.com'), -10, 90, true);
 
 --ADDRESS
 INSERT INTO public.addresses (address_id, customer_id, province_id, district_id, ward_code, description, is_default)
 VALUES (gen_random_uuid(), (SELECT customer_id FROM public.customers WHERE email = 'customer1@gmail.com'), 252, 1782,
-        '610201', 'Khóm 5', true),
+        '610201', 'Khóm 1', true),
        (gen_random_uuid(), (SELECT customer_id FROM public.customers WHERE email = 'customer2@gmail.com'), 252, 1782,
-        '610201', 'Khóm 6', true);
+        '610201', 'Khóm 2', true),
+       (gen_random_uuid(), (SELECT customer_id FROM public.customers WHERE email = 'customer3@gmail.com'), 252, 1782,
+        '610201', 'Khóm 3', true),
+       (gen_random_uuid(), (SELECT customer_id FROM public.customers WHERE email = 'customer4@gmail.com'), 252, 1782,
+        '610201', 'Khóm 4', true);
 
 --ITEM
 INSERT INTO public.items (item_name, is_activated)
@@ -161,111 +180,121 @@ VALUES
     ('Cua thịt vừa', 'con', 'Cua thịt vừa có trọng lượng từ 350-550g/con', 5, true),
     ('Cua thịt lớn', 'con', 'Cua thịt lớn có trọng lượng từ 550-800g/con', 5, true),
 
-    ('Cua test 1','kg','Test description description description description description description description description description description description description description description description description',5,true),
-    ('Cua test 2','kg','Test description description description description description description description description description description description description description description description description',5,true),
-    ('Cua test 3','kg','Test description description description description description description description description description description description description description description description description',5,true),
-    ('Cua test 4','kg','Test description description description description description description description description description description description description description description description description',5,true),
-    ('Cua test 5','kg','Test description description description description description description description description description description description description description description description description',5,true);
+    ('Cua test 1', 'kg',
+     'Test description description description description description description description description description description description description description description description description',
+     5, true),
+    ('Cua test 2', 'kg',
+     'Test description description description description description description description description description description description description description description description description',
+     5, true),
+    ('Cua test 3', 'kg',
+     'Test description description description description description description description description description description description description description description description description',
+     5, true),
+    ('Cua test 4', 'kg',
+     'Test description description description description description description description description description description description description description description description description',
+     5, true),
+    ('Cua test 5', 'kg',
+     'Test description description description description description description description description description description description description description description description description',
+     5, true);
 
 --BUYING_PRICE
 INSERT INTO public.buying_prices (product_id, buying_price_value, buying_price_fluctuation, is_current)
 VALUES
     --Tôm hùm
-    (1, 900000,0, true),
-    (2, 1150000,0, true),
-    (3, 1300000,0, true),
+    (1, 900000, 0, true),
+    (2, 1150000, 0, true),
+    (3, 1300000, 0, true),
 
-    (4, 1250000,0, true),
-    (5, 1750000,0, true),
+    (4, 1250000, 0, true),
+    (5, 1750000, 0, true),
 
-    (6, 1050000,0, true),
+    (6, 1050000, 0, true),
 
     --Tôm càng
-    (7, 270000,5000, true),
-    (8, 220000,3000, true),
-    (9, 195000,3000, true),
-    (10, 150000,2000, true),
+    (7, 270000, 5000, true),
+    (8, 220000, 3000, true),
+    (9, 195000, 3000, true),
+    (10, 150000, 2000, true),
 
     --Tôm thẻ
-    (11, 220000,2000, true),
-    (12, 180000,2000, true),
-    (13, 150000,1000, true),
-    (14, 120000,1000, true),
+    (11, 220000, 2000, true),
+    (12, 180000, 2000, true),
+    (13, 150000, 1000, true),
+    (14, 120000, 1000, true),
 
     --Tôm sú
-    (15, 230000,3000, true),
-    (16, 200000,2000, true),
-    (17, 180000,1000, true),
-    (18, 160000,1000, true),
+    (15, 230000, 3000, true),
+    (16, 200000, 2000, true),
+    (17, 180000, 1000, true),
+    (18, 160000, 1000, true),
 
     --Cua
-    (19, 290000,0, true),
-    (20, 390000,0, true),
-    (21, 590000,0, true),
+    (19, 290000, 0, true),
+    (20, 390000, 0, true),
+    (21, 590000, 0, true),
 
-    (22, 150000,0, true),
-    (23, 200000,0, true),
-    (24, 250000,0, true),
+    (22, 150000, 0, true),
+    (23, 200000, 0, true),
+    (24, 250000, 0, true),
 
-    (25, 150000,0, true),
-    (26, 200000,0, true),
-    (27, 250000,0, true),
+    (25, 150000, 0, true),
+    (26, 200000, 0, true),
+    (27, 250000, 0, true),
 
-    (28, 150000,0, true),
-    (29, 200000,0, true),
-    (30, 250000,0, true),
-    (31, 300000,0, true),
-    (32, 350000,0, true);
+    (28, 150000, 0, true),
+    (29, 200000, 0, true),
+    (30, 250000, 0, true),
+    (31, 300000, 0, true),
+    (32, 350000, 0, true);
 
 --SELLING_PRICE
 INSERT INTO public.selling_prices (product_id, selling_price_value, selling_price_fluctuation, is_current)
 VALUES
     --Tôm hùm
-    (1, 599000,0, true),
-    (2, 1069000,0, true),
-    (3, 1490000,0, true),
+    (1, 599000, 0, true),
+    (2, 1069000, 0, true),
+    (3, 1490000, 0, true),
 
-    (4, 745000,0, true),
-    (5, 1189000,0, true),
+    (4, 745000, 0, true),
+    (5, 1189000, 0, true),
 
-    (6, 1299000,0, true),
+    (6, 1299000, 0, true),
 
     --Tôm càng
-    (7, 299000,0, true),
-    (8, 249000,0, true),
-    (9, 229000,0, true),
-    (10, 209000,0, true),
+    (7, 299000, 0, true),
+    (8, 249000, 0, true),
+    (9, 229000, 0, true),
+    (10, 209000, 0, true),
 
     --Tôm thẻ
-    (11, 249000,0, true),
-    (12, 199000,0, true),
-    (13, 179000,0, true),
-    (14, 159000,0, true),
+    (11, 249000, 0, true),
+    (12, 199000, 0, true),
+    (13, 179000, 0, true),
+    (14, 159000, 0, true),
 
     --Tôm sú
-    (15, 269000,0, true),
-    (16, 229000,0, true),
-    (17, 199000,0, true),
-    (18, 179000,0, true),
+    (15, 269000, 0, true),
+    (16, 229000, 0, true),
+    (17, 199000, 0, true),
+    (18, 179000, 0, true),
 
     --Cua
-    (19, 99000,0, true),
-    (20, 150000,0, true),
-    (21, 409000,0, true),
+    (19, 99000, 0, true),
+    (20, 150000, 0, true),
+    (21, 409000, 0, true),
 
-    (22, 69000,0, true),
-    (23, 109000,0, true),
-    (24, 209000,0, true),
+    (22, 69000, 0, true),
+    (23, 109000, 0, true),
+    (24, 209000, 0, true),
 
-    (25, 79000,0, true),
-    (26, 129000,0, true),
-    (27, 329000,0, true),
+    (25, 79000, 0, true),
+    (26, 129000, 0, true),
+    (27, 329000, 0, true),
 
-    (28, 199000,0, true),
-    (29, 299000,0, true),
-    (30, 399000,0, true),
-    (31, 499000,0, true),
-    (32, 599000,0, true);
+    (28, 199000, 0, true),
+    (29, 299000, 0, true),
+    (30, 399000, 0, true),
+    (31, 499000, 0, true),
+    (32, 599000, 0, true);
 
 --WEIGHT
 INSERT INTO public.weights (product_id, weight_value, is_current)
@@ -306,11 +335,11 @@ VALUES --Tôm hùm
        (26, 30.5, true),
        (27, 40.5, true),
 
-         (28, 205.3, true),
-         (29, 309.5, true),
-         (30, 400.5, true),
-         (31, 50.5, true),
-         (32, 6.5, true);
+       (28, 205.3, true),
+       (29, 309.5, true),
+       (30, 400.5, true),
+       (31, 50.5, true),
+       (32, 6.5, true);
 
 --CART
 INSERT INTO public.carts (customer_id)
@@ -320,8 +349,19 @@ VALUES ((SELECT customer_id FROM public.customers WHERE email = 'customer1@gmail
 
 --CART_DETAIL
 INSERT INTO public.cart_details (cart_id, product_id, quantity)
-VALUES ((SELECT cart_id FROM public.carts WHERE customer_id = (SELECT customer_id FROM public.customers WHERE email = 'customer1@gmail.com')), 1, 5),
-       ((SELECT cart_id FROM public.carts WHERE customer_id = (SELECT customer_id FROM public.customers WHERE email = 'customer1@gmail.com')), 2, 4),
-       ((SELECT cart_id FROM public.carts WHERE customer_id = (SELECT customer_id FROM public.customers WHERE email = 'customer1@gmail.com')), 3, 3),
-       ((SELECT cart_id FROM public.carts WHERE customer_id = (SELECT customer_id FROM public.customers WHERE email = 'customer1@gmail.com')), 4, 2),
-       ((SELECT cart_id FROM public.carts WHERE customer_id = (SELECT customer_id FROM public.customers WHERE email = 'customer1@gmail.com')), 5, 1);
+VALUES ((SELECT cart_id
+         FROM public.carts
+         WHERE customer_id = (SELECT customer_id FROM public.customers WHERE email = 'customer1@gmail.com')), 1, 5),
+       ((SELECT cart_id
+         FROM public.carts
+         WHERE customer_id = (SELECT customer_id FROM public.customers WHERE email = 'customer1@gmail.com')), 2, 4),
+       ((SELECT cart_id
+         FROM public.carts
+         WHERE customer_id = (SELECT customer_id FROM public.customers WHERE email = 'customer1@gmail.com')), 3, 3),
+       ((SELECT cart_id
+         FROM public.carts
+         WHERE customer_id = (SELECT customer_id FROM public.customers WHERE email = 'customer1@gmail.com')), 4, 2),
+       ((SELECT cart_id
+         FROM public.carts
+         WHERE customer_id = (SELECT customer_id FROM public.customers WHERE email = 'customer1@gmail.com')), 5, 1);
+
