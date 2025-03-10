@@ -148,7 +148,7 @@ public class SellingOrderServiceImpl implements SellingOrderService {
     }
 
     @Override
-    public void createSellingOrder(SellingOrderDTO sellingOrderDTO) throws ResourceNotFoundException {
+    public SellingOrderDTO createSellingOrder(SellingOrderDTO sellingOrderDTO) throws ResourceNotFoundException {
         UUID customerId;
 
         if (sellingOrderDTO.getCustomerId() != null && !sellingOrderDTO.getCustomerId().isEmpty()) {
@@ -181,6 +181,8 @@ public class SellingOrderServiceImpl implements SellingOrderService {
         sellingOrder.setOrderStatuses(orderStatusService.createOrderStatus(newSellingOrderId, orderStatusEnum));
 
         sellingOrderRepository.save(sellingOrder);
+
+        return sellingOrderMapper.toSellingOrderDTO(sellingOrder);
     }
 
 

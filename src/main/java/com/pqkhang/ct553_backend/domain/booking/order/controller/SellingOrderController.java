@@ -24,11 +24,12 @@ public class SellingOrderController {
     private final SellingOrderService sellingOrderService;
 
     @PostMapping
-    public ApiResponse<Void> createSellingOrder(@Valid @RequestBody SellingOrderDTO sellingOrderDTO) throws ResourceNotFoundException {
-        sellingOrderService.createSellingOrder(sellingOrderDTO);
-        return ApiResponse.<Void>builder()
+    public ApiResponse<SellingOrderDTO> createSellingOrder(@Valid @RequestBody SellingOrderDTO sellingOrderDTO) throws ResourceNotFoundException {
+//        sellingOrderService.createSellingOrder(sellingOrderDTO);
+        return ApiResponse.<SellingOrderDTO>builder()
                 .status(HttpStatus.OK.value())
                 .success(true)
+                .payload(sellingOrderService.createSellingOrder(sellingOrderDTO))
                 .message("Tạo đơn hàng thành công")
                 .build();
     }
