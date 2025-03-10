@@ -24,6 +24,6 @@ public class OrderStatus extends BaseEntity {
     OrderStatusEnum status;
 
     @ManyToOne
-    @JoinColumn(name = "order_id", nullable = false)
-    Order order;
+    @JoinColumn(name = "selling_order_id", nullable = false)
+    SellingOrder sellingOrder;
 }

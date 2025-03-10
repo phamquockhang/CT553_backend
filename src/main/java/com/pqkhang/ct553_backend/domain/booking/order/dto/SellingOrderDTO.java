@@ -14,37 +14,37 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class OrderDTO {
-    String orderId;
+public class SellingOrderDTO {
+    String sellingOrderId;
 
-    @NotBlank(message = "Customer ID is required")
     String customerId;
 
-    @NotBlank(message = "Name is required")
-    String name;
+    String customerName;
 
-    @NotBlank(message = "Phone is required")
     String phone;
 
     String email;
 
-    @NotBlank(message = "Address is required")
     String address;
 
     String note;
 
-    @NotNull(message = "Total amount is required")
     BigDecimal totalAmount;
+
+    Integer usedScore;
+
+    Integer earnedScore;
 
     @NotBlank(message = "Payment status is required")
     String paymentStatus;
 
+    @NotBlank(message = "Order status is required")
     String orderStatus;
 
     List<OrderStatusDTO> orderStatuses;
 
     @NotNull(message = "Order details is required")
-    List<OrderDetailDTO> orderDetails;
+    List<SellingOrderDetailDTO> sellingOrderDetails;
 
     LocalDateTime createdAt;
     LocalDateTime updatedAt;

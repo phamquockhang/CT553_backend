@@ -10,12 +10,18 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class OrderDetailDTO {
-    Integer orderDetailId;
+public class SellingOrderDetailDTO {
+    Integer sellingOrderDetailId;
 
     Integer productId;
 
+    String productName;
+
+    String unit;
+
     Double quantity;
 
-    BigDecimal price;
+    BigDecimal unitPrice;
+
+    BigDecimal totalPrice;
 }
