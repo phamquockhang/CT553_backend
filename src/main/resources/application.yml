@@ -2,9 +2,9 @@ spring:
   application:
     name: CT553_backend
   datasource:
-    url: jdbc:postgresql://ct553-be-ct553.k.aivencloud.com:22066/ct553?sslmode=require
-    username: avnadmin
-    password: AVNS_PsfCeKl1BWSxBWjH-dj
+    url: ${DATABASE_URL}
+    username: ${DATABASE_USER}
+    password: ${DATABASE_PASSWORD}
 
   jpa:
     hibernate:
@@ -28,4 +28,4 @@ application:
       refresh-token-validity-in-seconds: 604800 # 7 days
 
 cloudinary:
-  url: cloudinary://449763141578937:5XPkEpp24XbH8zBKGt32MeBkpds@djqcnzjbg
+  url: ${CLOUDINARY_URL}
