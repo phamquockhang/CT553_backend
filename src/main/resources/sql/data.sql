@@ -42,10 +42,71 @@ VALUES ('Get all roles', '/api/v1/roles', 'GET', 'ROLE'),
        ('Update a product', '/api/v1/products/{id}', 'PUT', 'PRODUCT'),
        ('Delete a product', '/api/v1/products/{id}', 'DELETE', 'PRODUCT'),
 
-       ('Get all orders', '/api/v1/orders', 'GET', 'ORDER'),
-       ('Get a order', '/api/v1/orders/{id}', 'GET', 'ORDER'),
-       ('Create a order', '/api/v1/orders', 'POST', 'ORDER'),
-       ('Update a order', '/api/v1/orders/{id}', 'PUT', 'ORDER');
+       ('Get all selling orders', '/api/v1/selling_orders', 'GET', 'SELLING ORDER'),
+       ('Get a selling order', '/api/v1/selling_orders/{id}', 'GET', 'SELLING ORDER'),
+       ('Create a selling order', '/api/v1/selling_orders', 'POST', 'SELLING ORDER'),
+       ('Update a selling order', '/api/v1/selling_orders/{id}', 'PUT', 'SELLING ORDER'),
+
+       ('Get all buying orders', '/api/v1/buying_orders', 'GET', 'BUYING ORDER'),
+       ('Get a buying order', '/api/v1/buying_orders/{id}', 'GET', 'BUYING ORDER'),
+       ('Create a buying order', '/api/v1/buying_orders', 'POST', 'BUYING ORDER'),
+       ('Update a buying order', '/api/v1/buying_orders/{id}', 'PUT', 'BUYING ORDER'),
+
+       ('Get all order statuses', '/api/v1/order_statuses', 'GET', 'ORDER STATUS'),
+       ('Get all order statuses by order', '/api/v1/order_statuses/{id}', 'GET', 'ORDER STATUS'),
+       ('Create a order status', '/api/v1/order_statuses', 'POST', 'ORDER STATUS'),
+
+       ('Get all carts', '/api/v1/carts', 'GET', 'CART'),
+       ('Get a cart', '/api/v1/carts/{id}', 'GET', 'CART'),
+       ('Create a cart', '/api/v1/carts', 'POST', 'CART'),
+       ('Update a cart', '/api/v1/carts/{id}', 'PUT', 'CART'),
+       ('Delete a cart', '/api/v1/carts/{id}', 'DELETE', 'CART'),
+
+       ('Get all addresses', '/api/v1/addresses', 'GET', 'ADDRESS'),
+       ('Get a address', '/api/v1/addresses/{id}', 'GET', 'ADDRESS'),
+       ('Create a address', '/api/v1/addresses', 'POST', 'ADDRESS'),
+       ('Update a address', '/api/v1/addresses/{id}', 'PUT', 'ADDRESS'),
+       ('Delete a address', '/api/v1/addresses/{id}', 'DELETE', 'ADDRESS'),
+
+       ('Get all scores', '/api/v1/scores', 'GET', 'SCORE'),
+       ('Get a score', '/api/v1/scores/{id}', 'GET', 'SCORE'),
+       ('Create a score', '/api/v1/scores', 'POST', 'SCORE'),
+       ('Update a score', '/api/v1/scores/{id}', 'PUT', 'SCORE'),
+       ('Delete a score', '/api/v1/scores/{id}', 'DELETE', 'SCORE'),
+
+       ('Get all product images', '/api/v1/product_images', 'GET', 'PRODUCT IMAGE'),
+       ('Get a product image', '/api/v1/product_images/{id}', 'GET', 'PRODUCT IMAGE'),
+       ('Create a product image', '/api/v1/product_images', 'POST', 'PRODUCT IMAGE'),
+       ('Update a product image', '/api/v1/product_images/{id}', 'PUT', 'PRODUCT IMAGE'),
+       ('Delete a product image', '/api/v1/product_images/{id}', 'DELETE', 'PRODUCT IMAGE'),
+
+       ('Get all buying prices', '/api/v1/buying_prices', 'GET', 'BUYING PRICE'),
+       ('Get a buying price', '/api/v1/buying_prices/{id}', 'GET', 'BUYING PRICE'),
+       ('Create a buying price', '/api/v1/buying_prices', 'POST', 'BUYING PRICE'),
+       ('Update a buying price', '/api/v1/buying_prices/{id}', 'PUT', 'BUYING PRICE'),
+       ('Delete a buying price', '/api/v1/buying_prices/{id}', 'DELETE', 'BUYING PRICE'),
+
+       ('Get all selling prices', '/api/v1/selling_prices', 'GET', 'SELLING PRICE'),
+       ('Get a selling price', '/api/v1/selling_prices/{id}', 'GET', 'SELLING PRICE'),
+       ('Create a selling price', '/api/v1/selling_prices', 'POST', 'SELLING PRICE'),
+       ('Update a selling price', '/api/v1/selling_prices/{id}', 'PUT', 'SELLING PRICE'),
+       ('Delete a selling price', '/api/v1/selling_prices/{id}', 'DELETE', 'SELLING PRICE'),
+
+       ('Get all weights', '/api/v1/weights', 'GET', 'WEIGHT'),
+       ('Get a weight', '/api/v1/weights/{id}', 'GET', 'WEIGHT'),
+       ('Create a weight', '/api/v1/weights', 'POST', 'WEIGHT'),
+       ('Update a weight', '/api/v1/weights/{id}', 'PUT', 'WEIGHT'),
+       ('Delete a weight', '/api/v1/weights/{id}', 'DELETE', 'WEIGHT'),
+
+       ('Get all payment methods', '/api/v1/payment_methods', 'GET', 'PAYMENT METHOD'),
+       ('Get a payment method', '/api/v1/payment_methods/{id}', 'GET', 'PAYMENT METHOD'),
+       ('Create a payment method', '/api/v1/payment_methods', 'POST', 'PAYMENT METHOD'),
+       ('Update a payment method', '/api/v1/payment_methods/{id}', 'PUT', 'PAYMENT METHOD'),
+       ('Delete a payment method', '/api/v1/payment_methods/{id}', 'DELETE', 'PAYMENT METHOD'),
+
+       ('Get all transactions', '/api/v1/transactions', 'GET', 'TRANSACTION'),
+       ('Get a transaction', '/api/v1/transactions/{id}', 'GET', 'TRANSACTION'),
+       ('Create a transaction', '/api/v1/transactions', 'POST', 'TRANSACTION');
 
 --ROLE_PERMISSION FOR STAFF
 INSERT INTO public.permission_role (role_id, permission_id)
@@ -365,3 +426,6 @@ VALUES ((SELECT cart_id
          FROM public.carts
          WHERE customer_id = (SELECT customer_id FROM public.customers WHERE email = 'customer1@gmail.com')), 5, 1);
 
+INSERT INTO public.payment_methods (payment_method_name)
+VALUES ('VN_PAY'),
+       ('COD');
