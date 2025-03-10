@@ -112,3 +112,21 @@ CREATE SEQUENCE order_statuses_seq
 ALTER TABLE public.order_statuses
     ALTER COLUMN order_status_id SET DEFAULT nextval('order_statuses_seq'),
     ALTER COLUMN created_at SET DEFAULT CURRENT_TIMESTAMP;
+
+--PAYMENTMETHOD
+DROP SEQUENCE IF EXISTS payment_methods_seq CASCADE;
+CREATE SEQUENCE payment_methods_seq
+    START WITH 1
+    INCREMENT BY 1;
+ALTER TABLE public.payment_methods
+    ALTER COLUMN payment_method_id SET DEFAULT nextval('payment_methods_seq'),
+    ALTER COLUMN created_at SET DEFAULT CURRENT_TIMESTAMP;
+
+--TRANSACTION
+DROP SEQUENCE IF EXISTS transactions_seq CASCADE;
+CREATE SEQUENCE transactions_seq
+    START WITH 1
+    INCREMENT BY 1;
+ALTER TABLE public.transactions
+    ALTER COLUMN transaction_id SET DEFAULT nextval('transactions_seq'),
+    ALTER COLUMN created_at SET DEFAULT CURRENT_TIMESTAMP;

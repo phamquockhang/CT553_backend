@@ -10,13 +10,13 @@ spring:
     hibernate:
       ddl-auto: update
 #      ddl-auto: create
-    show-sql: true
+    show-sql: false
     properties:
       hibernate:
         format_sql: true
 
-#  jackson:
-#    default-property-inclusion: non_null
+  jackson:
+    default-property-inclusion: non_null
 
 application:
   security:
@@ -29,3 +29,13 @@ application:
 
 cloudinary:
   url: ${CLOUDINARY_URL}
+
+payment:
+  vnPay:
+    url: ${PAY_URL}
+    tmnCode: ${TMN_CODE}
+    secretKey: ${SECRET_KEY}
+    returnUrl: ${RETURN_URL}
+    version: ${VERSION}
+    command: ${COMMAND}
+    orderType: ${ORDER_TYPE}
