@@ -34,6 +34,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -198,5 +199,16 @@ public class TransactionServiceImpl implements TransactionService {
                         .map(this::customTransactionDTOForGetAll)
                         .collect(Collectors.toList())
                 ).build();
+    }
+
+    @Override
+    @Transactional
+    public void checkAndUpdateExpiredTransactions() {
+        LocalDateTime minusTime = LocalDateTime.now().minusMinutes(15);
+//        LocalDateTime minusTime = LocalDateTime.now().minusSeconds(15);
+        int updatedCount = transactionRepository.updateExpiredTransactions(minusTime);
+        if(updatedCount > 0) {
+            System.out.println("Updated " + updatedCount + " expired transactions");
+        }
     }
 }

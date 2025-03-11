@@ -4,4 +4,5 @@ public enum TransactionStatusEnum {
     COMPLETED,
     PENDING,
     FAILED,
+    EXPIRED
 }

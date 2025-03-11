@@ -16,4 +16,6 @@ public interface TransactionService {
     TransactionDTO getTransactionById(Integer transactionId) throws ResourceNotFoundException;
 
     Page<TransactionDTO> getAllTransactions(Map<String, String> params) throws ResourceNotFoundException;
+
+    void checkAndUpdateExpiredTransactions();
 }

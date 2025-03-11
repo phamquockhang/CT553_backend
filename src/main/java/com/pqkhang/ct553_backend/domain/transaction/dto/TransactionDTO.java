@@ -33,7 +33,4 @@ public class TransactionDTO {
 
     LocalDateTime createdAt;
     LocalDateTime updatedAt;
-
-    String customerName;
-    String sellingOrderId;
 }
