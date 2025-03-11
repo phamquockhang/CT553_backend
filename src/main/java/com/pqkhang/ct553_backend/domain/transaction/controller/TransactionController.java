@@ -68,7 +68,10 @@ public class TransactionController {
 
         final String CLIENT_URL = env.getProperty("CLIENT_URL");
         TransactionDTO transactionDTO = transactionService.handleVNPayCallback(callbackRequest);
-        response.sendRedirect(CLIENT_URL + "/order/payment/success?transactionId=" + transactionDTO.getTransactionId());
+        if (callbackRequest.getVnp_ResponseCode().equals("00"))
+            response.sendRedirect(CLIENT_URL + "/order/payment/success?transactionId=" + transactionDTO.getTransactionId());
+        else
+            response.sendRedirect(CLIENT_URL + "/order/payment/fail?transactionId=" + transactionDTO.getTransactionId());
 
         return ApiResponse.<TransactionDTO>builder()
                 .status(HttpStatus.OK.value())

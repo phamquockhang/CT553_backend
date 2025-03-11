@@ -6,7 +6,6 @@ import com.pqkhang.ct553_backend.app.response.Meta;
 import com.pqkhang.ct553_backend.app.response.Page;
 import com.pqkhang.ct553_backend.domain.booking.order.dto.OverviewSellingOrderDTO;
 import com.pqkhang.ct553_backend.domain.booking.order.entity.SellingOrder;
-import com.pqkhang.ct553_backend.domain.booking.order.enums.OrderStatusEnum;
 import com.pqkhang.ct553_backend.domain.booking.order.enums.PaymentStatusEnum;
 import com.pqkhang.ct553_backend.domain.booking.order.mapper.SellingOrderMapper;
 import com.pqkhang.ct553_backend.domain.booking.order.repository.SellingOrderRepository;
@@ -118,14 +117,14 @@ public class TransactionServiceImpl implements TransactionService {
     public TransactionDTO createTransaction(HttpServletRequest request, TransactionDTO transactionDTO) throws ResourceNotFoundException {
         SellingOrder sellingOrder = sellingOrderRepository.findById(transactionDTO.getSellingOrder().getSellingOrderId()).orElseThrow(() -> new ResourceNotFoundException("Selling order not found"));
 
-        sellingOrder.setOrderStatus(OrderStatusEnum.PENDING);
+        sellingOrder.setPaymentStatus(PaymentStatusEnum.PENDING);
+//        sellingOrder.setOrderStatus(OrderStatusEnum.PENDING);
         sellingOrderRepository.save(sellingOrder);
 
         Transaction transaction = transactionMapper.toTransaction(transactionDTO);
         transaction.setStatus(TransactionStatusEnum.PENDING);
         transaction.setSellingOrder(sellingOrder);
         transaction.setAmount(sellingOrder.getTotalAmount());
-
 
         String txnRef = VNPayUtils.getRandomNumber(8);
         transaction.setTxnRef(txnRef);
@@ -145,19 +144,28 @@ public class TransactionServiceImpl implements TransactionService {
     @Transactional
     public TransactionDTO handleVNPayCallback(VNPayCallbackRequest request) throws Exception {
         String status = request.getVnp_ResponseCode();
+        String txnRef = request.getVnp_TxnRef();
+        String sellingOrderId = request.getVnp_OrderInfo();
 
-        Transaction transaction = transactionRepository.findByTxnRef(request.getVnp_TxnRef()).orElseThrow(() -> new ResourceNotFoundException("Transaction not found"));
+        System.out.println("status: " + status);
 
+        Transaction transaction = transactionRepository.findByTxnRef(txnRef).orElseThrow(() -> new ResourceNotFoundException("Transaction not found"));
         transaction.setStatus("00".equals(status) ? TransactionStatusEnum.COMPLETED : TransactionStatusEnum.FAILED);
         transactionRepository.save(transaction);
 
-        String sellingOrderId = request.getVnp_OrderInfo();
+
         SellingOrder sellingOrder = sellingOrderRepository.findById(sellingOrderId).orElseThrow(() -> new ResourceNotFoundException("Selling order not found"));
 
         if ("00".equals(status)) {
-            sellingOrderService.updateSellingOrderStatus(sellingOrderId, sellingOrder.getOrderStatus(), PaymentStatusEnum.PAID);
+            sellingOrderService.updateSellingOrderStatus(sellingOrderId, sellingOrder.getOrderStatus(), PaymentStatusEnum.SUCCESS);
+        } else if ("09".equals(status) || "10".equals(status)) {
+            sellingOrderService.updateSellingOrderStatus(sellingOrderId, sellingOrder.getOrderStatus(), PaymentStatusEnum.FAILED);
+        } else if ("24".equals(status)) {
+            sellingOrderService.updateSellingOrderStatus(sellingOrderId, sellingOrder.getOrderStatus(), PaymentStatusEnum.CANCELLED);
+        } else if ("15".equals(status)) {
+            sellingOrderService.updateSellingOrderStatus(sellingOrderId, sellingOrder.getOrderStatus(), PaymentStatusEnum.EXPIRED);
         } else {
-            sellingOrderService.updateSellingOrderStatus(sellingOrderId, sellingOrder.getOrderStatus(), PaymentStatusEnum.UNPAID);
+            sellingOrderService.updateSellingOrderStatus(sellingOrderId, sellingOrder.getOrderStatus(), PaymentStatusEnum.ERROR);
         }
 //        sellingOrderRepository.save(sellingOrder);
 

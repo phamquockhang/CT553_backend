@@ -128,10 +128,13 @@ public class SellingOrderServiceImpl implements SellingOrderService {
     }
 
     private void processCustomerScore(SellingOrderDTO sellingOrderDTO, SellingOrder sellingOrder, UUID customerId) {
-        PaymentStatusEnum paymentStatus = PaymentStatusEnum.valueOf(sellingOrderDTO.getPaymentStatus());
-        if (customerId == null || paymentStatus.equals(PaymentStatusEnum.UNPAID)) {
+        //only process score when customer has account
+        if (customerId == null) {
             return;
         }
+
+        OrderStatusEnum orderStatus = OrderStatusEnum.valueOf(sellingOrderDTO.getOrderStatus());
+        PaymentStatusEnum paymentStatus = PaymentStatusEnum.valueOf(sellingOrderDTO.getPaymentStatus());
 
         int convertedScore = ScoreCalculator.convertMoneyToScores(sellingOrderDTO.getTotalAmount());
         int deductedScore = sellingOrderDTO.getUsedScore() != null ? -sellingOrderDTO.getUsedScore() : 0;
@@ -140,10 +143,16 @@ public class SellingOrderServiceImpl implements SellingOrderService {
         sellingOrder.setEarnedScore(convertedScore);
 
         if (finalScore != 0) {
-            ScoreDTO newScoreDTO = ScoreDTO.builder()
-                    .changeAmount(finalScore)
-                    .build();
-            scoreService.createScore(customerId, newScoreDTO);
+            // only process score when payment status is success,
+            // or payment status is COD and order status is completed
+            if (orderStatus.equals(OrderStatusEnum.COMPLETED) &&
+                    (paymentStatus.equals(PaymentStatusEnum.COD) || paymentStatus.equals(PaymentStatusEnum.SUCCESS))
+            ) {
+                ScoreDTO newScoreDTO = ScoreDTO.builder()
+                        .changeAmount(finalScore)
+                        .build();
+                scoreService.createScore(customerId, newScoreDTO);
+            }
         }
     }
 
@@ -161,7 +170,6 @@ public class SellingOrderServiceImpl implements SellingOrderService {
 
         // Chuyển đổi orderStatus từ String sang Enum
         OrderStatusEnum orderStatusEnum = OrderStatusEnum.valueOf(sellingOrderDTO.getOrderStatus());
-
 
         SellingOrder sellingOrder = sellingOrderMapper.toSellingOrder(sellingOrderDTO);
         String newSellingOrderId = OrderUtils.generateOrderId();
@@ -196,12 +204,13 @@ public class SellingOrderServiceImpl implements SellingOrderService {
             sellingOrder.setOrderStatus(newOrderStatus);
         }
 
-        sellingOrder.setPaymentStatus(newPaymentStatus);
+        PaymentStatusEnum oldPaymentStatus = sellingOrder.getPaymentStatus();
+        if (!oldPaymentStatus.equals(newPaymentStatus)) {
+            sellingOrder.setPaymentStatus(newPaymentStatus);
+        }
 
         if (sellingOrder.getCustomer() != null) {
-            if (newPaymentStatus.equals(PaymentStatusEnum.PAID)) {
-                processCustomerScore(sellingOrderMapper.toSellingOrderDTO(sellingOrder), sellingOrder, sellingOrder.getCustomer().getCustomerId());
-            }
+            processCustomerScore(sellingOrderMapper.toSellingOrderDTO(sellingOrder), sellingOrder, sellingOrder.getCustomer().getCustomerId());
         }
 
         sellingOrderRepository.save(sellingOrder);
