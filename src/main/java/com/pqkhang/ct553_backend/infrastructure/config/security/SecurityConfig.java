@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -39,6 +40,7 @@ public class SecurityConfig {
 
     private final RSAKeyRecord rsaKeyRecord;
     private final JwtAuthFilter jwtAuthFilter;
+    private final Environment env;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -52,11 +54,16 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http, AppAuthenticationEntryPoint appAuthenticationEntryPoint) throws Exception {
+        final String CLIENT_URL = env.getProperty("CLIENT_URL");
+        final String ADMIN_URL = env.getProperty("ADMIN_URL");
+
         http.securityMatcher("/**")
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(corsConfig -> corsConfig.configurationSource(request -> {
                     CorsConfiguration config = new CorsConfiguration();
-                    config.setAllowedOrigins(List.of("http://localhost:1108", "http://localhost:5000", "http://localhost:1108/"));
+                    assert CLIENT_URL != null;
+                    assert ADMIN_URL != null;
+                    config.setAllowedOrigins(List.of(CLIENT_URL, ADMIN_URL, CLIENT_URL + "/"));
                     config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
                     config.setAllowCredentials(true);
                     config.setAllowedHeaders(List.of("Authorization", "Content-Type", "Accept", "siteUrl"));
@@ -66,6 +73,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(requests -> requests
                         .requestMatchers("/", "/api/v1/auth/**",
                                 "/api/v1/items/**", "/api/v1/products/**",
+                                "/api/v1/selling_orders/**", "/api/v1/transactions/**",
                                 "/oauth2/**").permitAll()
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

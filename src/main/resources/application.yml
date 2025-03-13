@@ -2,21 +2,21 @@ spring:
   application:
     name: CT553_backend
   datasource:
-    url: jdbc:postgresql://ct553-be-ct553.k.aivencloud.com:22066/ct553?sslmode=require
-    username: avnadmin
-    password: AVNS_PsfCeKl1BWSxBWjH-dj
+    url: ${DATABASE_URL}
+    username: ${DATABASE_USER}
+    password: ${DATABASE_PASSWORD}
 
   jpa:
     hibernate:
       ddl-auto: update
 #      ddl-auto: create
-    show-sql: true
+    show-sql: false
     properties:
       hibernate:
         format_sql: true
 
-#  jackson:
-#    default-property-inclusion: non_null
+  jackson:
+    default-property-inclusion: non_null
 
 application:
   security:
@@ -28,4 +28,14 @@ application:
       refresh-token-validity-in-seconds: 604800 # 7 days
 
 cloudinary:
-  url: cloudinary://449763141578937:5XPkEpp24XbH8zBKGt32MeBkpds@djqcnzjbg
+  url: ${CLOUDINARY_URL}
+
+payment:
+  vnPay:
+    url: ${PAY_URL}
+    tmnCode: ${TMN_CODE}
+    secretKey: ${SECRET_KEY}
+    returnUrl: ${RETURN_URL}
+    version: ${VERSION}
+    command: ${COMMAND}
+    orderType: ${ORDER_TYPE}

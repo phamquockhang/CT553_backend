@@ -13,7 +13,7 @@ import java.util.UUID;
 
 @Service
 public interface SellingOrderService {
-    void createSellingOrder(SellingOrderDTO sellingOrderDTO) throws ResourceNotFoundException;
+    SellingOrderDTO createSellingOrder(SellingOrderDTO sellingOrderDTO) throws ResourceNotFoundException;
 
     void updateSellingOrderStatus(String orderId, OrderStatusEnum orderStatusEnum, PaymentStatusEnum paymentStatusEnum) throws ResourceNotFoundException;
 
