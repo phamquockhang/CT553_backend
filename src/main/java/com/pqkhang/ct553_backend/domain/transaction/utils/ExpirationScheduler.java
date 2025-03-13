@@ -10,9 +10,10 @@ public class ExpirationScheduler {
     @Autowired
     private TransactionService transactionService;
 
-    @Scheduled(cron = "0 */1 * * * *") // Cron: mỗi phút
+    //    @Scheduled(cron = " */10 * * * * *")
+    @Scheduled(cron = "0 */1 * * * *")
     public void checkExpiredOrders() {
-        System.out.println("Checking for expired orders...");
+        System.out.println("Checking for expired orders and transactions");
         transactionService.checkAndUpdateExpiredTransactions();
     }
 }

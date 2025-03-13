@@ -151,24 +151,26 @@ public class TransactionServiceImpl implements TransactionService {
         System.out.println("status: " + status);
 
         Transaction transaction = transactionRepository.findByTxnRef(txnRef).orElseThrow(() -> new ResourceNotFoundException("Transaction not found"));
-        transaction.setStatus("00".equals(status) ? TransactionStatusEnum.COMPLETED : TransactionStatusEnum.FAILED);
-        transactionRepository.save(transaction);
-
-
         SellingOrder sellingOrder = sellingOrderRepository.findById(sellingOrderId).orElseThrow(() -> new ResourceNotFoundException("Selling order not found"));
 
-        if ("00".equals(status)) {
-            sellingOrderService.updateSellingOrderStatus(sellingOrderId, sellingOrder.getOrderStatus(), PaymentStatusEnum.SUCCESS);
-        } else if ("09".equals(status) || "10".equals(status)) {
-            sellingOrderService.updateSellingOrderStatus(sellingOrderId, sellingOrder.getOrderStatus(), PaymentStatusEnum.FAILED);
-        } else if ("24".equals(status)) {
-            sellingOrderService.updateSellingOrderStatus(sellingOrderId, sellingOrder.getOrderStatus(), PaymentStatusEnum.CANCELLED);
-        } else if ("15".equals(status)) {
-            sellingOrderService.updateSellingOrderStatus(sellingOrderId, sellingOrder.getOrderStatus(), PaymentStatusEnum.EXPIRED);
-        } else {
-            sellingOrderService.updateSellingOrderStatus(sellingOrderId, sellingOrder.getOrderStatus(), PaymentStatusEnum.ERROR);
+        switch (status) {
+            case "00" -> {
+                sellingOrderService.updateSellingOrderStatus(sellingOrderId, sellingOrder.getOrderStatus(), PaymentStatusEnum.SUCCESS);
+                transaction.setStatus(TransactionStatusEnum.SUCCESS);
+            }
+            case "24" -> {
+                sellingOrderService.updateSellingOrderStatus(sellingOrderId, sellingOrder.getOrderStatus(), PaymentStatusEnum.CANCELLED);
+                transaction.setStatus(TransactionStatusEnum.CANCELLED);
+            }
+            case "15" -> {
+                sellingOrderService.updateSellingOrderStatus(sellingOrderId, sellingOrder.getOrderStatus(), PaymentStatusEnum.EXPIRED);
+                transaction.setStatus(TransactionStatusEnum.EXPIRED);
+            }
+            case null, default -> {
+                sellingOrderService.updateSellingOrderStatus(sellingOrderId, sellingOrder.getOrderStatus(), PaymentStatusEnum.FAILED);
+                transaction.setStatus(TransactionStatusEnum.FAILED);
+            }
         }
-//        sellingOrderRepository.save(sellingOrder);
 
         return transactionMapper.toTransactionDTO(transaction);
     }
@@ -204,11 +206,17 @@ public class TransactionServiceImpl implements TransactionService {
     @Override
     @Transactional
     public void checkAndUpdateExpiredTransactions() {
-        LocalDateTime minusTime = LocalDateTime.now().minusMinutes(15);
-//        LocalDateTime minusTime = LocalDateTime.now().minusSeconds(15);
-        int updatedCount = transactionRepository.updateExpiredTransactions(minusTime);
-        if(updatedCount > 0) {
-            System.out.println("Updated " + updatedCount + " expired transactions");
+//        LocalDateTime minusTime = LocalDateTime.now().minusMinutes(15);
+        LocalDateTime minusTime = LocalDateTime.now().minusSeconds(15);
+        int updateExpiredTransactions = transactionRepository.updateExpiredTransactions(minusTime);
+        int updateExpiredSellingOrders = sellingOrderRepository.updateExpiredSellingOrders(minusTime);
+
+        if(updateExpiredTransactions > 0) {
+            System.out.println("Updated " + updateExpiredTransactions + " expired transactions");
+        }
+
+        if(updateExpiredSellingOrders > 0) {
+            System.out.println("Updated " + updateExpiredSellingOrders + " expired selling orders");
         }
     }
 }
