@@ -10,6 +10,7 @@ import com.pqkhang.ct553_backend.domain.booking.order.enums.PaymentStatusEnum;
 import com.pqkhang.ct553_backend.domain.booking.order.mapper.SellingOrderMapper;
 import com.pqkhang.ct553_backend.domain.booking.order.repository.SellingOrderRepository;
 import com.pqkhang.ct553_backend.domain.booking.order.service.SellingOrderService;
+import com.pqkhang.ct553_backend.domain.common.service.EmailService;
 import com.pqkhang.ct553_backend.domain.transaction.dto.TransactionDTO;
 import com.pqkhang.ct553_backend.domain.transaction.dto.request.VNPayCallbackRequest;
 import com.pqkhang.ct553_backend.domain.transaction.dto.response.VNPayResponse;
@@ -49,12 +50,13 @@ public class TransactionServiceImpl implements TransactionService {
     SellingOrderRepository sellingOrderRepository;
     RequestParamUtils requestParamUtils;
     StringUtils stringUtils;
-    private final SellingOrderService sellingOrderService;
-    private final SellingOrderMapper sellingOrderMapper;
+    SellingOrderService sellingOrderService;
+    SellingOrderMapper sellingOrderMapper;
+    EmailService emailService;
 
     private String getPaymentUrlIfNeeded(HttpServletRequest request, Transaction transaction) throws ResourceNotFoundException {
         if (transaction.getPaymentMethod() != null && "VN_Pay".equals(transaction.getPaymentMethod().getPaymentMethodName())) {
-            VNPayResponse vnPayResponse = paymentService.createVnPayPayment(request, transaction, transaction.getTxnRef());
+            VNPayResponse vnPayResponse = paymentService.createVnPayPayment(request, transaction);
             return vnPayResponse.getPaymentUrl();
         }
         return "";
@@ -76,7 +78,7 @@ public class TransactionServiceImpl implements TransactionService {
                         criteriaBuilder.like(
                                 criteriaBuilder.function("unaccent", String.class,
                                         criteriaBuilder.lower(
-                                                root.get("txnRef"))), likePattern),
+                                                root.get("transactionId"))), likePattern),
                         criteriaBuilder.like(
                                 criteriaBuilder.function("unaccent", String.class,
                                         criteriaBuilder.lower(
@@ -99,7 +101,7 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
-    public TransactionDTO getTransactionById(Integer transactionId) throws ResourceNotFoundException {
+    public TransactionDTO getTransactionById(String transactionId) throws ResourceNotFoundException {
         Transaction transaction = transactionRepository.findById(transactionId).orElseThrow(() -> new ResourceNotFoundException("Transaction not found"));
         return transactionMapper.toTransactionDTO(transaction);
     }
@@ -127,8 +129,8 @@ public class TransactionServiceImpl implements TransactionService {
         transaction.setSellingOrder(sellingOrder);
         transaction.setAmount(sellingOrder.getTotalAmount());
 
-        String txnRef = VNPayUtils.getRandomNumber(8);
-        transaction.setTxnRef(txnRef);
+        String transactionId = VNPayUtils.getRandomNumber(8);
+        transaction.setTransactionId(transactionId);
 
         Transaction savedTransaction = transactionRepository.save(transaction);
 
@@ -150,13 +152,17 @@ public class TransactionServiceImpl implements TransactionService {
 
         System.out.println("status: " + status);
 
-        Transaction transaction = transactionRepository.findByTxnRef(txnRef).orElseThrow(() -> new ResourceNotFoundException("Transaction not found"));
+        Transaction transaction = transactionRepository.findById(txnRef).orElseThrow(() -> new ResourceNotFoundException("Transaction not found"));
         SellingOrder sellingOrder = sellingOrderRepository.findById(sellingOrderId).orElseThrow(() -> new ResourceNotFoundException("Selling order not found"));
 
         switch (status) {
             case "00" -> {
                 sellingOrderService.updateSellingOrderStatus(sellingOrderId, sellingOrder.getOrderStatus(), PaymentStatusEnum.SUCCESS);
                 transaction.setStatus(TransactionStatusEnum.SUCCESS);
+
+                if (transaction.getSellingOrder().getCustomer() != null) {
+                    emailService.sendSuccessfullyTransactionEmail(transaction);
+                }
             }
             case "24" -> {
                 sellingOrderService.updateSellingOrderStatus(sellingOrderId, sellingOrder.getOrderStatus(), PaymentStatusEnum.CANCELLED);
@@ -206,8 +212,8 @@ public class TransactionServiceImpl implements TransactionService {
     @Override
     @Transactional
     public void checkAndUpdateExpiredTransactions() {
-//        LocalDateTime minusTime = LocalDateTime.now().minusMinutes(15);
-        LocalDateTime minusTime = LocalDateTime.now().minusSeconds(15);
+        LocalDateTime minusTime = LocalDateTime.now().minusMinutes(15);
+//        LocalDateTime minusTime = LocalDateTime.now().minusSeconds(15);
         int updateExpiredTransactions = transactionRepository.updateExpiredTransactions(minusTime);
         int updateExpiredSellingOrders = sellingOrderRepository.updateExpiredSellingOrders(minusTime);
 

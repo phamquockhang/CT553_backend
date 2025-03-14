@@ -26,7 +26,7 @@ public class PaymentServiceImpl implements PaymentService {
     VNPayConfig vnPayConfig;
 
     @Override
-    public VNPayResponse createVnPayPayment(HttpServletRequest request, Transaction transaction, String txnRef) throws ResourceNotFoundException {
+    public VNPayResponse createVnPayPayment(HttpServletRequest request, Transaction transaction) throws ResourceNotFoundException {
         SellingOrder sellingOrder = sellingOrderRepository.findById(transaction.getSellingOrder().getSellingOrderId())
                 .orElseThrow(() -> new ResourceNotFoundException("Selling order not found"));
 
@@ -34,7 +34,7 @@ public class PaymentServiceImpl implements PaymentService {
         Map<String, String> vnpParamsMap = vnPayConfig.getVNPayConfig(sellingOrder.getSellingOrderId());
         vnpParamsMap.put("vnp_Amount", String.valueOf(amount));
         vnpParamsMap.put("vnp_IpAddr", VNPayUtils.getIpAddress(request));
-        vnpParamsMap.put("vnp_TxnRef", txnRef);
+        vnpParamsMap.put("vnp_TxnRef", transaction.getTransactionId());
         String queryUrl = VNPayUtils.getPaymentURL(vnpParamsMap, true);
         String hashData = VNPayUtils.getPaymentURL(vnpParamsMap, false);
         String vnpSecureHash = VNPayUtils.hmacSHA512(vnPayConfig.getSecretKey(), hashData);

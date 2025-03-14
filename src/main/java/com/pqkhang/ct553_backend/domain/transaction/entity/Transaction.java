@@ -20,9 +20,7 @@ import java.math.BigDecimal;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Transaction extends BaseEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "transactions_id_seq")
-    @SequenceGenerator(name = "transactions_id_seq", sequenceName = "transactions_seq", allocationSize = 1)
-    Integer transactionId;
+    String transactionId;
 
     @Enumerated(EnumType.STRING)
     TransactionTypeEnum transactionType;
@@ -30,8 +28,6 @@ public class Transaction extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="selling_order_id")
     SellingOrder sellingOrder;
-
-    String txnRef;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="payment_method_id")

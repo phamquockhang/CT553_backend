@@ -13,7 +13,7 @@ public interface TransactionService {
 
     TransactionDTO handleVNPayCallback(VNPayCallbackRequest request) throws Exception;
 
-    TransactionDTO getTransactionById(Integer transactionId) throws ResourceNotFoundException;
+    TransactionDTO getTransactionById(String transactionId) throws ResourceNotFoundException;
 
     Page<TransactionDTO> getAllTransactions(Map<String, String> params) throws ResourceNotFoundException;
 

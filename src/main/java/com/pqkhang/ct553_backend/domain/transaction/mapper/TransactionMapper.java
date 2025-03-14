@@ -9,5 +9,4 @@ public interface TransactionMapper {
     TransactionDTO toTransactionDTO(Transaction transaction);
 
     Transaction toTransaction(TransactionDTO transactionDTO);
-//    void updateTransactionFromDTO(@MappingTarget Transaction transaction, TransactionDTO transactionDTO);
 }

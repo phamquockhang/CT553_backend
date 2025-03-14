@@ -26,7 +26,7 @@ public class TransactionController {
     Environment env;
 
     @GetMapping("/{id}")
-    public ApiResponse<TransactionDTO> getTransactionById(@PathVariable Integer id) throws ResourceNotFoundException {
+    public ApiResponse<TransactionDTO> getTransactionById(@PathVariable String id) throws ResourceNotFoundException {
         return ApiResponse.<TransactionDTO>builder()
                 .status(HttpStatus.OK.value())
                 .success(true)

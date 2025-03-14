@@ -123,10 +123,5 @@ ALTER TABLE public.payment_methods
     ALTER COLUMN created_at SET DEFAULT CURRENT_TIMESTAMP;
 
 --TRANSACTION
-DROP SEQUENCE IF EXISTS transactions_seq CASCADE;
-CREATE SEQUENCE transactions_seq
-    START WITH 1
-    INCREMENT BY 1;
 ALTER TABLE public.transactions
-    ALTER COLUMN transaction_id SET DEFAULT nextval('transactions_seq'),
     ALTER COLUMN created_at SET DEFAULT CURRENT_TIMESTAMP;

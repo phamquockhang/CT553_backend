@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class TransactionDTO {
-    Integer transactionId;
+    String transactionId;
 
     @NotBlank(message = "Selling order id is required")
     SellingOrderDTO sellingOrder;
@@ -28,8 +28,6 @@ public class TransactionDTO {
     String status;
 
     BigDecimal amount;
-
-    String txnRef;
 
     LocalDateTime createdAt;
     LocalDateTime updatedAt;

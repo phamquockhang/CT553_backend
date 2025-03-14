@@ -7,11 +7,8 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 
-public interface TransactionRepository extends JpaRepository<Transaction, Integer>, JpaSpecificationExecutor<Transaction> {
-    Optional<Transaction> findByTxnRef(String txnRef);
-
+public interface TransactionRepository extends JpaRepository<Transaction, String>, JpaSpecificationExecutor<Transaction> {
     // update expired transactions status to EXPIRED
     @Modifying
     @Query("UPDATE Transaction t SET t.status = 'EXPIRED' WHERE t.status = 'PENDING' AND t.createdAt < :minusTime")
