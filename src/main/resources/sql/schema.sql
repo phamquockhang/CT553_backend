@@ -125,3 +125,12 @@ ALTER TABLE public.payment_methods
 --TRANSACTION
 ALTER TABLE public.transactions
     ALTER COLUMN created_at SET DEFAULT CURRENT_TIMESTAMP;
+
+--VOUCHER
+DROP SEQUENCE IF EXISTS vouchers_seq CASCADE;
+CREATE SEQUENCE vouchers_seq
+    START WITH 1
+    INCREMENT BY 1;
+ALTER TABLE public.vouchers
+    ALTER COLUMN voucher_id SET DEFAULT nextval('vouchers_seq'),
+    ALTER COLUMN created_at SET DEFAULT CURRENT_TIMESTAMP;
