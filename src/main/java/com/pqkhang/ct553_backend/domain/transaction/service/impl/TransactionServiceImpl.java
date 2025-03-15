@@ -19,7 +19,6 @@ import com.pqkhang.ct553_backend.domain.transaction.enums.TransactionStatusEnum;
 import com.pqkhang.ct553_backend.domain.transaction.mapper.TransactionMapper;
 import com.pqkhang.ct553_backend.domain.transaction.repository.TransactionRepository;
 import com.pqkhang.ct553_backend.domain.transaction.service.TransactionService;
-import com.pqkhang.ct553_backend.infrastructure.service.PaymentServiceImpl;
 import com.pqkhang.ct553_backend.infrastructure.utils.RequestParamUtils;
 import com.pqkhang.ct553_backend.infrastructure.utils.StringUtils;
 import com.pqkhang.ct553_backend.infrastructure.utils.VNPayUtils;
@@ -55,7 +54,7 @@ public class TransactionServiceImpl implements TransactionService {
     EmailService emailService;
 
     private String getPaymentUrlIfNeeded(HttpServletRequest request, Transaction transaction) throws ResourceNotFoundException {
-        if (transaction.getPaymentMethod() != null && "VN_Pay".equals(transaction.getPaymentMethod().getPaymentMethodName())) {
+        if (transaction.getPaymentMethod() != null && "VN_PAY".equals(transaction.getPaymentMethod().getPaymentMethodName())) {
             VNPayResponse vnPayResponse = paymentService.createVnPayPayment(request, transaction);
             return vnPayResponse.getPaymentUrl();
         }
