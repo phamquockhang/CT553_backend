@@ -2,6 +2,7 @@ package com.pqkhang.ct553_backend.domain.booking.order.entity;
 
 import com.pqkhang.ct553_backend.domain.booking.order.enums.OrderStatusEnum;
 import com.pqkhang.ct553_backend.domain.booking.order.enums.PaymentStatusEnum;
+import com.pqkhang.ct553_backend.domain.booking.voucher.entity.UsedVoucher;
 import com.pqkhang.ct553_backend.domain.common.entity.BaseEntity;
 import com.pqkhang.ct553_backend.domain.user.entity.Customer;
 import jakarta.persistence.*;
@@ -54,4 +55,7 @@ public class SellingOrder extends BaseEntity {
 
     @OneToMany(mappedBy = "sellingOrder", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     List<SellingOrderDetail> sellingOrderDetails;
+
+    @OneToOne(mappedBy = "sellingOrder", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
+    UsedVoucher usedVoucher;
 }

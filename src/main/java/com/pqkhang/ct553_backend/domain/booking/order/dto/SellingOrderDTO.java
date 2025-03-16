@@ -1,5 +1,6 @@
 package com.pqkhang.ct553_backend.domain.booking.order.dto;
 
+import com.pqkhang.ct553_backend.domain.booking.voucher.dto.UsedVoucherDTO;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -45,6 +46,8 @@ public class SellingOrderDTO {
 
     @NotNull(message = "Order details is required")
     List<SellingOrderDetailDTO> sellingOrderDetails;
+
+    UsedVoucherDTO usedVoucher;
 
     LocalDateTime createdAt;
     LocalDateTime updatedAt;

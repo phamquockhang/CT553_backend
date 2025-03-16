@@ -429,3 +429,14 @@ VALUES ((SELECT cart_id
 INSERT INTO public.payment_methods (payment_method_name)
 VALUES ('VN_PAY'),
        ('COD');
+
+INSERT INTO public.vouchers (voucher_code, status, discount_type, discount_value, min_order_value,
+                             max_discount, start_date, end_date, usage_limit, used_count)
+VALUES ('KSEA-GFJ57', 'ACTIVE', 'PERCENTAGE', 10.00, 100000.00, 50000.00, '2025-03-01', '2025-12-31', 100, 10),
+       ('KSEA-76DVL', 'INACTIVE', 'PERCENTAGE', 10.00, 100000.00, 50000.00, '2025-03-01', '2025-12-31', 0, 0),
+       ('KSEA-89XYZ', 'ACTIVE', 'AMOUNT', 50000.00, 200000.00, NULL, '2025-04-01', '2025-09-30', 50, 5),
+       ('KSEA-12LMN', 'EXPIRED', 'PERCENTAGE', 15.00, 150000.00, 75000.00, '2024-01-01', '2024-12-31', 80, 68),
+       ('KSEA-34PQR', 'OUT_OF_USES', 'PERCENTAGE', 20.00, 80000.00, 40000.00, '2025-02-01', '2025-07-31', 20, 20),
+       ('KSEA-56TUV', 'DISABLED', 'AMOUNT', 5000.00, 50000.00, NULL, '2025-05-01', '2025-11-30', 30, 3),
+       ('KSEA-TEST1', 'INACTIVE', 'AMOUNT', 100000.00, 500000.00, NULL, '2025-03-01', '2025-03-31', 100, 10),
+       ('KSEA-TEST2', 'ACTIVE', 'AMOUNT', 100000.00, 500000.00, NULL, '2025-03-01', '2025-03-15', 100, 10);

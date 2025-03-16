@@ -1,4 +1,4 @@
-package com.pqkhang.ct553_backend.domain.booking.order.dto;
+package com.pqkhang.ct553_backend.domain.booking.order.dto.response;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
