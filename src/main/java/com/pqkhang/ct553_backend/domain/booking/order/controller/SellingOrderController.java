@@ -4,6 +4,7 @@ import com.pqkhang.ct553_backend.app.exception.ResourceNotFoundException;
 import com.pqkhang.ct553_backend.app.response.ApiResponse;
 import com.pqkhang.ct553_backend.app.response.Page;
 import com.pqkhang.ct553_backend.domain.booking.order.dto.SellingOrderDTO;
+import com.pqkhang.ct553_backend.domain.booking.order.dto.request.RequestSellingOrderDTO;
 import com.pqkhang.ct553_backend.domain.booking.order.enums.OrderStatusEnum;
 import com.pqkhang.ct553_backend.domain.booking.order.enums.PaymentStatusEnum;
 import com.pqkhang.ct553_backend.domain.booking.order.service.SellingOrderService;
@@ -24,12 +25,12 @@ public class SellingOrderController {
     private final SellingOrderService sellingOrderService;
 
     @PostMapping
-    public ApiResponse<SellingOrderDTO> createSellingOrder(@Valid @RequestBody SellingOrderDTO sellingOrderDTO) throws ResourceNotFoundException {
+    public ApiResponse<SellingOrderDTO> createSellingOrder(@Valid @RequestBody RequestSellingOrderDTO requestSellingOrderDTO) throws ResourceNotFoundException {
 //        sellingOrderService.createSellingOrder(sellingOrderDTO);
         return ApiResponse.<SellingOrderDTO>builder()
                 .status(HttpStatus.OK.value())
                 .success(true)
-                .payload(sellingOrderService.createSellingOrder(sellingOrderDTO))
+                .payload(sellingOrderService.createSellingOrder(requestSellingOrderDTO))
                 .message("Tạo đơn hàng thành công")
                 .build();
     }

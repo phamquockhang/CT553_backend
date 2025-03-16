@@ -4,7 +4,7 @@ import com.pqkhang.ct553_backend.app.exception.ResourceNotFoundException;
 import com.pqkhang.ct553_backend.app.request.SearchCriteria;
 import com.pqkhang.ct553_backend.app.response.Meta;
 import com.pqkhang.ct553_backend.app.response.Page;
-import com.pqkhang.ct553_backend.domain.booking.order.dto.OverviewSellingOrderDTO;
+import com.pqkhang.ct553_backend.domain.booking.order.dto.response.OverviewSellingOrderDTO;
 import com.pqkhang.ct553_backend.domain.booking.order.entity.SellingOrder;
 import com.pqkhang.ct553_backend.domain.booking.order.enums.PaymentStatusEnum;
 import com.pqkhang.ct553_backend.domain.booking.order.mapper.SellingOrderMapper;

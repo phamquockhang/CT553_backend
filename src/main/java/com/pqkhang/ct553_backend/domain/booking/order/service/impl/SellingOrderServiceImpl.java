@@ -4,6 +4,7 @@ import com.pqkhang.ct553_backend.app.exception.ResourceNotFoundException;
 import com.pqkhang.ct553_backend.app.response.Meta;
 import com.pqkhang.ct553_backend.app.response.Page;
 import com.pqkhang.ct553_backend.domain.booking.order.dto.SellingOrderDTO;
+import com.pqkhang.ct553_backend.domain.booking.order.dto.request.RequestSellingOrderDTO;
 import com.pqkhang.ct553_backend.domain.booking.order.entity.SellingOrder;
 import com.pqkhang.ct553_backend.domain.booking.order.enums.OrderStatusEnum;
 import com.pqkhang.ct553_backend.domain.booking.order.enums.PaymentStatusEnum;
@@ -13,6 +14,7 @@ import com.pqkhang.ct553_backend.domain.booking.order.service.OrderStatusService
 import com.pqkhang.ct553_backend.domain.booking.order.service.SellingOrderDetailService;
 import com.pqkhang.ct553_backend.domain.booking.order.service.SellingOrderService;
 import com.pqkhang.ct553_backend.domain.booking.order.utils.OrderUtils;
+import com.pqkhang.ct553_backend.domain.booking.voucher.repository.VoucherRepository;
 import com.pqkhang.ct553_backend.domain.user.dto.ScoreCalculator;
 import com.pqkhang.ct553_backend.domain.user.dto.ScoreDTO;
 import com.pqkhang.ct553_backend.domain.user.entity.Customer;
@@ -48,10 +50,11 @@ public class SellingOrderServiceImpl implements SellingOrderService {
     SellingOrderDetailService sellingOrderDetailService;
     OrderStatusService orderStatusService;
     StringUtils stringUtils;
+    ScoreService scoreService;
+    VoucherRepository voucherRepository;
 
-    private static final String DEFAULT_PAGE = "1";
-    private static final String DEFAULT_PAGE_SIZE = "10";
-    private final ScoreService scoreService;
+    static String DEFAULT_PAGE = "1";
+    static String DEFAULT_PAGE_SIZE = "10";
 
     private Pageable createPageable(Map<String, String> params) {
         int page = Integer.parseInt(params.getOrDefault("page", DEFAULT_PAGE));
@@ -157,11 +160,11 @@ public class SellingOrderServiceImpl implements SellingOrderService {
     }
 
     @Override
-    public SellingOrderDTO createSellingOrder(SellingOrderDTO sellingOrderDTO) throws ResourceNotFoundException {
+    public SellingOrderDTO createSellingOrder(RequestSellingOrderDTO requestSellingOrderDTO) throws ResourceNotFoundException {
         UUID customerId;
 
-        if (sellingOrderDTO.getCustomerId() != null && !sellingOrderDTO.getCustomerId().isEmpty()) {
-            customerId = UUID.fromString(sellingOrderDTO.getCustomerId());
+        if (requestSellingOrderDTO.getCustomerId() != null && !requestSellingOrderDTO.getCustomerId().isEmpty()) {
+            customerId = UUID.fromString(requestSellingOrderDTO.getCustomerId());
             customerRepository.findById(customerId).orElseThrow(() ->
                     new ResourceNotFoundException("Không tìm thấy khách hàng với id: " + customerId));
         } else {
@@ -169,23 +172,23 @@ public class SellingOrderServiceImpl implements SellingOrderService {
         }
 
         // Chuyển đổi orderStatus từ String sang Enum
-        OrderStatusEnum orderStatusEnum = OrderStatusEnum.valueOf(sellingOrderDTO.getOrderStatus());
+        OrderStatusEnum orderStatusEnum = OrderStatusEnum.valueOf(requestSellingOrderDTO.getOrderStatus());
 
-        SellingOrder sellingOrder = sellingOrderMapper.toSellingOrder(sellingOrderDTO);
+        SellingOrder sellingOrder = sellingOrderMapper.toSellingOrder(requestSellingOrderDTO);
         String newSellingOrderId = OrderUtils.generateOrderId();
         sellingOrder.setSellingOrderId(newSellingOrderId);
         sellingOrder.setOrderStatus(orderStatusEnum);
         sellingOrder.setCustomer(customerId != null ? Customer.builder().customerId(customerId).build() : null);
 
         // Tính toán điểm tích lũy
-        processCustomerScore(sellingOrderDTO, sellingOrder, customerId);
+        processCustomerScore(requestSellingOrderDTO, sellingOrder, customerId);
 
         sellingOrder.setOrderStatuses(null);
         sellingOrder.setSellingOrderDetails(null);
         sellingOrderRepository.save(sellingOrder);
 
         // Tạo chi tiết đơn hàng và trạng thái đơn hàng
-        sellingOrder.setSellingOrderDetails(sellingOrderDetailService.createSellingOrderDetail(newSellingOrderId, sellingOrderDTO.getSellingOrderDetails()));
+        sellingOrder.setSellingOrderDetails(sellingOrderDetailService.createSellingOrderDetail(newSellingOrderId, requestSellingOrderDTO.getSellingOrderDetails()));
         sellingOrder.setOrderStatuses(orderStatusService.createOrderStatus(newSellingOrderId, orderStatusEnum));
 
         sellingOrderRepository.save(sellingOrder);

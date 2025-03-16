@@ -3,6 +3,7 @@ package com.pqkhang.ct553_backend.domain.booking.order.service;
 import com.pqkhang.ct553_backend.app.exception.ResourceNotFoundException;
 import com.pqkhang.ct553_backend.app.response.Page;
 import com.pqkhang.ct553_backend.domain.booking.order.dto.SellingOrderDTO;
+import com.pqkhang.ct553_backend.domain.booking.order.dto.request.RequestSellingOrderDTO;
 import com.pqkhang.ct553_backend.domain.booking.order.enums.OrderStatusEnum;
 import com.pqkhang.ct553_backend.domain.booking.order.enums.PaymentStatusEnum;
 import org.springframework.stereotype.Service;
@@ -13,7 +14,7 @@ import java.util.UUID;
 
 @Service
 public interface SellingOrderService {
-    SellingOrderDTO createSellingOrder(SellingOrderDTO sellingOrderDTO) throws ResourceNotFoundException;
+    SellingOrderDTO createSellingOrder(RequestSellingOrderDTO requestSellingOrderDTO) throws ResourceNotFoundException;
 
     void updateSellingOrderStatus(String orderId, OrderStatusEnum orderStatusEnum, PaymentStatusEnum paymentStatusEnum) throws ResourceNotFoundException;
 
