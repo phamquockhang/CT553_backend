@@ -165,6 +165,7 @@ public class VoucherServiceImpl implements VoucherService {
     }
 
     @Override
+    @Transactional
     public void useVoucher(String voucherCode) throws ResourceNotFoundException {
         Voucher voucher = voucherRepository.findByVoucherCode(voucherCode)
                 .orElseThrow(() -> new ResourceNotFoundException("Voucher not found"));
@@ -172,6 +173,34 @@ public class VoucherServiceImpl implements VoucherService {
         voucher.setUsedCount(voucher.getUsedCount() + 1);
         if (voucher.getUsedCount() >= voucher.getUsageLimit()) {
             voucher.setStatus(VoucherStatusEnum.OUT_OF_USES);
+        }
+
+        voucherRepository.save(voucher);
+    }
+
+    @Override
+    @Transactional
+    public void returnVoucher(String voucherCode) throws ResourceNotFoundException {
+        Voucher voucher = voucherRepository.findByVoucherCode(voucherCode)
+                .orElseThrow(() -> new ResourceNotFoundException("Voucher not found"));
+
+        voucher.setUsedCount(voucher.getUsedCount() - 1);
+        if (voucher.getUsedCount() < voucher.getUsageLimit()) {
+            voucher.setStatus(VoucherStatusEnum.ACTIVE);
+        }
+
+        voucherRepository.save(voucher);
+    }
+
+    @Override
+    @Transactional
+    public void returnVoucher(String voucherCode, Integer numberOfVoucher) throws ResourceNotFoundException {
+        Voucher voucher = voucherRepository.findByVoucherCode(voucherCode)
+                .orElseThrow(() -> new ResourceNotFoundException("Voucher not found"));
+
+        voucher.setUsedCount(voucher.getUsedCount() - numberOfVoucher);
+        if (voucher.getUsedCount() < voucher.getUsageLimit()) {
+            voucher.setStatus(VoucherStatusEnum.ACTIVE);
         }
 
         voucherRepository.save(voucher);

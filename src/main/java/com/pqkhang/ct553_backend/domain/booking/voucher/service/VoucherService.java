@@ -25,5 +25,9 @@ public interface VoucherService {
 
     void useVoucher(String voucherCode) throws ResourceNotFoundException;
 
+    void returnVoucher(String voucherCode) throws ResourceNotFoundException;
+
+    void returnVoucher(String voucherCode, Integer numberOfVoucher) throws ResourceNotFoundException;
+
     void updateVoucherStatusDaily();
 }

@@ -93,8 +93,8 @@ ALTER TABLE public.cart_details
     ALTER COLUMN created_at SET DEFAULT CURRENT_TIMESTAMP;
 
 --SELLING_ORDER
-ALTER TABLE public.selling_orders
-    ALTER COLUMN customer_id DROP NOT NULL;
+-- ALTER TABLE public.selling_orders
+--     ALTER COLUMN customer_id DROP NOT NULL;
 
 --SELLING_ORDER_DETAIL
 DROP SEQUENCE IF EXISTS selling_order_details_seq CASCADE;
@@ -133,4 +133,13 @@ CREATE SEQUENCE vouchers_seq
     INCREMENT BY 1;
 ALTER TABLE public.vouchers
     ALTER COLUMN voucher_id SET DEFAULT nextval('vouchers_seq'),
+    ALTER COLUMN created_at SET DEFAULT CURRENT_TIMESTAMP;
+
+--USED_VOUCHER
+DROP SEQUENCE IF EXISTS used_vouchers_seq CASCADE;
+CREATE SEQUENCE used_vouchers_seq
+    START WITH 1
+    INCREMENT BY 1;
+ALTER TABLE public.used_vouchers
+    ALTER COLUMN used_voucher_id SET DEFAULT nextval('used_vouchers_seq'),
     ALTER COLUMN created_at SET DEFAULT CURRENT_TIMESTAMP;

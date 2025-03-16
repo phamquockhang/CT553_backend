@@ -6,7 +6,6 @@ import lombok.experimental.FieldDefaults;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)

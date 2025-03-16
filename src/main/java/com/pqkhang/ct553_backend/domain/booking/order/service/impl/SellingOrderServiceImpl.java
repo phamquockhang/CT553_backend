@@ -14,7 +14,13 @@ import com.pqkhang.ct553_backend.domain.booking.order.service.OrderStatusService
 import com.pqkhang.ct553_backend.domain.booking.order.service.SellingOrderDetailService;
 import com.pqkhang.ct553_backend.domain.booking.order.service.SellingOrderService;
 import com.pqkhang.ct553_backend.domain.booking.order.utils.OrderUtils;
+import com.pqkhang.ct553_backend.domain.booking.voucher.dto.UsedVoucherDTO;
+import com.pqkhang.ct553_backend.domain.booking.voucher.entity.Voucher;
+import com.pqkhang.ct553_backend.domain.booking.voucher.enums.DiscountTypeEnum;
+import com.pqkhang.ct553_backend.domain.booking.voucher.mapper.UsedVoucherMapper;
 import com.pqkhang.ct553_backend.domain.booking.voucher.repository.VoucherRepository;
+import com.pqkhang.ct553_backend.domain.booking.voucher.service.UsedVoucherService;
+import com.pqkhang.ct553_backend.domain.booking.voucher.service.VoucherService;
 import com.pqkhang.ct553_backend.domain.user.dto.ScoreCalculator;
 import com.pqkhang.ct553_backend.domain.user.dto.ScoreDTO;
 import com.pqkhang.ct553_backend.domain.user.entity.Customer;
@@ -26,12 +32,14 @@ import jakarta.persistence.criteria.Predicate;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -41,6 +49,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PACKAGE, makeFinal = true)
+@Slf4j
 public class SellingOrderServiceImpl implements SellingOrderService {
 
     CustomerRepository customerRepository;
@@ -52,6 +61,9 @@ public class SellingOrderServiceImpl implements SellingOrderService {
     StringUtils stringUtils;
     ScoreService scoreService;
     VoucherRepository voucherRepository;
+    UsedVoucherService usedVoucherService;
+    UsedVoucherMapper usedVoucherMapper;
+    VoucherService voucherService;
 
     static String DEFAULT_PAGE = "1";
     static String DEFAULT_PAGE_SIZE = "10";
@@ -162,13 +174,21 @@ public class SellingOrderServiceImpl implements SellingOrderService {
     @Override
     public SellingOrderDTO createSellingOrder(RequestSellingOrderDTO requestSellingOrderDTO) throws ResourceNotFoundException {
         UUID customerId;
-
         if (requestSellingOrderDTO.getCustomerId() != null && !requestSellingOrderDTO.getCustomerId().isEmpty()) {
             customerId = UUID.fromString(requestSellingOrderDTO.getCustomerId());
             customerRepository.findById(customerId).orElseThrow(() ->
                     new ResourceNotFoundException("Không tìm thấy khách hàng với id: " + customerId));
         } else {
             customerId = null;
+        }
+
+        String voucherCode;
+        Voucher voucher = null;
+        if (requestSellingOrderDTO.getVoucherCode() != null && !requestSellingOrderDTO.getVoucherCode().isEmpty()) {
+            voucherCode = requestSellingOrderDTO.getVoucherCode();
+            voucher = voucherRepository.findByVoucherCode(voucherCode).orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy voucher với mã: " + voucherCode));
+        } else {
+            voucherCode = null;
         }
 
         // Chuyển đổi orderStatus từ String sang Enum
@@ -185,17 +205,45 @@ public class SellingOrderServiceImpl implements SellingOrderService {
 
         sellingOrder.setOrderStatuses(null);
         sellingOrder.setSellingOrderDetails(null);
+        sellingOrder.setUsedVoucher(null);
         sellingOrderRepository.save(sellingOrder);
 
-        // Tạo chi tiết đơn hàng và trạng thái đơn hàng
+        // Tạo chi tiết đơn hàng, trạng thái đơn hàng và voucher đã sử dụng
         sellingOrder.setSellingOrderDetails(sellingOrderDetailService.createSellingOrderDetail(newSellingOrderId, requestSellingOrderDTO.getSellingOrderDetails()));
         sellingOrder.setOrderStatuses(orderStatusService.createOrderStatus(newSellingOrderId, orderStatusEnum));
 
+        if (voucherCode != null) {
+            voucher = voucherRepository.findByVoucherCode(voucherCode).orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy voucher với mã: " + voucherCode));
+
+            // Tính toán giảm giá
+            BigDecimal totalAmount = sellingOrder.getTotalAmount();
+            BigDecimal discountAmount;
+
+            if (voucher.getDiscountType().equals(DiscountTypeEnum.PERCENTAGE)) {
+                discountAmount = totalAmount.multiply(voucher.getDiscountValue()).divide(BigDecimal.valueOf(100));
+                discountAmount = discountAmount.compareTo(voucher.getMaxDiscount()) > 0 ? voucher.getMaxDiscount() : discountAmount;
+            } else {
+                discountAmount = voucher.getDiscountValue();
+            }
+            sellingOrder.setTotalAmount(totalAmount.subtract(discountAmount));
+
+
+            UsedVoucherDTO usedVoucherDTO = new UsedVoucherDTO();
+            usedVoucherDTO.setVoucherCode(voucherCode);
+            usedVoucherDTO.setSellingOrderId(sellingOrder.getSellingOrderId());
+            usedVoucherDTO.setDiscountAmount(discountAmount);
+
+            log.info("------------------UsedVoucherDTO: {}", usedVoucherDTO);
+
+            usedVoucherService.createUsedVoucher(usedVoucherDTO);
+            voucherService.useVoucher(voucherCode);
+        }
+
+        // Lưu lại đơn hàng sau khi cập nhật tổng tiền giảm giá
         sellingOrderRepository.save(sellingOrder);
 
         return sellingOrderMapper.toSellingOrderDTO(sellingOrder);
     }
-
 
     @Override
     public void updateSellingOrderStatus(String sellingOrderId, OrderStatusEnum newOrderStatus, PaymentStatusEnum newPaymentStatus) throws ResourceNotFoundException {
@@ -205,6 +253,15 @@ public class SellingOrderServiceImpl implements SellingOrderService {
         if (!oldOrderStatus.equals(newOrderStatus)) {
             orderStatusService.createOrderStatus(sellingOrderId, newOrderStatus);
             sellingOrder.setOrderStatus(newOrderStatus);
+            if (newOrderStatus.equals(OrderStatusEnum.CANCELLED)) {
+                if (sellingOrder.getUsedVoucher() != null) {
+                    try {
+                        voucherService.returnVoucher(sellingOrder.getUsedVoucher().getVoucher().getVoucherCode());
+                    } catch (ResourceNotFoundException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            }
         }
 
         PaymentStatusEnum oldPaymentStatus = sellingOrder.getPaymentStatus();

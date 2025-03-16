@@ -10,6 +10,7 @@ import com.pqkhang.ct553_backend.domain.booking.order.enums.PaymentStatusEnum;
 import com.pqkhang.ct553_backend.domain.booking.order.mapper.SellingOrderMapper;
 import com.pqkhang.ct553_backend.domain.booking.order.repository.SellingOrderRepository;
 import com.pqkhang.ct553_backend.domain.booking.order.service.SellingOrderService;
+import com.pqkhang.ct553_backend.domain.booking.voucher.service.VoucherService;
 import com.pqkhang.ct553_backend.domain.common.service.EmailService;
 import com.pqkhang.ct553_backend.domain.transaction.dto.TransactionDTO;
 import com.pqkhang.ct553_backend.domain.transaction.dto.request.VNPayCallbackRequest;
@@ -52,6 +53,7 @@ public class TransactionServiceImpl implements TransactionService {
     SellingOrderService sellingOrderService;
     SellingOrderMapper sellingOrderMapper;
     EmailService emailService;
+    private final VoucherService voucherService;
 
     private String getPaymentUrlIfNeeded(HttpServletRequest request, Transaction transaction) throws ResourceNotFoundException {
         if (transaction.getPaymentMethod() != null && "VN_PAY".equals(transaction.getPaymentMethod().getPaymentMethodName())) {
@@ -214,6 +216,8 @@ public class TransactionServiceImpl implements TransactionService {
         LocalDateTime minusTime = LocalDateTime.now().minusMinutes(15);
 //        LocalDateTime minusTime = LocalDateTime.now().minusSeconds(15);
         int updateExpiredTransactions = transactionRepository.updateExpiredTransactions(minusTime);
+
+        List<SellingOrder> sellingOrders = sellingOrderRepository.findByPaymentStatusAndCreatedAtBefore(PaymentStatusEnum.PENDING, minusTime);
         int updateExpiredSellingOrders = sellingOrderRepository.updateExpiredSellingOrders(minusTime);
 
         if(updateExpiredTransactions > 0) {
@@ -222,6 +226,24 @@ public class TransactionServiceImpl implements TransactionService {
 
         if(updateExpiredSellingOrders > 0) {
             System.out.println("Updated " + updateExpiredSellingOrders + " expired selling orders");
+            if (!sellingOrders.isEmpty()) {
+                sellingOrders.forEach(sellingOrder -> {
+                    if (sellingOrder.getUsedVoucher() != null) {
+                        try {
+                            voucherService.returnVoucher(sellingOrder.getUsedVoucher().getVoucher().getVoucherCode());
+                        } catch (ResourceNotFoundException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+
+//                    CAN LAM 👇
+//                    try {
+//                        emailService.sendExpiredTransactionEmail(sellingOrder);
+//                    } catch (ResourceNotFoundException e) {
+//                        e.printStackTrace();
+//                    }
+                });
+            }
         }
     }
 }

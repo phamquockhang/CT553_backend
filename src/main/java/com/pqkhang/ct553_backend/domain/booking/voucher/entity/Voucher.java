@@ -9,6 +9,7 @@ import lombok.experimental.FieldDefaults;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @Getter
@@ -54,4 +55,7 @@ public class Voucher extends BaseEntity {
 
     @Column(nullable = false)
     Integer usedCount;
+
+    @OneToMany(mappedBy = "voucher", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
+    List<UsedVoucher> usedVoucher;
 }

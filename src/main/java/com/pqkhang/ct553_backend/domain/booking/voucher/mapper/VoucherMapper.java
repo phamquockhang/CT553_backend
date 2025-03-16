@@ -4,7 +4,7 @@ import com.pqkhang.ct553_backend.domain.booking.voucher.dto.VoucherDTO;
 import com.pqkhang.ct553_backend.domain.booking.voucher.entity.Voucher;
 import org.mapstruct.Mapper;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = {UsedVoucherMapper.class})
 public interface VoucherMapper {
     VoucherDTO toVoucherDTO(Voucher voucher);
 
