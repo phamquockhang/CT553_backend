@@ -43,15 +43,15 @@ public class Voucher extends BaseEntity {
 
     BigDecimal maxDiscount;
 
-    @Column(nullable = false)
+    @Column(nullable = false, updatable = false)
     LocalDate startDate;
 
-    @Column(nullable = false)
+    @Column(nullable = false, updatable = false)
     LocalDate endDate;
 
     @Column(nullable = false)
     Integer usageLimit;
 
     @Column(nullable = false)
-    Integer usedCount = 0;
+    Integer usedCount;
 }

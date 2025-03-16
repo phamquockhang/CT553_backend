@@ -17,6 +17,7 @@ import jakarta.persistence.criteria.Predicate;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -25,6 +26,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -33,6 +35,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PACKAGE, makeFinal = true)
+@Slf4j
 public class VoucherServiceImpl implements VoucherService {
 
     RequestParamUtils requestParamUtils;
@@ -141,6 +144,7 @@ public class VoucherServiceImpl implements VoucherService {
 
         voucher.setVoucherCode(VoucherUtils.generateVoucherCode());
         voucher.setStatus(VoucherStatusEnum.INACTIVE);
+        voucher.setUsedCount(0);
 
         voucherRepository.save(voucher);
     }
@@ -161,10 +165,38 @@ public class VoucherServiceImpl implements VoucherService {
     }
 
     @Override
-    public void useVoucher(Integer voucherId) throws ResourceNotFoundException {
-        Voucher voucher = voucherRepository.findById(voucherId).orElseThrow(() -> new ResourceNotFoundException("Voucher not found"));
+    public void useVoucher(String voucherCode) throws ResourceNotFoundException {
+        Voucher voucher = voucherRepository.findByVoucherCode(voucherCode)
+                .orElseThrow(() -> new ResourceNotFoundException("Voucher not found"));
 
         voucher.setUsedCount(voucher.getUsedCount() + 1);
+        if (voucher.getUsedCount() >= voucher.getUsageLimit()) {
+            voucher.setStatus(VoucherStatusEnum.OUT_OF_USES);
+        }
+
         voucherRepository.save(voucher);
+    }
+
+    @Override
+    @Transactional
+    public void updateVoucherStatusDaily() {
+        LocalDate today = LocalDate.now();
+
+        // Cập nhật voucher đang được kích hoạt thành hết hạn sử dụng
+        List<Voucher> expiredVouchers = voucherRepository.findByEndDateBeforeAndStatus(today, VoucherStatusEnum.ACTIVE);
+        expiredVouchers.forEach(voucher -> voucher.setStatus(VoucherStatusEnum.EXPIRED));
+        if (!expiredVouchers.isEmpty()) {
+            log.info("Đã cập nhật trạng thái hết hạn sử dụng cho {} voucher.", expiredVouchers.size());
+        }
+
+        // Cập nhật voucher chưa kích hoạt thành kích hoạt
+        List<Voucher> activeVouchers = voucherRepository.findByStartDateBeforeAndStatus(today, VoucherStatusEnum.INACTIVE);
+        activeVouchers.forEach(voucher -> voucher.setStatus(VoucherStatusEnum.ACTIVE));
+        if (!activeVouchers.isEmpty()) {
+            log.info("Đã cập nhật trạng thái kích hoạt cho {} voucher.", activeVouchers.size());
+        }
+
+        voucherRepository.saveAll(expiredVouchers);
+        voucherRepository.saveAll(activeVouchers);
     }
 }

@@ -23,5 +23,7 @@ public interface VoucherService {
 
     void deleteVoucher(Integer id) throws ResourceNotFoundException;
 
-    void useVoucher(Integer voucherId) throws ResourceNotFoundException;
+    void useVoucher(String voucherCode) throws ResourceNotFoundException;
+
+    void updateVoucherStatusDaily();
 }
