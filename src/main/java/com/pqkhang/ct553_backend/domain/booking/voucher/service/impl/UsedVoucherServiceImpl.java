@@ -125,7 +125,7 @@ public class UsedVoucherServiceImpl implements UsedVoucherService {
 
     @Override
     @Transactional
-    public void deleteVoucher(Integer usedVoucherId) throws ResourceNotFoundException {
+    public void deleteUsedVoucher(Integer usedVoucherId) throws ResourceNotFoundException {
         if (!usedVoucherRepository.existsById(usedVoucherId)) {
             throw new ResourceNotFoundException("Used voucher not found");
         }

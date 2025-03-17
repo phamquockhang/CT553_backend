@@ -15,5 +15,5 @@ public interface UsedVoucherService {
 
     void createUsedVoucher(UsedVoucherDTO usedVoucherDTO);
 
-    void deleteVoucher(Integer usedVoucherId) throws ResourceNotFoundException;
+    void deleteUsedVoucher(Integer usedVoucherId) throws ResourceNotFoundException;
 }

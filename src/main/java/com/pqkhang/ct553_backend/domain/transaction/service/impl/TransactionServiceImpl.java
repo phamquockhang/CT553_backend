@@ -10,6 +10,7 @@ import com.pqkhang.ct553_backend.domain.booking.order.enums.PaymentStatusEnum;
 import com.pqkhang.ct553_backend.domain.booking.order.mapper.SellingOrderMapper;
 import com.pqkhang.ct553_backend.domain.booking.order.repository.SellingOrderRepository;
 import com.pqkhang.ct553_backend.domain.booking.order.service.SellingOrderService;
+import com.pqkhang.ct553_backend.domain.booking.voucher.service.UsedVoucherService;
 import com.pqkhang.ct553_backend.domain.booking.voucher.service.VoucherService;
 import com.pqkhang.ct553_backend.domain.common.service.EmailService;
 import com.pqkhang.ct553_backend.domain.transaction.dto.TransactionDTO;
@@ -53,7 +54,8 @@ public class TransactionServiceImpl implements TransactionService {
     SellingOrderService sellingOrderService;
     SellingOrderMapper sellingOrderMapper;
     EmailService emailService;
-    private final VoucherService voucherService;
+    VoucherService voucherService;
+    UsedVoucherService usedVoucherService;
 
     private String getPaymentUrlIfNeeded(HttpServletRequest request, Transaction transaction) throws ResourceNotFoundException {
         if (transaction.getPaymentMethod() != null && "VN_PAY".equals(transaction.getPaymentMethod().getPaymentMethodName())) {
@@ -231,17 +233,11 @@ public class TransactionServiceImpl implements TransactionService {
                     if (sellingOrder.getUsedVoucher() != null) {
                         try {
                             voucherService.returnVoucher(sellingOrder.getUsedVoucher().getVoucher().getVoucherCode());
+                            usedVoucherService.deleteUsedVoucher(sellingOrder.getUsedVoucher().getUsedVoucherId());
                         } catch (ResourceNotFoundException e) {
                             throw new RuntimeException(e);
                         }
                     }
-
-//                    CAN LAM 👇
-//                    try {
-//                        emailService.sendExpiredTransactionEmail(sellingOrder);
-//                    } catch (ResourceNotFoundException e) {
-//                        e.printStackTrace();
-//                    }
                 });
             }
         }
