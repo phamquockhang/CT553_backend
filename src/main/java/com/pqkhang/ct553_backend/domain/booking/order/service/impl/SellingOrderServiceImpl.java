@@ -21,6 +21,7 @@ import com.pqkhang.ct553_backend.domain.booking.voucher.mapper.UsedVoucherMapper
 import com.pqkhang.ct553_backend.domain.booking.voucher.repository.VoucherRepository;
 import com.pqkhang.ct553_backend.domain.booking.voucher.service.UsedVoucherService;
 import com.pqkhang.ct553_backend.domain.booking.voucher.service.VoucherService;
+import com.pqkhang.ct553_backend.domain.common.service.EmailService;
 import com.pqkhang.ct553_backend.domain.user.dto.ScoreCalculator;
 import com.pqkhang.ct553_backend.domain.user.dto.ScoreDTO;
 import com.pqkhang.ct553_backend.domain.user.entity.Customer;
@@ -67,6 +68,7 @@ public class SellingOrderServiceImpl implements SellingOrderService {
 
     static String DEFAULT_PAGE = "1";
     static String DEFAULT_PAGE_SIZE = "10";
+    private final EmailService emailService;
 
     private Pageable createPageable(Map<String, String> params) {
         int page = Integer.parseInt(params.getOrDefault("page", DEFAULT_PAGE));
@@ -262,6 +264,8 @@ public class SellingOrderServiceImpl implements SellingOrderService {
                     }
                 }
             }
+
+            emailService.sendSellingOrderStatusEmail(sellingOrder);
         }
 
         PaymentStatusEnum oldPaymentStatus = sellingOrder.getPaymentStatus();

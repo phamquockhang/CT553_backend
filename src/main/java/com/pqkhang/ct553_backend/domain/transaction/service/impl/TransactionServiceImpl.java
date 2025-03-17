@@ -161,7 +161,7 @@ public class TransactionServiceImpl implements TransactionService {
                 sellingOrderService.updateSellingOrderStatus(sellingOrderId, sellingOrder.getOrderStatus(), PaymentStatusEnum.SUCCESS);
                 transaction.setStatus(TransactionStatusEnum.SUCCESS);
 
-                if (transaction.getSellingOrder().getCustomer() != null) {
+                if (transaction.getSellingOrder().getEmail() != null) {
                     emailService.sendSuccessfullyTransactionEmail(transaction);
                 }
             }

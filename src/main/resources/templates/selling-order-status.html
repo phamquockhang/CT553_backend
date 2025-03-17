@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thanh toán thành công</title>
+    <title>Trạng thái đơn hàng</title>
     <style>
         body {
             font-family: 'Arial', sans-serif;
@@ -24,14 +24,9 @@
         .header {
             text-align: center;
             padding: 15px 0;
-            background-color: #003F8F;
             color: #ffffff;
             border-top-left-radius: 8px;
             border-top-right-radius: 8px;
-        }
-
-        .header h2 {
-            margin: 0;
         }
 
         .content {
@@ -64,19 +59,14 @@
 
         .cta-button {
             display: inline-block;
-            background-color: #003F8F;
-            /*color: #ffffff;*/
             padding: 12px 20px;
             margin-top: 20px;
             text-decoration: none;
             font-size: 16px;
             border-radius: 5px;
             font-weight: bold;
+            color: white;
         }
-
-        /*.cta-button:hover {*/
-        /*    background-color: #003F8F;*/
-        /*}*/
 
         .footer {
             text-align: center;
@@ -86,28 +76,62 @@
             border-top: 1px solid #ddd;
             margin-top: 20px;
         }
+
+        .CONFIRMED {
+            background-color: #28a745;
+            color: white !important;
+            text-decoration: none !important;
+        }
+
+        .PREPARING {
+            background-color: #FFA500;
+            color: #1b1919 !important;
+            text-decoration: none !important;
+        }
+
+        .DELIVERING {
+            background-color: #004faf;
+            color: white !important;
+            text-decoration: none !important;
+        }
+
+        .DELIVERED {
+            background-color: #1b8b33;
+            color: white !important;
+            text-decoration: none !important;
+        }
+
+        .COMPLETED {
+            background-color: #157d2c;
+            color: white !important;
+            text-decoration: none !important;
+        }
+
+        .CANCELLED {
+            background-color: #dc3545;
+            color: white !important;
+            text-decoration: none !important;
+        }
     </style>
 </head>
 <body>
 <div class="container">
     <!-- Header -->
-    <div class="header">
-        <h2>🎉 Thanh toán thành công!</h2>
+    <div th:class="'header ' + ${orderStatus}">
+        <h2 th:text="${orderStatusText}"></h2>
     </div>
 
     <!-- Nội dung chính -->
     <div class="content">
-        <p>Chúc mừng! Đơn hàng của bạn đã được thanh toán thành công.</p>
+        <p th:text="${orderMessage}"></p>
         <p>Dưới đây là thông tin chi tiết:</p>
 
         <div class="order-info">
-            <p><strong>Mã giao dịch:</strong> <span th:text="${transactionId}"></span></p>
+            <!--            <p><strong>Mã giao dịch:</strong> <span th:text="${transactionId}"></span></p>-->
             <p><strong>Mã đơn hàng:</strong> #<span th:text="${sellingOrderId}"></span></p>
         </div>
 
-        <a th:href="@{${sellingOrderDetailURL}}" class="cta-button" style="color: white">Xem chi tiết đơn hàng</a>
-
-        <p style="margin-top: 20px;">Cảm ơn bạn đã tin tưởng và sử dụng dịch vụ của chúng tôi!</p>
+        <a th:href="@{${sellingOrderDetailURL}}" th:class="'cta-button ' + ${orderStatus}">Xem chi tiết đơn hàng</a>
     </div>
 
     <!-- Footer -->
