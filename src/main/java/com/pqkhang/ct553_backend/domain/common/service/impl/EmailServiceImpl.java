@@ -1,5 +1,6 @@
 package com.pqkhang.ct553_backend.domain.common.service.impl;
 
+import com.pqkhang.ct553_backend.domain.booking.order.entity.SellingOrder;
 import com.pqkhang.ct553_backend.domain.common.service.EmailService;
 import com.pqkhang.ct553_backend.domain.transaction.entity.Transaction;
 import com.pqkhang.ct553_backend.infrastructure.kafka.email.EmailObject;
@@ -83,4 +84,69 @@ public class EmailServiceImpl implements EmailService {
 
         emailProducer.sendEmailMessage(emailObject);
     }
+
+    @Override
+    public void sendSellingOrderStatusEmail(SellingOrder sellingOrder) {
+        String CLIENT_URL = environment.getProperty("CLIENT_URL");
+
+        String orderStatus = "";
+        String orderStatusText = "";
+        String orderMessage = "";
+
+        switch (sellingOrder.getOrderStatus()) {
+            case CONFIRMED:
+                orderStatus = "CONFIRMED";
+                orderStatusText = "🎉 Đơn hàng đã được xác nhận";
+                orderMessage = "Chúng tôi sẽ sớm giao hàng cho bạn. Cảm ơn bạn đã mua hàng tại K-Seafood!";
+                break;
+            case PREPARING:
+                orderStatus = "PREPARING";
+                orderStatusText = "⏳ Đơn hàng đang được chuẩn bị";
+                orderMessage = "Chúng tôi đang chuẩn bị đơn hàng của bạn. Vui lòng chờ trong giây lát!";
+                break;
+            case DELIVERING:
+                orderStatus = "DELIVERING";
+                orderStatusText = "🚚 Đơn hàng đang được giao";
+                orderMessage = "Đơn hàng của bạn đang trên đường đến. Hãy chuẩn bị nhận hàng!";
+                break;
+            case DELIVERED:
+                orderStatus = "DELIVERED";
+                orderStatusText = "✅ Đơn hàng đã giao thành công";
+                orderMessage = "Cảm ơn bạn đã mua hàng tại K-Seafood! Hy vọng bạn hài lòng với sản phẩm.";
+                break;
+            case COMPLETED:
+                orderStatus = "COMPLETED";
+                orderStatusText = "🎊 Đơn hàng đã hoàn thành";
+                orderMessage = "Cảm ơn bạn đã mua hàng tại K-Seafood! Đơn hàng đã hoàn tất và được ghi nhận.";
+                break;
+            case CANCELLED:
+                orderStatus = "CANCELLED";
+                orderStatusText = "Đơn hàng đã bị hủy!!";
+                orderMessage = "Rất tiếc, đơn hàng của bạn đã bị hủy. Nếu có thắc mắc, vui lòng liên hệ với chúng tôi.";
+                break;
+            default:
+                orderStatus = "UNKNOWN";
+                orderStatusText = "❓ Trạng thái đơn hàng không xác định";
+                orderMessage = "Chúng tôi không thể xác định trạng thái đơn hàng của bạn. Vui lòng liên hệ hỗ trợ.";
+                break;
+        }
+
+        Map<String, Object> context = Map.of(
+                "orderStatus", orderStatus,
+                "orderStatusText", orderStatusText,
+                "orderMessage", orderMessage,
+                "sellingOrderId", sellingOrder.getSellingOrderId(),
+                "sellingOrderDetailURL", CLIENT_URL + "/selling-order/" + sellingOrder.getSellingOrderId()
+        );
+
+        EmailObject emailObject = EmailObject.builder()
+                .receiverEmail(sellingOrder.getEmail())
+                .subject("K-Seafood - Thông báo đơn hàng #" + sellingOrder.getSellingOrderId() + " của bạn")
+                .templateFileName("selling-order-status")
+                .context(context)
+                .build();
+
+        emailProducer.sendEmailMessage(emailObject);
+    }
+
 }
