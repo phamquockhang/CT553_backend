@@ -15,9 +15,9 @@ import com.pqkhang.ct553_backend.domain.booking.order.service.SellingOrderDetail
 import com.pqkhang.ct553_backend.domain.booking.order.service.SellingOrderService;
 import com.pqkhang.ct553_backend.domain.booking.order.utils.OrderUtils;
 import com.pqkhang.ct553_backend.domain.booking.voucher.dto.UsedVoucherDTO;
+import com.pqkhang.ct553_backend.domain.booking.voucher.entity.UsedVoucher;
 import com.pqkhang.ct553_backend.domain.booking.voucher.entity.Voucher;
 import com.pqkhang.ct553_backend.domain.booking.voucher.enums.DiscountTypeEnum;
-import com.pqkhang.ct553_backend.domain.booking.voucher.mapper.UsedVoucherMapper;
 import com.pqkhang.ct553_backend.domain.booking.voucher.repository.VoucherRepository;
 import com.pqkhang.ct553_backend.domain.booking.voucher.service.UsedVoucherService;
 import com.pqkhang.ct553_backend.domain.booking.voucher.service.VoucherService;
@@ -63,7 +63,6 @@ public class SellingOrderServiceImpl implements SellingOrderService {
     ScoreService scoreService;
     VoucherRepository voucherRepository;
     UsedVoucherService usedVoucherService;
-    UsedVoucherMapper usedVoucherMapper;
     VoucherService voucherService;
 
     static String DEFAULT_PAGE = "1";
@@ -257,20 +256,24 @@ public class SellingOrderServiceImpl implements SellingOrderService {
             sellingOrder.setOrderStatus(newOrderStatus);
             if (newOrderStatus.equals(OrderStatusEnum.CANCELLED)) {
                 if (sellingOrder.getUsedVoucher() != null) {
-                    try {
-                        voucherService.returnVoucher(sellingOrder.getUsedVoucher().getVoucher().getVoucherCode());
-                    } catch (ResourceNotFoundException e) {
-                        throw new RuntimeException(e);
-                    }
+                    UsedVoucher usedVoucher = sellingOrder.getUsedVoucher();
+
+                    sellingOrder.setUsedVoucher(null);
+                    sellingOrderRepository.save(sellingOrder);
+
+                    voucherService.returnVoucher(usedVoucher.getVoucher().getVoucherCode());
+//                    usedVoucherService.deleteUsedVoucher(usedVoucher.getUsedVoucherId());
                 }
             }
 
+            log.info("Sending email to customer");
             emailService.sendSellingOrderStatusEmail(sellingOrder);
         }
 
         PaymentStatusEnum oldPaymentStatus = sellingOrder.getPaymentStatus();
         if (!oldPaymentStatus.equals(newPaymentStatus)) {
             sellingOrder.setPaymentStatus(newPaymentStatus);
+            sellingOrderRepository.save(sellingOrder);
         }
 
         if (sellingOrder.getCustomer() != null) {
