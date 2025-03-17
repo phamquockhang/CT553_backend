@@ -24,6 +24,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
@@ -123,12 +124,13 @@ public class UsedVoucherServiceImpl implements UsedVoucherService {
         log.info("3. Create used voucher: {}", usedVoucher);
     }
 
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     @Override
-    @Transactional
     public void deleteUsedVoucher(Integer usedVoucherId) throws ResourceNotFoundException {
         if (!usedVoucherRepository.existsById(usedVoucherId)) {
             throw new ResourceNotFoundException("Used voucher not found");
         }
+
         usedVoucherRepository.deleteById(usedVoucherId);
     }
 }

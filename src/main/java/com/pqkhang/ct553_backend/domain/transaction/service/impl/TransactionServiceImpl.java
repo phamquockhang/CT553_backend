@@ -6,12 +6,11 @@ import com.pqkhang.ct553_backend.app.response.Meta;
 import com.pqkhang.ct553_backend.app.response.Page;
 import com.pqkhang.ct553_backend.domain.booking.order.dto.response.OverviewSellingOrderDTO;
 import com.pqkhang.ct553_backend.domain.booking.order.entity.SellingOrder;
+import com.pqkhang.ct553_backend.domain.booking.order.enums.OrderStatusEnum;
 import com.pqkhang.ct553_backend.domain.booking.order.enums.PaymentStatusEnum;
 import com.pqkhang.ct553_backend.domain.booking.order.mapper.SellingOrderMapper;
 import com.pqkhang.ct553_backend.domain.booking.order.repository.SellingOrderRepository;
 import com.pqkhang.ct553_backend.domain.booking.order.service.SellingOrderService;
-import com.pqkhang.ct553_backend.domain.booking.voucher.service.UsedVoucherService;
-import com.pqkhang.ct553_backend.domain.booking.voucher.service.VoucherService;
 import com.pqkhang.ct553_backend.domain.common.service.EmailService;
 import com.pqkhang.ct553_backend.domain.transaction.dto.TransactionDTO;
 import com.pqkhang.ct553_backend.domain.transaction.dto.request.VNPayCallbackRequest;
@@ -54,8 +53,6 @@ public class TransactionServiceImpl implements TransactionService {
     SellingOrderService sellingOrderService;
     SellingOrderMapper sellingOrderMapper;
     EmailService emailService;
-    VoucherService voucherService;
-    UsedVoucherService usedVoucherService;
 
     private String getPaymentUrlIfNeeded(HttpServletRequest request, Transaction transaction) throws ResourceNotFoundException {
         if (transaction.getPaymentMethod() != null && "VN_PAY".equals(transaction.getPaymentMethod().getPaymentMethodName())) {
@@ -216,30 +213,27 @@ public class TransactionServiceImpl implements TransactionService {
     @Transactional
     public void checkAndUpdateExpiredTransactions() {
         LocalDateTime minusTime = LocalDateTime.now().minusMinutes(15);
-//        LocalDateTime minusTime = LocalDateTime.now().minusSeconds(15);
-        int updateExpiredTransactions = transactionRepository.updateExpiredTransactions(minusTime);
+//        LocalDateTime minusTime = LocalDateTime.now().minusSeconds(30);
 
-        List<SellingOrder> sellingOrders = sellingOrderRepository.findByPaymentStatusAndCreatedAtBefore(PaymentStatusEnum.PENDING, minusTime);
-        int updateExpiredSellingOrders = sellingOrderRepository.updateExpiredSellingOrders(minusTime);
-
-        if(updateExpiredTransactions > 0) {
-            System.out.println("Updated " + updateExpiredTransactions + " expired transactions");
+        List<Transaction> transactions = transactionRepository.findByStatusAndCreatedAtBefore(TransactionStatusEnum.PENDING, minusTime);
+        if (!transactions.isEmpty()) {
+            transactions.forEach(transaction -> transaction.setStatus(TransactionStatusEnum.EXPIRED));
+            System.out.println("----- Expired transactions: " + transactions.size());
+            transactionRepository.saveAll(transactions);
         }
 
-        if(updateExpiredSellingOrders > 0) {
-            System.out.println("Updated " + updateExpiredSellingOrders + " expired selling orders");
-            if (!sellingOrders.isEmpty()) {
-                sellingOrders.forEach(sellingOrder -> {
-                    if (sellingOrder.getUsedVoucher() != null) {
-                        try {
-                            voucherService.returnVoucher(sellingOrder.getUsedVoucher().getVoucher().getVoucherCode());
-                            usedVoucherService.deleteUsedVoucher(sellingOrder.getUsedVoucher().getUsedVoucherId());
-                        } catch (ResourceNotFoundException e) {
-                            throw new RuntimeException(e);
-                        }
-                    }
-                });
-            }
+        List<SellingOrder> sellingOrders = sellingOrderRepository.findByPaymentStatusAndCreatedAtBefore(PaymentStatusEnum.PENDING, minusTime);
+        if (!sellingOrders.isEmpty()) {
+            System.out.println("----- Expired selling orders: " + sellingOrders.size());
+            sellingOrders.forEach(sellingOrder -> {
+                try {
+                    sellingOrderService.updateSellingOrderStatus(sellingOrder.getSellingOrderId(), OrderStatusEnum.CANCELLED, PaymentStatusEnum.EXPIRED);
+                } catch (ResourceNotFoundException e) {
+                    throw new RuntimeException(e);
+                }
+
+            });
+            sellingOrderRepository.saveAll(sellingOrders);
         }
     }
 }
