@@ -14,8 +14,8 @@ public class SchedulerUtils {
     @Autowired
     private TransactionService transactionService;
 
-    //    @Scheduled(cron = "0 0 0 * * *")
-    @Scheduled(cron = " */10 * * * * *")
+    //    @Scheduled(cron = " */10 * * * * *")
+    @Scheduled(cron = "0 0 0 * * *")
     public void checkExpiredVouchers() {
         System.out.println("🔄 Voucher: Bắt đầu cập nhật trạng thái vào 0h...");
         voucherService.updateVoucherStatusDaily();

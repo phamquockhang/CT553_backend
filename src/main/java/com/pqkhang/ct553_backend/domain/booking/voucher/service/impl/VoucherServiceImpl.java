@@ -4,10 +4,12 @@ import com.pqkhang.ct553_backend.app.exception.ResourceNotFoundException;
 import com.pqkhang.ct553_backend.app.response.Meta;
 import com.pqkhang.ct553_backend.app.response.Page;
 import com.pqkhang.ct553_backend.domain.booking.voucher.dto.VoucherDTO;
+import com.pqkhang.ct553_backend.domain.booking.voucher.entity.UsedVoucher;
 import com.pqkhang.ct553_backend.domain.booking.voucher.entity.Voucher;
 import com.pqkhang.ct553_backend.domain.booking.voucher.enums.DiscountTypeEnum;
 import com.pqkhang.ct553_backend.domain.booking.voucher.enums.VoucherStatusEnum;
 import com.pqkhang.ct553_backend.domain.booking.voucher.mapper.VoucherMapper;
+import com.pqkhang.ct553_backend.domain.booking.voucher.repository.UsedVoucherRepository;
 import com.pqkhang.ct553_backend.domain.booking.voucher.repository.VoucherRepository;
 import com.pqkhang.ct553_backend.domain.booking.voucher.service.VoucherService;
 import com.pqkhang.ct553_backend.domain.booking.voucher.utils.VoucherUtils;
@@ -45,6 +47,7 @@ public class VoucherServiceImpl implements VoucherService {
 
     static String DEFAULT_PAGE = "1";
     static String DEFAULT_PAGE_SIZE = "10";
+    private final UsedVoucherRepository usedVoucherRepository;
 
     private Pageable createPageable(Map<String, String> params) {
         int page = Integer.parseInt(params.getOrDefault("page", DEFAULT_PAGE));
