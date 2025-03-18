@@ -152,6 +152,7 @@ public class SellingOrderServiceImpl implements SellingOrderService {
         OrderStatusEnum orderStatus = OrderStatusEnum.valueOf(sellingOrderDTO.getOrderStatus());
         PaymentStatusEnum paymentStatus = PaymentStatusEnum.valueOf(sellingOrderDTO.getPaymentStatus());
 
+        // Tính điểm tích lũy từ tổng tiền đơn hàng (khi chưa trừ điểm và voucher, nếu có)
         int convertedScore = ScoreCalculator.convertMoneyToScores(sellingOrderDTO.getTotalAmount());
         int deductedScore = sellingOrderDTO.getUsedScore() != null ? -sellingOrderDTO.getUsedScore() : 0;
         int finalScore = convertedScore + deductedScore;
@@ -160,9 +161,8 @@ public class SellingOrderServiceImpl implements SellingOrderService {
 
         if (finalScore != 0) {
             // only process score when payment status is success,
-            // or payment status is COD and order status is completed
-            if (orderStatus.equals(OrderStatusEnum.COMPLETED) &&
-                    (paymentStatus.equals(PaymentStatusEnum.COD) || paymentStatus.equals(PaymentStatusEnum.SUCCESS))
+            //  and order status is completed
+            if (orderStatus.equals(OrderStatusEnum.COMPLETED) && paymentStatus.equals(PaymentStatusEnum.SUCCESS)
             ) {
                 ScoreDTO newScoreDTO = ScoreDTO.builder()
                         .changeAmount(finalScore)
@@ -170,6 +170,8 @@ public class SellingOrderServiceImpl implements SellingOrderService {
                 scoreService.createScore(customerId, newScoreDTO);
             }
         }
+
+        sellingOrderRepository.save(sellingOrder);
     }
 
     @Override
@@ -200,9 +202,7 @@ public class SellingOrderServiceImpl implements SellingOrderService {
         sellingOrder.setSellingOrderId(newSellingOrderId);
         sellingOrder.setOrderStatus(orderStatusEnum);
         sellingOrder.setCustomer(customerId != null ? Customer.builder().customerId(customerId).build() : null);
-
-        // Tính toán điểm tích lũy
-        processCustomerScore(requestSellingOrderDTO, sellingOrder, customerId);
+        sellingOrder.setTotalAmount(requestSellingOrderDTO.getUsedScore() != null ? requestSellingOrderDTO.getTotalAmount().subtract(BigDecimal.valueOf(requestSellingOrderDTO.getUsedScore())) : requestSellingOrderDTO.getTotalAmount());
 
         sellingOrder.setOrderStatuses(null);
         sellingOrder.setSellingOrderDetails(null);
@@ -242,6 +242,17 @@ public class SellingOrderServiceImpl implements SellingOrderService {
 
         // Lưu lại đơn hàng sau khi cập nhật tổng tiền giảm giá
         sellingOrderRepository.save(sellingOrder);
+
+        System.out.println("🔄 SellingOrder: totalAmount " + sellingOrder.getTotalAmount());
+        // Tính toán điểm tích lũy
+        processCustomerScore(requestSellingOrderDTO, sellingOrder, customerId);
+
+        if (sellingOrder.getEmail() != null && !sellingOrder.getEmail().isEmpty()) {
+            if (sellingOrder.getOrderStatus().equals(OrderStatusEnum.COMPLETED) && sellingOrder.getPaymentStatus().equals(PaymentStatusEnum.SUCCESS)) {
+                log.info("Sending email to customer");
+                emailService.sendSellingOrderStatusEmail(sellingOrder);
+            }
+        }
 
         return sellingOrderMapper.toSellingOrderDTO(sellingOrder);
     }

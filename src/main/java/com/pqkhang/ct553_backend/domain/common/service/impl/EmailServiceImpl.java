@@ -77,7 +77,7 @@ public class EmailServiceImpl implements EmailService {
 
         EmailObject emailObject = EmailObject.builder()
                 .receiverEmail(transaction.getSellingOrder().getCustomer().getEmail())
-                .subject("K-Seafood - Thông báo đơn hàng #" + transaction.getSellingOrder().getSellingOrderId() + " của bạn")
+                .subject("📢 Thông báo đơn hàng #" + transaction.getSellingOrder().getSellingOrderId() + " của bạn")
                 .templateFileName("success-transaction")
                 .context(context)
                 .build();
@@ -121,7 +121,7 @@ public class EmailServiceImpl implements EmailService {
                 break;
             case CANCELLED:
                 orderStatus = "CANCELLED";
-                orderStatusText = "Đơn hàng đã bị hủy!!";
+                orderStatusText = "😟 Đơn hàng đã bị hủy!!";
                 orderMessage = "Rất tiếc, đơn hàng của bạn đã bị hủy. Nếu có thắc mắc, vui lòng liên hệ với chúng tôi.";
                 break;
             default:
@@ -141,7 +141,7 @@ public class EmailServiceImpl implements EmailService {
 
         EmailObject emailObject = EmailObject.builder()
                 .receiverEmail(sellingOrder.getEmail())
-                .subject("K-Seafood - Thông báo đơn hàng #" + sellingOrder.getSellingOrderId() + " của bạn")
+                .subject("📢 Thông báo đơn hàng #" + sellingOrder.getSellingOrderId() + " của bạn")
                 .templateFileName("selling-order-status")
                 .context(context)
                 .build();
