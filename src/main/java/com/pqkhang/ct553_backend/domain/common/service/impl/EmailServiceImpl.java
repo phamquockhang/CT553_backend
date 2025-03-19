@@ -76,7 +76,7 @@ public class EmailServiceImpl implements EmailService {
         );
 
         EmailObject emailObject = EmailObject.builder()
-                .receiverEmail(transaction.getSellingOrder().getCustomer().getEmail())
+                .receiverEmail(transaction.getSellingOrder().getEmail())
                 .subject("📢 Thông báo đơn hàng #" + transaction.getSellingOrder().getSellingOrderId() + " của bạn")
                 .templateFileName("success-transaction")
                 .context(context)
