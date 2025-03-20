@@ -120,12 +120,18 @@ public class TransactionServiceImpl implements TransactionService {
     public TransactionDTO createTransaction(HttpServletRequest request, TransactionDTO transactionDTO) throws ResourceNotFoundException {
         SellingOrder sellingOrder = sellingOrderRepository.findById(transactionDTO.getSellingOrder().getSellingOrderId()).orElseThrow(() -> new ResourceNotFoundException("Selling order not found"));
 
-        sellingOrder.setPaymentStatus(PaymentStatusEnum.PENDING);
-//        sellingOrder.setOrderStatus(OrderStatusEnum.PENDING);
-        sellingOrderRepository.save(sellingOrder);
+        if (transactionDTO.getPaymentMethod() != null && transactionDTO.getPaymentMethod().getPaymentMethodName().equals("VN_PAY")) {
+            sellingOrder.setPaymentStatus(PaymentStatusEnum.PENDING);
+//            sellingOrder.setOrderStatus(OrderStatusEnum.PENDING);
+            sellingOrderRepository.save(sellingOrder);
+        }
 
         Transaction transaction = transactionMapper.toTransaction(transactionDTO);
-        transaction.setStatus(TransactionStatusEnum.PENDING);
+        if(transaction.getPaymentMethod() != null && transaction.getPaymentMethod().getPaymentMethodName().equals("COD")) {
+            transaction.setStatus(TransactionStatusEnum.COD_PENDING);
+        } else {
+            transaction.setStatus(TransactionStatusEnum.PENDING);
+        }
         transaction.setSellingOrder(sellingOrder);
         transaction.setAmount(sellingOrder.getTotalAmount());
 

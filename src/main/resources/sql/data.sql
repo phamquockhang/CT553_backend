@@ -106,7 +106,13 @@ VALUES ('Get all roles', '/api/v1/roles', 'GET', 'ROLE'),
 
        ('Get all transactions', '/api/v1/transactions', 'GET', 'TRANSACTION'),
        ('Get a transaction', '/api/v1/transactions/{id}', 'GET', 'TRANSACTION'),
-       ('Create a transaction', '/api/v1/transactions', 'POST', 'TRANSACTION');
+       ('Create a transaction', '/api/v1/transactions', 'POST', 'TRANSACTION'),
+
+       ('Get all vouchers', '/api/v1/vouchers', 'GET', 'VOUCHER'),
+       ('Get a voucher', '/api/v1/vouchers/{id}', 'GET', 'VOUCHER'),
+       ('Create a voucher', '/api/v1/vouchers', 'POST', 'VOUCHER'),
+       ('Update a voucher', '/api/v1/vouchers/{id}', 'PUT', 'VOUCHER'),
+       ('Delete a voucher', '/api/v1/vouchers/{id}', 'DELETE', 'VOUCHER');
 
 --ROLE_PERMISSION FOR STAFF
 INSERT INTO public.permission_role (role_id, permission_id)
@@ -118,7 +124,9 @@ VALUES (2, 18),
        (2, 31),
        (2, 32),
        (2, 33),
-       (2, 34);
+       (2, 34),
+       (2, 85),
+       (2, 86);
 
 --ROLE_PERMISSION FOR CUSTOMER
 -- INSERT INTO public.permission_role (role_id, permission_id)
@@ -426,10 +434,12 @@ VALUES ((SELECT cart_id
          FROM public.carts
          WHERE customer_id = (SELECT customer_id FROM public.customers WHERE email = 'customer1@gmail.com')), 5, 1);
 
+--PAYMENT_METHOD
 INSERT INTO public.payment_methods (payment_method_name)
 VALUES ('VN_PAY'),
        ('COD');
 
+--VOUCHER
 INSERT INTO public.vouchers (voucher_code, status, discount_type, discount_value, min_order_value,
                              max_discount, start_date, end_date, usage_limit, used_count)
 VALUES ('KSEA-GFJ57', 'ACTIVE', 'PERCENTAGE', 10.00, 100000.00, 50000.00, '2025-03-01', '2025-12-31', 100, 10),

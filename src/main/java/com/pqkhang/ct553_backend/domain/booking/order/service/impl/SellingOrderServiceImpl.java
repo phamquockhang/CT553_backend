@@ -243,7 +243,7 @@ public class SellingOrderServiceImpl implements SellingOrderService {
         // Lưu lại đơn hàng sau khi cập nhật tổng tiền giảm giá
         sellingOrderRepository.save(sellingOrder);
 
-        System.out.println("🔄 SellingOrder: totalAmount " + sellingOrder.getTotalAmount());
+        System.out.println("💲 SellingOrder: totalAmount " + sellingOrder.getTotalAmount());
         // Tính toán điểm tích lũy
         processCustomerScore(requestSellingOrderDTO, sellingOrder, customerId);
 

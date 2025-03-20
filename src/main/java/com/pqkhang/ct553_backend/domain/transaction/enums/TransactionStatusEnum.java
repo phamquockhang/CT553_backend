@@ -6,4 +6,5 @@ public enum TransactionStatusEnum {
     FAILED,
     EXPIRED,
     CANCELLED,
+    COD_PENDING
 }
