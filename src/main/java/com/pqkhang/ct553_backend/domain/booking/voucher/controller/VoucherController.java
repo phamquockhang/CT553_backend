@@ -12,8 +12,6 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import java.math.BigDecimal;
-import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -44,12 +42,12 @@ public class VoucherController {
                 .build();
     }
 
-    @GetMapping("/valid/{totalAmount}")
-    public ApiResponse<List<VoucherDTO>> getAllValidVouchers(@PathVariable BigDecimal totalAmount) {
-        return ApiResponse.<List<VoucherDTO>>builder()
+    @GetMapping("/valid")
+    public ApiResponse<Page<VoucherDTO>> getAllValidVouchers(@RequestParam Map<String, String> params) throws ResourceNotFoundException {
+        return ApiResponse.<Page<VoucherDTO>>builder()
                 .status(HttpStatus.OK.value())
                 .success(true)
-                .payload(voucherService.getAllValidVouchers(totalAmount))
+                .payload(voucherService.getAllValidVouchers(params))
                 .message("Lấy danh sách voucher hợp lệ thành công")
                 .build();
     }

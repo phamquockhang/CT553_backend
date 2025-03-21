@@ -5,8 +5,6 @@ import com.pqkhang.ct553_backend.app.response.Page;
 import com.pqkhang.ct553_backend.domain.booking.voucher.dto.VoucherDTO;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
-import java.util.List;
 import java.util.Map;
 
 @Service
@@ -15,7 +13,7 @@ public interface VoucherService {
 
     Page<VoucherDTO> getVouchers(Map<String, String> params) throws ResourceNotFoundException;
 
-    List<VoucherDTO> getAllValidVouchers(BigDecimal totalAmount);
+    Page<VoucherDTO> getAllValidVouchers(Map<String, String> params) throws ResourceNotFoundException;
 
     void createVoucher(VoucherDTO voucherDTO);
 
@@ -26,8 +24,6 @@ public interface VoucherService {
     void useVoucher(String voucherCode) throws ResourceNotFoundException;
 
     void returnVoucher(String voucherCode) throws ResourceNotFoundException;
-
-    void returnVoucher(String voucherCode, Integer numberOfVoucher) throws ResourceNotFoundException;
 
     void updateVoucherStatusDaily();
 }
