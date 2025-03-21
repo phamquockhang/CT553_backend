@@ -157,8 +157,6 @@ public class SellingOrderServiceImpl implements SellingOrderService {
         int deductedScore = sellingOrderDTO.getUsedScore() != null ? -sellingOrderDTO.getUsedScore() : 0;
         int finalScore = convertedScore + deductedScore;
 
-        sellingOrder.setEarnedScore(convertedScore);
-
         if (finalScore != 0) {
             // only process score when payment status is success,
             //  and order status is completed
@@ -204,6 +202,13 @@ public class SellingOrderServiceImpl implements SellingOrderService {
         sellingOrder.setCustomer(customerId != null ? Customer.builder().customerId(customerId).build() : null);
         sellingOrder.setTotalAmount(requestSellingOrderDTO.getUsedScore() != null ? requestSellingOrderDTO.getTotalAmount().subtract(BigDecimal.valueOf(requestSellingOrderDTO.getUsedScore())) : requestSellingOrderDTO.getTotalAmount());
 
+//        if (customerId != null) {
+//            int convertedScore = ScoreCalculator.convertMoneyToScores(requestSellingOrderDTO.getTotalAmount());
+//            sellingOrder.setEarnedScore(convertedScore);
+//        }
+
+        sellingOrder.setEarnedScore(customerId != null ? ScoreCalculator.convertMoneyToScores(requestSellingOrderDTO.getTotalAmount()) : 0);
+
         sellingOrder.setOrderStatuses(null);
         sellingOrder.setSellingOrderDetails(null);
         sellingOrder.setUsedVoucher(null);
@@ -243,7 +248,7 @@ public class SellingOrderServiceImpl implements SellingOrderService {
         // Lưu lại đơn hàng sau khi cập nhật tổng tiền giảm giá
         sellingOrderRepository.save(sellingOrder);
 
-        System.out.println("🔄 SellingOrder: totalAmount " + sellingOrder.getTotalAmount());
+        System.out.println("💲 SellingOrder: totalAmount " + sellingOrder.getTotalAmount());
         // Tính toán điểm tích lũy
         processCustomerScore(requestSellingOrderDTO, sellingOrder, customerId);
 
