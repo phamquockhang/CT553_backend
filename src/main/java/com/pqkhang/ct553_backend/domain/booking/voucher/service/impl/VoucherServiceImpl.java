@@ -218,8 +218,12 @@ public class VoucherServiceImpl implements VoucherService {
         int expiredCount = voucherRepository.updateStatusByEndDate(today);
         int activatedCount = voucherRepository.updateStatusByStartDate(today);
 
-        log.info("Đã cập nhật trạng thái hết hạn sử dụng cho {} voucher.", expiredCount);
-        log.info("Đã cập nhật trạng thái kích hoạt cho {} voucher.", activatedCount);
+        if(expiredCount > 0) {
+            log.info("Đã cập nhật trạng thái hết hạn sử dụng cho {} voucher.", expiredCount);
+        }
 
+        if(activatedCount > 0) {
+            log.info("Đã cập nhật trạng thái kích hoạt cho {} voucher.", activatedCount);
+        }
     }
 }

@@ -19,11 +19,11 @@ public interface VoucherRepository extends JpaRepository<Voucher, Integer>, JpaS
 //    List<Voucher> findByEndDateBeforeAndStatus(LocalDate date, VoucherStatusEnum status);
 
     @Modifying
-    @Query("UPDATE Voucher v SET v.status = 'EXPIRED' WHERE v.endDate < :today AND v.status = 'INACTIVE'")
+    @Query("UPDATE Voucher v SET v.status = 'EXPIRED' WHERE v.endDate < :today AND v.status = 'ACTIVE'")
     int updateStatusByEndDate(LocalDate today);
 
     @Modifying
-    @Query("UPDATE Voucher v SET v.status = 'INACTIVE' WHERE v.startDate < :today AND v.status = 'ACTIVE'")
+    @Query("UPDATE Voucher v SET v.status = 'ACTIVE' WHERE v.startDate <= :today AND v.status = 'INACTIVE'")
     int updateStatusByStartDate(LocalDate today);
 
     Optional<Voucher> findByVoucherCode(String voucherCode);
