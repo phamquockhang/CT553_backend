@@ -2,9 +2,12 @@ spring:
   application:
     name: CT553_backend
   datasource:
-    url: ${DATABASE_URL}
-    username: ${DATABASE_USER}
-    password: ${DATABASE_PASSWORD}
+    url: jdbc:postgresql://localhost:5432/ct553
+    username: postgres
+    password: 123456
+#    url: ${DATABASE_URL}
+#    username: ${DATABASE_USER}
+#    password: ${DATABASE_PASSWORD}
 
   jpa:
     hibernate:

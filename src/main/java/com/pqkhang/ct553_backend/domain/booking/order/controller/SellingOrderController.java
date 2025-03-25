@@ -5,6 +5,7 @@ import com.pqkhang.ct553_backend.app.response.ApiResponse;
 import com.pqkhang.ct553_backend.app.response.Page;
 import com.pqkhang.ct553_backend.domain.booking.order.dto.SellingOrderDTO;
 import com.pqkhang.ct553_backend.domain.booking.order.dto.request.RequestSellingOrderDTO;
+import com.pqkhang.ct553_backend.domain.booking.order.dto.response.SellingOrderStatisticsDTO;
 import com.pqkhang.ct553_backend.domain.booking.order.enums.OrderStatusEnum;
 import com.pqkhang.ct553_backend.domain.booking.order.enums.PaymentStatusEnum;
 import com.pqkhang.ct553_backend.domain.booking.order.service.SellingOrderService;
@@ -28,7 +29,7 @@ public class SellingOrderController {
     public ApiResponse<SellingOrderDTO> createSellingOrder(@Valid @RequestBody RequestSellingOrderDTO requestSellingOrderDTO) throws ResourceNotFoundException {
 //        sellingOrderService.createSellingOrder(sellingOrderDTO);
         return ApiResponse.<SellingOrderDTO>builder()
-                .status(HttpStatus.OK.value())
+                .status(HttpStatus.CREATED.value())
                 .success(true)
                 .payload(sellingOrderService.createSellingOrder(requestSellingOrderDTO))
                 .message("Tạo đơn hàng thành công")
@@ -52,7 +53,7 @@ public class SellingOrderController {
     @GetMapping("/all")
     public ApiResponse<List<SellingOrderDTO>> getAllSellingOrders() {
         return ApiResponse.<List<SellingOrderDTO>>builder()
-                .status(HttpStatus.CREATED.value())
+                .status(HttpStatus.OK.value())
                 .success(true)
                 .payload(sellingOrderService.getAllSellingOrders())
                 .message("Lấy thông tin tất cả đơn hàng thành công")
@@ -62,7 +63,7 @@ public class SellingOrderController {
     @GetMapping("/customer/{customerId}")
     public ApiResponse<List<SellingOrderDTO>> getAllSellingOrdersByCustomerId(@PathVariable("customerId") UUID customerId) throws ResourceNotFoundException {
         return ApiResponse.<List<SellingOrderDTO>>builder()
-                .status(HttpStatus.CREATED.value())
+                .status(HttpStatus.OK.value())
                 .success(true)
                 .payload(sellingOrderService.getAllSellingOrdersByCustomerId(customerId))
                 .message("Lấy thông tin tất cả đơn hàng của khách hàng thành công")
@@ -72,7 +73,7 @@ public class SellingOrderController {
     @GetMapping("/{sellingOrderId}")
     public ApiResponse<SellingOrderDTO> getSellingOrder(@PathVariable("sellingOrderId") String sellingOrderId) throws ResourceNotFoundException {
         return ApiResponse.<SellingOrderDTO>builder()
-                .status(HttpStatus.CREATED.value())
+                .status(HttpStatus.OK.value())
                 .success(true)
                 .payload(sellingOrderService.getSellingOrder(sellingOrderId))
                 .message("Lấy thông tin đơn hàng thành công")
@@ -82,10 +83,20 @@ public class SellingOrderController {
     @GetMapping
     public ApiResponse<Page<SellingOrderDTO>> getSellingOrders(@RequestParam Map<String, String> params) throws ResourceNotFoundException {
         return ApiResponse.<Page<SellingOrderDTO>>builder()
-                .status(HttpStatus.CREATED.value())
+                .status(HttpStatus.OK.value())
                 .success(true)
                 .payload(sellingOrderService.getSellingOrders(params))
                 .message("Lấy thông tin tất cả đơn hàng thành công")
+                .build();
+    }
+
+    @GetMapping("/today")
+    public ApiResponse<SellingOrderStatisticsDTO> getSellingOrderStatisticsForToday() {
+        return ApiResponse.<SellingOrderStatisticsDTO>builder()
+                .status(HttpStatus.OK.value())
+                .success(true)
+                .payload(sellingOrderService.getSellingOrderStatisticsForToday())
+                .message("Lấy thông tin đơn hàng hôm nay thành công")
                 .build();
     }
 }

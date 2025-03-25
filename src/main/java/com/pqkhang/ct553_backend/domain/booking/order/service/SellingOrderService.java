@@ -4,6 +4,7 @@ import com.pqkhang.ct553_backend.app.exception.ResourceNotFoundException;
 import com.pqkhang.ct553_backend.app.response.Page;
 import com.pqkhang.ct553_backend.domain.booking.order.dto.SellingOrderDTO;
 import com.pqkhang.ct553_backend.domain.booking.order.dto.request.RequestSellingOrderDTO;
+import com.pqkhang.ct553_backend.domain.booking.order.dto.response.SellingOrderStatisticsDTO;
 import com.pqkhang.ct553_backend.domain.booking.order.enums.OrderStatusEnum;
 import com.pqkhang.ct553_backend.domain.booking.order.enums.PaymentStatusEnum;
 import org.springframework.stereotype.Service;
@@ -25,4 +26,6 @@ public interface SellingOrderService {
     List<SellingOrderDTO> getAllSellingOrdersByCustomerId(UUID customerId) throws ResourceNotFoundException;
 
     Page<SellingOrderDTO> getSellingOrders(Map<String, String> params) throws ResourceNotFoundException;
+
+    SellingOrderStatisticsDTO getSellingOrderStatisticsForToday();
 }

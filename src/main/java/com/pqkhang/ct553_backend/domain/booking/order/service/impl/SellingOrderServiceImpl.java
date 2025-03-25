@@ -5,6 +5,7 @@ import com.pqkhang.ct553_backend.app.response.Meta;
 import com.pqkhang.ct553_backend.app.response.Page;
 import com.pqkhang.ct553_backend.domain.booking.order.dto.SellingOrderDTO;
 import com.pqkhang.ct553_backend.domain.booking.order.dto.request.RequestSellingOrderDTO;
+import com.pqkhang.ct553_backend.domain.booking.order.dto.response.SellingOrderStatisticsDTO;
 import com.pqkhang.ct553_backend.domain.booking.order.entity.SellingOrder;
 import com.pqkhang.ct553_backend.domain.booking.order.enums.OrderStatusEnum;
 import com.pqkhang.ct553_backend.domain.booking.order.enums.PaymentStatusEnum;
@@ -41,6 +42,9 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -322,6 +326,45 @@ public class SellingOrderServiceImpl implements SellingOrderService {
         Pageable pageable = createPageable(params);
         Specification<SellingOrder> spec = buildSearchSpec(params);
         return buildOrderPage(sellingOrderRepository.findAll(spec, pageable), pageable);
+    }
+
+    @Override
+    public SellingOrderStatisticsDTO getSellingOrderStatisticsForToday() {
+        LocalDate today = LocalDate.now();
+        LocalDateTime startOfDay = today.atStartOfDay();
+        LocalDateTime endOfDay = today.atTime(LocalTime.MAX);
+
+        // Lấy danh sách đơn hàng được tạo trong ngày
+        List<SellingOrder> orders = sellingOrderRepository.findAllByCreatedAtBetween(startOfDay, endOfDay);
+
+        BigDecimal totalRevenue = BigDecimal.ZERO;
+        int totalNewOrders = 0;
+        int totalDeliveringOrders = 0;
+        int totalDeliveredOrders = 0;
+        int totalCancelledOrders = 0;
+
+        for (SellingOrder order : orders) {
+            // Đếm số lượng đơn hàng theo trạng thái
+            if (order.getOrderStatus() == OrderStatusEnum.PENDING) {
+                totalNewOrders++;
+            } else if (order.getOrderStatus() == OrderStatusEnum.DELIVERING) {
+                totalDeliveringOrders++;
+            } else if (order.getOrderStatus() == OrderStatusEnum.DELIVERED) {
+                totalDeliveredOrders++;
+            } else if (order.getOrderStatus() == OrderStatusEnum.CANCELLED) {
+                totalCancelledOrders++;
+            } else if (order.getOrderStatus() == OrderStatusEnum.COMPLETED) {
+                totalRevenue = totalRevenue.add(order.getTotalAmount());
+            }
+        }
+
+        return SellingOrderStatisticsDTO.builder()
+                .totalRevenue(totalRevenue)
+                .totalNewOrders(totalNewOrders)
+                .totalDeliveringOrders(totalDeliveringOrders)
+                .totalDeliveredOrders(totalDeliveredOrders)
+                .totalCancelledOrders(totalCancelledOrders)
+                .build();
     }
 }
 

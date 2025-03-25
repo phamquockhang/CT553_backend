@@ -22,4 +22,6 @@ public interface SellingOrderRepository extends JpaRepository<SellingOrder, Stri
     int updateExpiredSellingOrders(LocalDateTime minusTime);
 
     List<SellingOrder> findByPaymentStatusAndCreatedAtBefore(PaymentStatusEnum paymentStatus, LocalDateTime createdAtBefore);
+
+    List<SellingOrder> findAllByCreatedAtBetween(LocalDateTime start, LocalDateTime end);
 }
