@@ -5,10 +5,10 @@ import com.pqkhang.ct553_backend.app.response.ApiResponse;
 import com.pqkhang.ct553_backend.app.response.Page;
 import com.pqkhang.ct553_backend.domain.booking.order.dto.SellingOrderDTO;
 import com.pqkhang.ct553_backend.domain.booking.order.dto.request.RequestSellingOrderDTO;
+import com.pqkhang.ct553_backend.domain.booking.order.dto.request.TimeRangeDTO;
 import com.pqkhang.ct553_backend.domain.booking.order.dto.response.SellingOrderStatisticsDTO;
 import com.pqkhang.ct553_backend.domain.booking.order.enums.OrderStatusEnum;
 import com.pqkhang.ct553_backend.domain.booking.order.enums.PaymentStatusEnum;
-import com.pqkhang.ct553_backend.domain.booking.order.repository.SellingOrderRepository;
 import com.pqkhang.ct553_backend.domain.booking.order.service.SellingOrderService;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
@@ -17,7 +17,6 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -32,7 +31,6 @@ import java.util.UUID;
 public class SellingOrderController {
 
     SellingOrderService sellingOrderService;
-    SellingOrderRepository sellingOrderRepository;
 
     @PostMapping
     public ApiResponse<SellingOrderDTO> createSellingOrder(@Valid @RequestBody RequestSellingOrderDTO requestSellingOrderDTO) throws ResourceNotFoundException {
@@ -100,39 +98,9 @@ public class SellingOrderController {
     }
 
     @GetMapping("/selling-order-statistics")
-    public ApiResponse<SellingOrderStatisticsDTO> getSellingOrderStatistics(@RequestParam String period) {
-        LocalDateTime startDate;
-        LocalDateTime endDate = LocalDateTime.now();
-
-        switch (period.toLowerCase()) {
-            case "today" -> startDate = LocalDate.now().atStartOfDay();
-            case "yesterday" -> {
-                startDate = LocalDate.now().minusDays(1).atStartOfDay();
-                endDate = LocalDate.now().minusDays(1).atTime(LocalTime.MAX);
-            }
-            case "this-week" -> startDate = LocalDate.now().with(DayOfWeek.MONDAY).atStartOfDay();
-            case "last-week" -> {
-                startDate = LocalDate.now().with(DayOfWeek.MONDAY).minusWeeks(1).atStartOfDay();
-                endDate = startDate.plusDays(6).toLocalDate().atTime(LocalTime.MAX);
-            }
-            case "this-month" -> startDate = LocalDate.now().withDayOfMonth(1).atStartOfDay();
-            case "last-month" -> {
-                startDate = LocalDate.now().minusMonths(1).withDayOfMonth(1).atStartOfDay();
-                endDate = startDate.plusMonths(1).minusDays(1).toLocalDate().atTime(LocalTime.MAX);
-            }
-            case "this-year" -> startDate = LocalDate.now().withDayOfYear(1).atStartOfDay();
-            case "last-year" -> {
-                startDate = LocalDate.now().minusYears(1).withDayOfYear(1).atStartOfDay();
-                endDate = startDate.plusYears(1).minusDays(1).toLocalDate().atTime(LocalTime.MAX);
-            }
-            case "all-time" -> {
-                startDate = sellingOrderRepository.findOldestOrderDate().orElse(LocalDate.of(1970, 1, 1)).atStartOfDay();
-                endDate = LocalDateTime.now();
-            }
-
-            default ->
-                    throw new IllegalArgumentException("Giai đoạn " + period + " không hợp lệ, chỉ hỗ trợ today, yesterday, this-week, last-week, this-month, last-month, this-year, last-year, all-time");
-        }
+    public ApiResponse<SellingOrderStatisticsDTO> getSellingOrderStatistics(@RequestBody TimeRangeDTO timeRangeDTO) {
+        LocalDateTime startDate = LocalDateTime.of(LocalDate.parse(timeRangeDTO.getStartTime()), LocalTime.MIN);
+        LocalDateTime endDate = LocalDateTime.of(LocalDate.parse(timeRangeDTO.getEndTime()), LocalTime.MAX);
 
         return ApiResponse.<SellingOrderStatisticsDTO>builder()
                 .status(HttpStatus.OK.value())
