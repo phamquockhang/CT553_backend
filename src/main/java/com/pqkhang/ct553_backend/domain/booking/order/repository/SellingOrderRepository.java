@@ -8,8 +8,10 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Repository
@@ -20,6 +22,9 @@ public interface SellingOrderRepository extends JpaRepository<SellingOrder, Stri
     @Modifying
     @Query("UPDATE SellingOrder s SET s.paymentStatus = 'EXPIRED' WHERE s.paymentStatus = 'PENDING' AND s.createdAt < :minusTime")
     int updateExpiredSellingOrders(LocalDateTime minusTime);
+
+    @Query("SELECT MIN(s.createdAt) FROM SellingOrder s")
+    Optional<LocalDate> findOldestOrderDate();
 
     List<SellingOrder> findByPaymentStatusAndCreatedAtBefore(PaymentStatusEnum paymentStatus, LocalDateTime createdAtBefore);
 

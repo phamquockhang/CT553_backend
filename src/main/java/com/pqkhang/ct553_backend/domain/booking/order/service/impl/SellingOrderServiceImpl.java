@@ -42,9 +42,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -329,18 +327,13 @@ public class SellingOrderServiceImpl implements SellingOrderService {
     }
 
     @Override
-    public SellingOrderStatisticsDTO getSellingOrderStatisticsForToday() {
-        LocalDate today = LocalDate.now();
-        LocalDateTime startOfDay = today.atStartOfDay();
-        LocalDateTime endOfDay = today.atTime(LocalTime.MAX);
-
-        // Lấy danh sách đơn hàng được tạo trong ngày
-        List<SellingOrder> orders = sellingOrderRepository.findAllByCreatedAtBetween(startOfDay, endOfDay);
+    public SellingOrderStatisticsDTO getSellingOrderStatistics(LocalDateTime startDate, LocalDateTime endDate) {
+        List<SellingOrder> orders = sellingOrderRepository.findAllByCreatedAtBetween(startDate, endDate);
 
         BigDecimal totalRevenue = BigDecimal.ZERO;
         int totalNewOrders = 0;
         int totalDeliveringOrders = 0;
-        int totalDeliveredOrders = 0;
+        int totalCompletedOrders = 0;
         int totalCancelledOrders = 0;
 
         for (SellingOrder order : orders) {
@@ -349,12 +342,11 @@ public class SellingOrderServiceImpl implements SellingOrderService {
                 totalNewOrders++;
             } else if (order.getOrderStatus() == OrderStatusEnum.DELIVERING) {
                 totalDeliveringOrders++;
-            } else if (order.getOrderStatus() == OrderStatusEnum.DELIVERED) {
-                totalDeliveredOrders++;
             } else if (order.getOrderStatus() == OrderStatusEnum.CANCELLED) {
                 totalCancelledOrders++;
             } else if (order.getOrderStatus() == OrderStatusEnum.COMPLETED) {
                 totalRevenue = totalRevenue.add(order.getTotalAmount());
+                totalCompletedOrders++;
             }
         }
 
@@ -362,7 +354,7 @@ public class SellingOrderServiceImpl implements SellingOrderService {
                 .totalRevenue(totalRevenue)
                 .totalNewOrders(totalNewOrders)
                 .totalDeliveringOrders(totalDeliveringOrders)
-                .totalDeliveredOrders(totalDeliveredOrders)
+                .totalCompletedOrders(totalCompletedOrders)
                 .totalCancelledOrders(totalCancelledOrders)
                 .build();
     }

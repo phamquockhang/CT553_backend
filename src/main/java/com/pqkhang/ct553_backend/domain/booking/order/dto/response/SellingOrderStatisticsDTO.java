@@ -13,11 +13,11 @@ import java.math.BigDecimal;
 public class SellingOrderStatisticsDTO {
     BigDecimal totalRevenue;
 
+    Integer totalCompletedOrders;
+
     Integer totalNewOrders;
 
     Integer totalDeliveringOrders;
-
-    Integer totalDeliveredOrders;
 
     Integer totalCancelledOrders;
 }

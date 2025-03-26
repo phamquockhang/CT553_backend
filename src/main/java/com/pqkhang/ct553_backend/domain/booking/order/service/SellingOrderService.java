@@ -9,6 +9,7 @@ import com.pqkhang.ct553_backend.domain.booking.order.enums.OrderStatusEnum;
 import com.pqkhang.ct553_backend.domain.booking.order.enums.PaymentStatusEnum;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -27,5 +28,5 @@ public interface SellingOrderService {
 
     Page<SellingOrderDTO> getSellingOrders(Map<String, String> params) throws ResourceNotFoundException;
 
-    SellingOrderStatisticsDTO getSellingOrderStatisticsForToday();
+    SellingOrderStatisticsDTO getSellingOrderStatistics(LocalDateTime startDate, LocalDateTime endDate);
 }
