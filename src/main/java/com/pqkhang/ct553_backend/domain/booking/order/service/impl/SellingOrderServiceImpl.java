@@ -5,6 +5,7 @@ import com.pqkhang.ct553_backend.app.response.Meta;
 import com.pqkhang.ct553_backend.app.response.Page;
 import com.pqkhang.ct553_backend.domain.booking.order.dto.SellingOrderDTO;
 import com.pqkhang.ct553_backend.domain.booking.order.dto.request.RequestSellingOrderDTO;
+import com.pqkhang.ct553_backend.domain.booking.order.dto.response.SellingOrderStatisticsDTO;
 import com.pqkhang.ct553_backend.domain.booking.order.entity.SellingOrder;
 import com.pqkhang.ct553_backend.domain.booking.order.enums.OrderStatusEnum;
 import com.pqkhang.ct553_backend.domain.booking.order.enums.PaymentStatusEnum;
@@ -41,6 +42,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -322,6 +324,39 @@ public class SellingOrderServiceImpl implements SellingOrderService {
         Pageable pageable = createPageable(params);
         Specification<SellingOrder> spec = buildSearchSpec(params);
         return buildOrderPage(sellingOrderRepository.findAll(spec, pageable), pageable);
+    }
+
+    @Override
+    public SellingOrderStatisticsDTO getSellingOrderStatistics(LocalDateTime startDate, LocalDateTime endDate) {
+        List<SellingOrder> orders = sellingOrderRepository.findAllByCreatedAtBetween(startDate, endDate);
+
+        BigDecimal totalRevenue = BigDecimal.ZERO;
+        int totalNewOrders = 0;
+        int totalDeliveringOrders = 0;
+        int totalCompletedOrders = 0;
+        int totalCancelledOrders = 0;
+
+        for (SellingOrder order : orders) {
+            // Đếm số lượng đơn hàng theo trạng thái
+            if (order.getOrderStatus() == OrderStatusEnum.PENDING) {
+                totalNewOrders++;
+            } else if (order.getOrderStatus() == OrderStatusEnum.DELIVERING) {
+                totalDeliveringOrders++;
+            } else if (order.getOrderStatus() == OrderStatusEnum.CANCELLED) {
+                totalCancelledOrders++;
+            } else if (order.getOrderStatus() == OrderStatusEnum.COMPLETED) {
+                totalRevenue = totalRevenue.add(order.getTotalAmount());
+                totalCompletedOrders++;
+            }
+        }
+
+        return SellingOrderStatisticsDTO.builder()
+                .totalRevenue(totalRevenue)
+                .totalNewOrders(totalNewOrders)
+                .totalDeliveringOrders(totalDeliveringOrders)
+                .totalCompletedOrders(totalCompletedOrders)
+                .totalCancelledOrders(totalCancelledOrders)
+                .build();
     }
 }
 

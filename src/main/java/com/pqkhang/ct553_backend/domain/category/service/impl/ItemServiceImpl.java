@@ -6,12 +6,16 @@ import com.pqkhang.ct553_backend.app.response.Meta;
 import com.pqkhang.ct553_backend.app.response.Page;
 import com.pqkhang.ct553_backend.domain.category.dto.GeneralizedItemDTO;
 import com.pqkhang.ct553_backend.domain.category.dto.ItemDTO;
+import com.pqkhang.ct553_backend.domain.category.dto.ProductDTO;
+import com.pqkhang.ct553_backend.domain.category.dto.response.CustomItemDTOForStatistics;
+import com.pqkhang.ct553_backend.domain.category.dto.response.CustomProductDTOForStatistics;
 import com.pqkhang.ct553_backend.domain.category.entity.Item;
 import com.pqkhang.ct553_backend.domain.category.entity.Product;
 import com.pqkhang.ct553_backend.domain.category.mapper.ItemMapper;
 import com.pqkhang.ct553_backend.domain.category.repository.ItemRepository;
 import com.pqkhang.ct553_backend.domain.category.repository.ProductRepository;
 import com.pqkhang.ct553_backend.domain.category.service.ItemService;
+import com.pqkhang.ct553_backend.domain.category.service.WeightService;
 import com.pqkhang.ct553_backend.infrastructure.utils.RequestParamUtils;
 import com.pqkhang.ct553_backend.infrastructure.utils.StringUtils;
 import jakarta.persistence.criteria.Join;
@@ -43,6 +47,7 @@ public class ItemServiceImpl implements ItemService {
     ItemMapper itemMapper;
     ProductServiceImpl productService;
     ProductRepository productRepository;
+    private final WeightService weightService;
 
     private ItemDTO customItemDTOMapper(Item item) {
         ItemDTO itemDTO = itemMapper.toItemDTO(item);
@@ -173,6 +178,41 @@ public class ItemServiceImpl implements ItemService {
     public void deleteItem(Integer itemId) throws ResourceNotFoundException {
         Item item = itemRepository.findById(itemId).orElseThrow(() -> new ResourceNotFoundException("Item ID " + itemId + " is invalid."));
         itemRepository.delete(item);
+    }
+
+    @Override
+    public List<CustomItemDTOForStatistics> getItemsForStatistics() {
+        List<ItemDTO> items = itemRepository.findAll().stream().map(itemMapper::toItemDTO).toList();
+
+        return items.stream().map(this::mapToCustomItemDTOForStatistics).collect(Collectors.toList());
+    }
+
+    private CustomItemDTOForStatistics mapToCustomItemDTOForStatistics(ItemDTO item) {
+        List<CustomProductDTOForStatistics> productsStatistics = item.getProducts().stream()
+                .map(
+                        product -> {
+                            try {
+                                return mapToCustomProductDTOForStatistics(product);
+                            } catch (ResourceNotFoundException e) {
+                                throw new RuntimeException("Không tìm thấy tài nguyên cho sản phẩm ID: " + product.getProductId(), e);
+                            }
+                        }
+                ).toList();
+
+        CustomItemDTOForStatistics customItemDTOForStatistics = itemMapper.toCustomItemDTOForStatistics(itemMapper.toItem(item));
+        customItemDTOForStatistics.setProducts(productsStatistics);
+
+        return customItemDTOForStatistics;
+    }
+
+    private CustomProductDTOForStatistics mapToCustomProductDTOForStatistics(ProductDTO product) throws ResourceNotFoundException {
+        String currentWeight = weightService.getCurrentWeightByProductId(product.getProductId()).getWeightValue().toString();
+
+        return CustomProductDTOForStatistics.builder()
+                .productId(product.getProductId())
+                .productName(product.getProductName())
+                .remainingQuantity(currentWeight)
+                .build();
     }
 }
 

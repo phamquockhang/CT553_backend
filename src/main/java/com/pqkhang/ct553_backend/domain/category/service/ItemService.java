@@ -4,6 +4,7 @@ import com.pqkhang.ct553_backend.app.exception.ResourceNotFoundException;
 import com.pqkhang.ct553_backend.app.response.Page;
 import com.pqkhang.ct553_backend.domain.category.dto.GeneralizedItemDTO;
 import com.pqkhang.ct553_backend.domain.category.dto.ItemDTO;
+import com.pqkhang.ct553_backend.domain.category.dto.response.CustomItemDTOForStatistics;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Service;
 
@@ -23,4 +24,6 @@ public interface ItemService {
     ItemDTO updateItem(Integer itemId, @Valid ItemDTO itemDTO) throws ResourceNotFoundException;
 
     void deleteItem(Integer itemId) throws ResourceNotFoundException;
+
+    List<CustomItemDTOForStatistics> getItemsForStatistics() throws ResourceNotFoundException;
 }
