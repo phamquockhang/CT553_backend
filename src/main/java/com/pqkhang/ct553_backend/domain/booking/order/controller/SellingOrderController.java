@@ -98,7 +98,9 @@ public class SellingOrderController {
     }
 
     @GetMapping("/selling-order-statistics")
-    public ApiResponse<SellingOrderStatisticsDTO> getSellingOrderStatistics(@RequestBody TimeRangeDTO timeRangeDTO) {
+    public ApiResponse<SellingOrderStatisticsDTO> getSellingOrderStatistics(@RequestParam Map<String, String> params) {
+
+        TimeRangeDTO timeRangeDTO = new TimeRangeDTO(params.get("startTime"), params.get("endTime"));
         LocalDateTime startDate = LocalDateTime.of(LocalDate.parse(timeRangeDTO.getStartTime()), LocalTime.MIN);
         LocalDateTime endDate = LocalDateTime.of(LocalDate.parse(timeRangeDTO.getEndTime()), LocalTime.MAX);
 

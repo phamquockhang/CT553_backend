@@ -5,6 +5,7 @@ import com.pqkhang.ct553_backend.app.response.ApiResponse;
 import com.pqkhang.ct553_backend.app.response.Page;
 import com.pqkhang.ct553_backend.domain.category.dto.GeneralizedItemDTO;
 import com.pqkhang.ct553_backend.domain.category.dto.ItemDTO;
+import com.pqkhang.ct553_backend.domain.category.dto.response.CustomItemDTOForStatistics;
 import com.pqkhang.ct553_backend.domain.category.service.ItemService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -47,6 +48,16 @@ public class ItemController {
                 .success(true)
                 .payload(itemService.getAllItems())
                 .message("Lấy tất cả mặt hàng thành công")
+                .build();
+    }
+
+    @GetMapping("/item-statistics")
+    public ApiResponse<List<CustomItemDTOForStatistics>> getItemsForStatistics() throws ResourceNotFoundException {
+        return ApiResponse.<List<CustomItemDTOForStatistics>>builder()
+                .status(HttpStatus.OK.value())
+                .success(true)
+                .payload(itemService.getItemsForStatistics())
+                .message("Lấy tất cả mặt hàng cho thống kê thành công")
                 .build();
     }
 
