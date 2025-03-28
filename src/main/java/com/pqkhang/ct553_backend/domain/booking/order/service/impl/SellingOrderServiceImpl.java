@@ -22,7 +22,7 @@ import com.pqkhang.ct553_backend.domain.booking.voucher.enums.DiscountTypeEnum;
 import com.pqkhang.ct553_backend.domain.booking.voucher.repository.VoucherRepository;
 import com.pqkhang.ct553_backend.domain.booking.voucher.service.UsedVoucherService;
 import com.pqkhang.ct553_backend.domain.booking.voucher.service.VoucherService;
-import com.pqkhang.ct553_backend.domain.common.service.EmailService;
+import com.pqkhang.ct553_backend.domain.notification.service.EmailService;
 import com.pqkhang.ct553_backend.domain.user.dto.ScoreCalculator;
 import com.pqkhang.ct553_backend.domain.user.dto.ScoreDTO;
 import com.pqkhang.ct553_backend.domain.user.entity.Customer;

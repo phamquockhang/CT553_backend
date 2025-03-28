@@ -1,4 +1,4 @@
-package com.pqkhang.ct553_backend.domain.common.service;
+package com.pqkhang.ct553_backend.domain.notification.service;
 
 import com.pqkhang.ct553_backend.domain.booking.order.entity.SellingOrder;
 import com.pqkhang.ct553_backend.domain.transaction.entity.Transaction;
