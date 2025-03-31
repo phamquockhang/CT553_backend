@@ -1,7 +1,7 @@
-package com.pqkhang.ct553_backend.domain.common.service.impl;
+package com.pqkhang.ct553_backend.domain.notification.service.impl;
 
 import com.pqkhang.ct553_backend.domain.booking.order.entity.SellingOrder;
-import com.pqkhang.ct553_backend.domain.common.service.EmailService;
+import com.pqkhang.ct553_backend.domain.notification.service.EmailService;
 import com.pqkhang.ct553_backend.domain.transaction.entity.Transaction;
 import com.pqkhang.ct553_backend.infrastructure.kafka.email.EmailObject;
 import com.pqkhang.ct553_backend.infrastructure.kafka.email.EmailProducer;

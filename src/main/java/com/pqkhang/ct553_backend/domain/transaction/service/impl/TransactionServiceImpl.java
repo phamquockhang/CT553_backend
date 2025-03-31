@@ -11,7 +11,7 @@ import com.pqkhang.ct553_backend.domain.booking.order.enums.PaymentStatusEnum;
 import com.pqkhang.ct553_backend.domain.booking.order.mapper.SellingOrderMapper;
 import com.pqkhang.ct553_backend.domain.booking.order.repository.SellingOrderRepository;
 import com.pqkhang.ct553_backend.domain.booking.order.service.SellingOrderService;
-import com.pqkhang.ct553_backend.domain.common.service.EmailService;
+import com.pqkhang.ct553_backend.domain.notification.service.EmailService;
 import com.pqkhang.ct553_backend.domain.transaction.dto.TransactionDTO;
 import com.pqkhang.ct553_backend.domain.transaction.dto.request.VNPayCallbackRequest;
 import com.pqkhang.ct553_backend.domain.transaction.dto.response.VNPayResponse;

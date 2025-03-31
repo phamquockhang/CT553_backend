@@ -29,4 +29,11 @@ public interface SellingOrderRepository extends JpaRepository<SellingOrder, Stri
     List<SellingOrder> findByPaymentStatusAndCreatedAtBefore(PaymentStatusEnum paymentStatus, LocalDateTime createdAtBefore);
 
     List<SellingOrder> findAllByCreatedAtBetween(LocalDateTime start, LocalDateTime end);
+
+    //    @Query("SELECT s.assignedStaffEmail, COUNT(s.sellingOrderId) FROM SellingOrder s WHERE DATE(s.createdAt) = CURRENT_DATE GROUP BY s.assignedStaffEmail")
+    @Query(value = "SELECT s.assigned_staff_email, COUNT(s.selling_order_id) " +
+            "FROM selling_orders s " +
+            "WHERE DATE(s.created_at) = CURRENT_DATE " +
+            "GROUP BY s.assigned_staff_email", nativeQuery = true)
+    List<Object[]> countOrdersByAssignedStaffToday();
 }

@@ -5,7 +5,6 @@ import com.pqkhang.ct553_backend.app.exception.ResourceNotFoundException;
 import com.pqkhang.ct553_backend.domain.auth.dto.request.AuthRequest;
 import com.pqkhang.ct553_backend.domain.auth.dto.response.AuthResponse;
 import com.pqkhang.ct553_backend.domain.auth.entity.Role;
-import com.pqkhang.ct553_backend.domain.auth.repository.PermissionRepository;
 import com.pqkhang.ct553_backend.domain.auth.repository.RoleRepository;
 import com.pqkhang.ct553_backend.domain.auth.service.AuthService;
 import com.pqkhang.ct553_backend.domain.booking.cart.service.CartService;
@@ -14,7 +13,6 @@ import com.pqkhang.ct553_backend.domain.user.dto.ScoreDTO;
 import com.pqkhang.ct553_backend.domain.user.entity.Customer;
 import com.pqkhang.ct553_backend.domain.user.entity.Staff;
 import com.pqkhang.ct553_backend.domain.user.mapper.CustomerMapper;
-import com.pqkhang.ct553_backend.domain.user.mapper.StaffMapper;
 import com.pqkhang.ct553_backend.domain.user.repository.CustomerRepository;
 import com.pqkhang.ct553_backend.domain.user.repository.StaffRepository;
 import com.pqkhang.ct553_backend.domain.user.service.ScoreService;
@@ -44,10 +42,7 @@ public class AuthServiceImpl implements AuthService {
     RoleRepository roleRepository;
     AuthenticationManager authenticationManager;
     JwtUtils jwtUtils;
-
-    PermissionRepository permissionRepository;
     StaffRepository staffRepository;
-    StaffMapper staffMapper;
     JwtDecoder jwtDecoder;
     AuditAwareImpl auditAware;
     ScoreService scoreService;

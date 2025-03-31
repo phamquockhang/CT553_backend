@@ -1,6 +1,6 @@
 package com.pqkhang.ct553_backend.infrastructure.kafka.email;
 
-import com.pqkhang.ct553_backend.domain.common.service.impl.EmailServiceImpl;
+import com.pqkhang.ct553_backend.domain.notification.service.impl.EmailServiceImpl;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;

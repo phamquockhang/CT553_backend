@@ -71,10 +71,11 @@ public class SecurityConfig {
                     return config;
                 }))
                 .authorizeHttpRequests(requests -> requests
-                        .requestMatchers("/", "/api/v1/auth/**",
+                        .requestMatchers("/", "/api/v1/auth/**","/api/v1/addresses/**",
                                 "/api/v1/items/**", "/api/v1/products/**",
                                 "/api/v1/payment-methods/**",
                                 "/api/v1/selling_orders/**", "/api/v1/transactions/**",
+                                "/ws/**",
                                 "/oauth2/**").permitAll()
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

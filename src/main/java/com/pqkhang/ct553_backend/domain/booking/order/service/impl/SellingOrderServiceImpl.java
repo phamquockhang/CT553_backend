@@ -22,14 +22,23 @@ import com.pqkhang.ct553_backend.domain.booking.voucher.enums.DiscountTypeEnum;
 import com.pqkhang.ct553_backend.domain.booking.voucher.repository.VoucherRepository;
 import com.pqkhang.ct553_backend.domain.booking.voucher.service.UsedVoucherService;
 import com.pqkhang.ct553_backend.domain.booking.voucher.service.VoucherService;
-import com.pqkhang.ct553_backend.domain.common.service.EmailService;
+import com.pqkhang.ct553_backend.domain.notification.dto.NotificationDTO;
+import com.pqkhang.ct553_backend.domain.notification.entity.Notification;
+import com.pqkhang.ct553_backend.domain.notification.enums.NotificationTypeEnum;
+import com.pqkhang.ct553_backend.domain.notification.repository.NotificationRepository;
+import com.pqkhang.ct553_backend.domain.notification.service.EmailService;
+import com.pqkhang.ct553_backend.domain.notification.service.NotificationService;
 import com.pqkhang.ct553_backend.domain.user.dto.ScoreCalculator;
 import com.pqkhang.ct553_backend.domain.user.dto.ScoreDTO;
 import com.pqkhang.ct553_backend.domain.user.entity.Customer;
+import com.pqkhang.ct553_backend.domain.user.entity.Staff;
 import com.pqkhang.ct553_backend.domain.user.repository.CustomerRepository;
+import com.pqkhang.ct553_backend.domain.user.repository.StaffRepository;
 import com.pqkhang.ct553_backend.domain.user.service.ScoreService;
+import com.pqkhang.ct553_backend.infrastructure.audit.AuditAwareImpl;
 import com.pqkhang.ct553_backend.infrastructure.utils.RequestParamUtils;
 import com.pqkhang.ct553_backend.infrastructure.utils.StringUtils;
+import com.pqkhang.ct553_backend.infrastructure.websocket.service.WebSocketService;
 import jakarta.persistence.criteria.Predicate;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -43,10 +52,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -66,10 +72,15 @@ public class SellingOrderServiceImpl implements SellingOrderService {
     VoucherRepository voucherRepository;
     UsedVoucherService usedVoucherService;
     VoucherService voucherService;
+    EmailService emailService;
+    StaffRepository staffRepository;
+    WebSocketService webSocketService;
 
     static String DEFAULT_PAGE = "1";
     static String DEFAULT_PAGE_SIZE = "10";
-    private final EmailService emailService;
+    private final NotificationService notificationService;
+    private final NotificationRepository notificationRepository;
+    private final AuditAwareImpl auditAwareImpl;
 
     private Pageable createPageable(Map<String, String> params) {
         int page = Integer.parseInt(params.getOrDefault("page", DEFAULT_PAGE));
@@ -79,7 +90,7 @@ public class SellingOrderServiceImpl implements SellingOrderService {
     }
 
     private Specification<SellingOrder> buildSearchSpec(Map<String, String> params) {
-        return Specification.where(buildQuerySpec_SellingOrderId(params)).and(buildPaymentStatusSpec(params)).and(buildOrderStatusSpec(params));
+        return Specification.where(buildQuerySpec_SellingOrderId(params)).and(buildPaymentStatusSpec(params)).and(buildOrderStatusSpec(params)).and(buildAssignedStaffEmailSpec(params));
     }
 
     private Specification<SellingOrder> buildQuerySpec_SellingOrderId(Map<String, String> params) {
@@ -104,6 +115,16 @@ public class SellingOrderServiceImpl implements SellingOrderService {
                 .stream()
                 .map(criteria -> (Specification<SellingOrder>) (root, query, cb) ->
                         cb.equal(root.get("orderStatus"), OrderStatusEnum.valueOf(criteria.getValue().toString().toUpperCase()))
+                )
+                .reduce(Specification::or)
+                .orElse(null);
+    }
+
+    private Specification<SellingOrder> buildAssignedStaffEmailSpec(Map<String, String> params) {
+        return requestParamUtils.getSearchCriteria(params, "assignedStaffEmail")
+                .stream()
+                .map(criteria -> (Specification<SellingOrder>) (root, query, cb) ->
+                        cb.equal(root.get("assignedStaffEmail"), criteria.getValue().toString())
                 )
                 .reduce(Specification::or)
                 .orElse(null);
@@ -174,6 +195,70 @@ public class SellingOrderServiceImpl implements SellingOrderService {
         sellingOrderRepository.save(sellingOrder);
     }
 
+    private static String getLeastBusyStaff(List<Object[]> staffOrdersCount, List<String> staffEmails) {
+        Map<String, Long> staffOrderMap = new HashMap<>();
+        for (Object[] result : staffOrdersCount) {
+            String email = (String) result[0];
+            Long count = (Long) result[1];
+            staffOrderMap.put(email, count);
+        }
+
+        String leastBusyStaff = null;
+        long minOrders = Long.MAX_VALUE;
+
+        for (String email : staffEmails) {
+            long orders = staffOrderMap.getOrDefault(email, 0L);
+            if (orders < minOrders) {
+                minOrders = orders;
+                leastBusyStaff = email;
+            }
+        }
+        return leastBusyStaff;
+    }
+
+    private String assignOrder(SellingOrder sellingOrder) {
+        // tìm các nhân viên hiện tại có thể xử lý đơn hàng
+        List<String> staffEmails = staffRepository.findAllStaffEmailsByIsActivatedTrue();
+
+        // tìm các nhân viên xử lý đơn hàng ít nhất trong ngày
+        List<Object[]> staffOrdersCount = sellingOrderRepository.countOrdersByAssignedStaffToday();
+
+        // tìm nhân viên có ít đơn hàng nhất trong ngày đến thời điểm hiện tại
+        String leastBusyStaff = getLeastBusyStaff(staffOrdersCount, staffEmails);
+
+        // gán đơn hàng cho nhân viên
+        sellingOrder.setAssignedStaffEmail(leastBusyStaff);
+        log.info("🔹 Assigned order to staff: {}", leastBusyStaff);
+        return leastBusyStaff;
+    }
+
+    private void createNotification(SellingOrder sellingOrder, String leastBusyStaffEmail) throws ResourceNotFoundException {
+        Staff staff = staffRepository.findStaffByEmail(leastBusyStaffEmail).orElseThrow(
+                () -> new ResourceNotFoundException("Không tìm thấy nhân viên với email: " + leastBusyStaffEmail)
+        );
+        // tạo thông báo cho nhân viên
+        NotificationDTO notificationDTO = NotificationDTO.builder()
+                .notificationType(NotificationTypeEnum.NEW_ORDER.name())
+                .staffId(staff.getStaffId().toString())
+                .sellingOrderId(sellingOrder.getSellingOrderId())
+                .build();
+        notificationService.createNotification(notificationDTO);
+        log.info("🔹 Notification: {}", notificationDTO);
+
+        // gửi thông báo hệ thống cho nhân viên
+        webSocketService.sendSystemNotification(staff.getStaffId(), "Bạn có đơn hàng mới cần xử lý");
+        log.info("🔹 Sending system notification");
+
+        sellingOrderRepository.save(sellingOrder);
+    }
+
+    private void assignOrderAndCreateNotification(SellingOrder sellingOrder) throws ResourceNotFoundException {
+        // phân công đơn hàng cho nhân viên ít đơn hàng nhất trong ngày
+        String leastBusyStaffEmail = assignOrder(sellingOrder);
+
+        createNotification(sellingOrder, leastBusyStaffEmail);
+    }
+
     @Override
     public SellingOrderDTO createSellingOrder(RequestSellingOrderDTO requestSellingOrderDTO) throws ResourceNotFoundException {
         UUID customerId;
@@ -202,14 +287,12 @@ public class SellingOrderServiceImpl implements SellingOrderService {
         sellingOrder.setSellingOrderId(newSellingOrderId);
         sellingOrder.setOrderStatus(orderStatusEnum);
         sellingOrder.setCustomer(customerId != null ? Customer.builder().customerId(customerId).build() : null);
-        sellingOrder.setTotalAmount(requestSellingOrderDTO.getUsedScore() != null ? requestSellingOrderDTO.getTotalAmount().subtract(BigDecimal.valueOf(requestSellingOrderDTO.getUsedScore())) : requestSellingOrderDTO.getTotalAmount());
-
-//        if (customerId != null) {
-//            int convertedScore = ScoreCalculator.convertMoneyToScores(requestSellingOrderDTO.getTotalAmount());
-//            sellingOrder.setEarnedScore(convertedScore);
-//        }
-
-        sellingOrder.setEarnedScore(customerId != null ? ScoreCalculator.convertMoneyToScores(requestSellingOrderDTO.getTotalAmount()) : 0);
+        sellingOrder.setTotalAmount(requestSellingOrderDTO.getUsedScore() != null
+                ? requestSellingOrderDTO.getTotalAmount().subtract(BigDecimal.valueOf(requestSellingOrderDTO.getUsedScore()))
+                : requestSellingOrderDTO.getTotalAmount());
+        sellingOrder.setEarnedScore(customerId != null
+                ? ScoreCalculator.convertMoneyToScores(requestSellingOrderDTO.getTotalAmount())
+                : 0);
 
         sellingOrder.setOrderStatuses(null);
         sellingOrder.setSellingOrderDetails(null);
@@ -219,7 +302,6 @@ public class SellingOrderServiceImpl implements SellingOrderService {
         // Tạo chi tiết đơn hàng, trạng thái đơn hàng và voucher đã sử dụng
         sellingOrder.setSellingOrderDetails(sellingOrderDetailService.createSellingOrderDetail(newSellingOrderId, requestSellingOrderDTO.getSellingOrderDetails()));
         sellingOrder.setOrderStatuses(orderStatusService.createOrderStatus(newSellingOrderId, orderStatusEnum));
-
         if (voucherCode != null) {
             voucher = voucherRepository.findByVoucherCode(voucherCode).orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy voucher với mã: " + voucherCode));
 
@@ -261,6 +343,23 @@ public class SellingOrderServiceImpl implements SellingOrderService {
             }
         }
 
+        auditAwareImpl.getCurrentAuditor().ifPresent(auditor -> {
+            log.info("🔹 Auditor: {}", auditor);
+
+            // chỉ phân công đơn hàng tự động và tạo thông báo cho nhân viên khi người tạo đơn hàng là khách hàng
+            // có thể là khách hàng đã đăng ký tài khoản hoặc khách vãng lai
+            if (customerRepository.existsByEmail(auditor) || auditor.equals("anonymousUser")) {
+                try {
+                    assignOrderAndCreateNotification(sellingOrder);
+                } catch (ResourceNotFoundException e) {
+                    throw new RuntimeException(e);
+                }
+            } else {
+                sellingOrder.setAssignedStaffEmail(auditor);
+                sellingOrderRepository.save(sellingOrder);
+            }
+        });
+
         return sellingOrderMapper.toSellingOrderDTO(sellingOrder);
     }
 
@@ -281,6 +380,19 @@ public class SellingOrderServiceImpl implements SellingOrderService {
 
                     voucherService.returnVoucher(usedVoucher.getVoucher().getVoucherCode());
 //                    usedVoucherService.deleteUsedVoucher(usedVoucher.getUsedVoucherId());
+                }
+
+                // Đánh dấu thông báo đã đọc khi hủy đơn hàng
+                Notification notification = notificationRepository.findBySellingOrder_SellingOrderId(sellingOrderId).orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy thông báo cho đơn hàng: " + sellingOrderId));
+                if (!notification.getIsRead()) {
+                    notificationService.readNotification(notification.getNotificationId());
+                }
+            } else if (newOrderStatus.equals(OrderStatusEnum.CONFIRMED)) {
+                // Đánh dấu thông báo đã đọc khi xác nhận đơn hàng
+                Notification notification = notificationRepository.findBySellingOrder_SellingOrderId(sellingOrderId).orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy thông báo cho đơn hàng: " + sellingOrderId));
+
+                if (!notification.getIsRead()) {
+                    notificationService.readNotification(notification.getNotificationId());
                 }
             }
 
