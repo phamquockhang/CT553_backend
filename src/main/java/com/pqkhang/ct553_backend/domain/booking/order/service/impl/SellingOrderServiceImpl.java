@@ -38,6 +38,7 @@ import com.pqkhang.ct553_backend.domain.user.service.ScoreService;
 import com.pqkhang.ct553_backend.infrastructure.audit.AuditAwareImpl;
 import com.pqkhang.ct553_backend.infrastructure.utils.RequestParamUtils;
 import com.pqkhang.ct553_backend.infrastructure.utils.StringUtils;
+import com.pqkhang.ct553_backend.infrastructure.websocket.service.WebSocketService;
 import jakarta.persistence.criteria.Predicate;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -73,6 +74,7 @@ public class SellingOrderServiceImpl implements SellingOrderService {
     VoucherService voucherService;
     EmailService emailService;
     StaffRepository staffRepository;
+    WebSocketService webSocketService;
 
     static String DEFAULT_PAGE = "1";
     static String DEFAULT_PAGE_SIZE = "10";
@@ -242,6 +244,10 @@ public class SellingOrderServiceImpl implements SellingOrderService {
                 .build();
         notificationService.createNotification(notificationDTO);
         log.info("🔹 Notification: {}", notificationDTO);
+
+        // gửi thông báo hệ thống cho nhân viên
+        webSocketService.sendSystemNotification(staff.getStaffId(), "Bạn có đơn hàng mới cần xử lý");
+        log.info("🔹 Sending system notification");
 
         sellingOrderRepository.save(sellingOrder);
     }

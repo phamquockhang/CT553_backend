@@ -75,6 +75,7 @@ public class SecurityConfig {
                                 "/api/v1/items/**", "/api/v1/products/**",
                                 "/api/v1/payment-methods/**",
                                 "/api/v1/selling_orders/**", "/api/v1/transactions/**",
+                                "/ws/**",
                                 "/oauth2/**").permitAll()
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
