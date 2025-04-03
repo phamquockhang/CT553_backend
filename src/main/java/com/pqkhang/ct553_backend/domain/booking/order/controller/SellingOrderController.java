@@ -68,11 +68,11 @@ public class SellingOrderController {
     }
 
     @GetMapping("/customer/{customerId}")
-    public ApiResponse<List<SellingOrderDTO>> getAllSellingOrdersByCustomerId(@PathVariable("customerId") UUID customerId) throws ResourceNotFoundException {
-        return ApiResponse.<List<SellingOrderDTO>>builder()
+    public ApiResponse<Page<SellingOrderDTO>> getAllSellingOrdersByCustomerId(@PathVariable("customerId") UUID customerId, @RequestParam Map<String, String> params) throws ResourceNotFoundException {
+        return ApiResponse.<Page<SellingOrderDTO>>builder()
                 .status(HttpStatus.OK.value())
                 .success(true)
-                .payload(sellingOrderService.getAllSellingOrdersByCustomerId(customerId))
+                .payload(sellingOrderService.getAllSellingOrdersByCustomerId(customerId, params))
                 .message("Lấy thông tin tất cả đơn hàng của khách hàng thành công")
                 .build();
     }
