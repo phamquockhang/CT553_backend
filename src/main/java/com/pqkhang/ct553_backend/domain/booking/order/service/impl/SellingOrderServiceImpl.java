@@ -51,7 +51,9 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -90,7 +92,38 @@ public class SellingOrderServiceImpl implements SellingOrderService {
     }
 
     private Specification<SellingOrder> buildSearchSpec(Map<String, String> params) {
-        return Specification.where(buildQuerySpec_SellingOrderId(params)).and(buildPaymentStatusSpec(params)).and(buildOrderStatusSpec(params)).and(buildAssignedStaffEmailSpec(params));
+        return Specification.where(buildQuerySpec_SellingOrderId(params))
+                .and(buildPaymentStatusSpec(params))
+                .and(buildOrderStatusSpec(params))
+                .and(buildAssignedStaffEmailSpec(params))
+                .and(buildInRangeDateSpec(params));
+    }
+
+    private Specification<SellingOrder> buildInRangeDateSpec(Map<String, String> params) {
+        String startDateStr = params.get("startDate");
+        String endDateStr = params.get("endDate");
+
+        if (startDateStr == null && endDateStr == null) {
+            return null;
+        }
+
+        LocalDateTime startDateTime = startDateStr != null
+                ? LocalDate.parse(startDateStr).atStartOfDay()
+                : null;
+
+        LocalDateTime endDateTime = endDateStr != null
+                ? LocalDate.parse(endDateStr).atTime(LocalTime.MAX)
+                : null;
+
+        return (root, query, cb) -> {
+            if (startDateTime != null && endDateTime != null) {
+                return cb.between(root.get("createdAt"), startDateTime, endDateTime);
+            } else if (startDateTime != null) {
+                return cb.greaterThanOrEqualTo(root.get("createdAt"), startDateTime);
+            } else {
+                return cb.lessThanOrEqualTo(root.get("createdAt"), endDateTime);
+            }
+        };
     }
 
     private Specification<SellingOrder> buildQuerySpec_SellingOrderId(Map<String, String> params) {
