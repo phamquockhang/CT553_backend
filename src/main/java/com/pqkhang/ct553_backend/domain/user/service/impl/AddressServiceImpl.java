@@ -6,6 +6,7 @@ import com.pqkhang.ct553_backend.domain.user.entity.Address;
 import com.pqkhang.ct553_backend.domain.user.entity.Customer;
 import com.pqkhang.ct553_backend.domain.user.mapper.AddressMapper;
 import com.pqkhang.ct553_backend.domain.user.repository.AddressRepository;
+import com.pqkhang.ct553_backend.domain.user.repository.CustomerRepository;
 import com.pqkhang.ct553_backend.domain.user.service.AddressService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +24,7 @@ public class AddressServiceImpl implements AddressService {
 
     AddressRepository addressRepository;
     AddressMapper addressMapper;
+    private final CustomerRepository customerRepository;
 
     @Override
     public List<AddressDTO> getAllAddressesByCustomerId(UUID customerId) throws ResourceNotFoundException {
@@ -42,6 +44,28 @@ public class AddressServiceImpl implements AddressService {
                 .findFirst()
                 .orElseThrow(() -> new ResourceNotFoundException("No default address found"));
         return addressMapper.toAddressDTO(address);
+    }
+
+    @Override
+    public void setDefaultAddress(UUID customerId, UUID addressId) throws ResourceNotFoundException {
+        customerRepository.findById(customerId)
+                .orElseThrow(() -> new ResourceNotFoundException("Customer not found"));
+        Address newDefaultAddress = addressRepository.findById(addressId)
+                .orElseThrow(() -> new ResourceNotFoundException("Address not found"));
+
+        if (!newDefaultAddress.getCustomer().getCustomerId().equals(customerId)) {
+            throw new ResourceNotFoundException("Address does not belong to customer");
+        }
+
+        Address currentDefaultAddress = addressRepository.findByCustomer_CustomerIdAndIsDefault(customerId, true);
+
+        if (currentDefaultAddress != null) {
+            currentDefaultAddress.setIsDefault(false);
+            addressRepository.save(currentDefaultAddress);
+        }
+
+        newDefaultAddress.setIsDefault(true);
+        addressRepository.save(newDefaultAddress);
     }
 
     @Override
