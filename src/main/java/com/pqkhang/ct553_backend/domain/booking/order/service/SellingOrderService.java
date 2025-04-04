@@ -24,7 +24,7 @@ public interface SellingOrderService {
 
     List<SellingOrderDTO> getAllSellingOrders();
 
-    List<SellingOrderDTO> getAllSellingOrdersByCustomerId(UUID customerId) throws ResourceNotFoundException;
+    Page<SellingOrderDTO> getAllSellingOrdersByCustomerId(UUID customerId, Map<String, String> params) throws ResourceNotFoundException;
 
     Page<SellingOrderDTO> getSellingOrders(Map<String, String> params) throws ResourceNotFoundException;
 

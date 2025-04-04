@@ -425,10 +425,12 @@ public class SellingOrderServiceImpl implements SellingOrderService {
     }
 
     @Override
-    public List<SellingOrderDTO> getAllSellingOrdersByCustomerId(UUID customerId) throws ResourceNotFoundException {
+    public Page<SellingOrderDTO> getAllSellingOrdersByCustomerId(UUID customerId, Map<String, String> params) throws ResourceNotFoundException {
         customerRepository.findById(customerId).orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy khách hàng với id: " + customerId));
-
-        return sellingOrderRepository.findAllByCustomer_CustomerId(customerId).stream().map(this::toOverViewSellingOrderDTO).toList();
+        Pageable pageable = createPageable(params);
+        Specification<SellingOrder> spec = buildSearchSpec(params);
+        spec = spec.and((root, query, cb) -> cb.equal(root.get("customer").get("customerId"), customerId));
+        return buildOrderPage(sellingOrderRepository.findAll(spec, pageable), pageable);
     }
 
     @Override
