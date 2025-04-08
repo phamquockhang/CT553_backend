@@ -10,7 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 @RestController
@@ -39,13 +38,23 @@ public class AddressController {
                 .build();
     }
 
+    @PutMapping("/setDefault/{customerId}/{addressId}")
+    public ApiResponse<Void> setDefaultAddress(@PathVariable("customerId") UUID customerId, @PathVariable("addressId") UUID addressId) throws ResourceNotFoundException {
+        addressService.setDefaultAddress(customerId, addressId);
+        return ApiResponse.<Void>builder()
+                .status(HttpStatus.OK.value())
+                .success(true)
+                .message("Đặt địa chỉ mặc định thành công!")
+                .build();
+    }
+
     @PostMapping("/{customerId}")
     public ApiResponse<AddressDTO> createAddress(@PathVariable("customerId") UUID customerId, @Valid @RequestBody AddressDTO addressDTO) throws ResourceNotFoundException {
         return ApiResponse.<AddressDTO>builder()
                 .status(HttpStatus.CREATED.value())
                 .success(true)
                 .payload(addressService.createAddress(customerId, addressDTO))
-                .message("Create address successfully")
+                .message("Tạo địa chỉ thành công!")
                 .build();
     }
 
@@ -55,18 +64,17 @@ public class AddressController {
                 .status(HttpStatus.OK.value())
                 .success(true)
                 .payload(addressService.updateAddress(id, addressDTO))
-                .message("Update address successfully")
+                .message("Cập nhật địa chỉ thành công!")
                 .build();
     }
 
     @DeleteMapping("/{id}")
-    public ApiResponse<Map<String, Boolean>> deleteAddress(@PathVariable("id") UUID id) throws ResourceNotFoundException {
+    public ApiResponse<Void> deleteAddress(@PathVariable("id") UUID id) throws ResourceNotFoundException {
         addressService.deleteAddress(id);
-        return ApiResponse.<Map<String, Boolean>>builder()
+        return ApiResponse.<Void>builder()
                 .status(HttpStatus.OK.value())
                 .success(true)
-                .payload(Map.of("deleted", Boolean.TRUE))
-                .message("Delete address successfully")
+                .message("Xóa địa chỉ thành công!")
                 .build();
     }
 

@@ -13,6 +13,8 @@ public interface AddressService {
 
     AddressDTO getDefaultAddressByCustomerId(UUID customerId) throws ResourceNotFoundException;
 
+    void setDefaultAddress(UUID customerId, UUID addressId) throws ResourceNotFoundException;
+
     AddressDTO createAddress(UUID customerId, AddressDTO addressDTO) throws ResourceNotFoundException;
 
     AddressDTO updateAddress(UUID id, AddressDTO addressDTO) throws ResourceNotFoundException;
