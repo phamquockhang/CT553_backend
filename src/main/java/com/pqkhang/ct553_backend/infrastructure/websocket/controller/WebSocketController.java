@@ -10,8 +10,6 @@ import org.springframework.stereotype.Controller;
 @RequiredArgsConstructor
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE, makeFinal = true)
 public class WebSocketController {
-
-
     @MessageMapping("/send-notification")
     @SendTo("/topic/notifications")
     public String sendNotification(String message) {
