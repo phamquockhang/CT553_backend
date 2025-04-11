@@ -1,6 +1,5 @@
 package com.pqkhang.ct553_backend.domain.notification.controller;
 
-import com.pqkhang.ct553_backend.app.exception.ResourceNotFoundException;
 import com.pqkhang.ct553_backend.app.response.ApiResponse;
 import com.pqkhang.ct553_backend.app.response.Page;
 import com.pqkhang.ct553_backend.domain.notification.dto.MessageDTO;
@@ -23,7 +22,7 @@ public class MessageController {
     MessageService messageService;
 
     @GetMapping
-    public ApiResponse<Page<MessageDTO>> getNotifications(@RequestParam Map<String, String> params) throws ResourceNotFoundException {
+    public ApiResponse<Page<MessageDTO>> getMessages(@RequestParam Map<String, String> params) {
         return ApiResponse.<Page<MessageDTO>>builder()
                 .status(HttpStatus.OK.value())
                 .success(true)
@@ -33,7 +32,7 @@ public class MessageController {
     }
 
     @PostMapping
-    public ApiResponse<Void> createNotification(@Valid @RequestBody MessageDTO messageDTO) {
+    public ApiResponse<Void> createMessage(@Valid @RequestBody MessageDTO messageDTO) {
         messageService.createMessage(messageDTO);
         return ApiResponse.<Void>builder()
                 .status(HttpStatus.CREATED.value())
@@ -43,7 +42,7 @@ public class MessageController {
     }
 
     @PutMapping("/{messageId}")
-    public ApiResponse<Void> readNotification(@PathVariable("messageId") UUID messageId) throws ResourceNotFoundException {
+    public ApiResponse<Void> readMessage(@PathVariable("messageId") UUID messageId) {
         messageService.readMessage(messageId);
         return ApiResponse.<Void>builder()
                 .status(HttpStatus.OK.value())

@@ -1,6 +1,5 @@
 package com.pqkhang.ct553_backend.domain.notification.service;
 
-import com.pqkhang.ct553_backend.app.exception.ResourceNotFoundException;
 import com.pqkhang.ct553_backend.app.response.Page;
 import com.pqkhang.ct553_backend.domain.notification.dto.MessageDTO;
 import jakarta.validation.Valid;
@@ -15,5 +14,5 @@ public interface MessageService {
 
     void createMessage(@Valid MessageDTO MessageDTO);
 
-    void readMessage(UUID messageId) throws ResourceNotFoundException;
+    void readMessage(UUID messageId);
 }

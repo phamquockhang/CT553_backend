@@ -6,9 +6,7 @@ import com.pqkhang.ct553_backend.app.response.Page;
 import com.pqkhang.ct553_backend.domain.notification.dto.ConversationDTO;
 import com.pqkhang.ct553_backend.domain.notification.entity.Conversation;
 import com.pqkhang.ct553_backend.domain.notification.mapper.ConversationMapper;
-import com.pqkhang.ct553_backend.domain.notification.mapper.MessageMapper;
 import com.pqkhang.ct553_backend.domain.notification.repository.ConversationRepository;
-import com.pqkhang.ct553_backend.domain.notification.repository.MessageRepository;
 import com.pqkhang.ct553_backend.domain.notification.service.ConversationService;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -27,14 +25,11 @@ import java.util.stream.Collectors;
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE, makeFinal = true)
 public class ConversationServiceImpl implements ConversationService {
 
-    MessageMapper messageMapper;
     ConversationMapper conversationMapper;
-    MessageRepository messageRepository;
-
+    ConversationRepository conversationRepository;
 
     static String DEFAULT_PAGE = "1";
     static String DEFAULT_PAGE_SIZE = "30";
-    private final ConversationRepository conversationRepository;
 
     private Pageable createPageable(Map<String, String> params) {
         int page = Integer.parseInt(params.getOrDefault("page", DEFAULT_PAGE));
@@ -77,8 +72,17 @@ public class ConversationServiceImpl implements ConversationService {
     }
 
     @Override
+    @SneakyThrows
     public void createConversation(ConversationDTO conversationDTO) {
-        Conversation conversation = conversationMapper.toConversation(conversationDTO);
-        conversationRepository.save(conversation);
+        Conversation conversation = conversationRepository.findByParticipantId1AndParticipantId2(
+                conversationDTO.getParticipantId1(),
+                conversationDTO.getParticipantId2()
+        );
+        if (conversation != null) {
+            throw new IllegalStateException("Conversation already exists");
+        }
+
+        Conversation newConversation = conversationMapper.toConversation(conversationDTO);
+        conversationRepository.save(newConversation);
     }
 }

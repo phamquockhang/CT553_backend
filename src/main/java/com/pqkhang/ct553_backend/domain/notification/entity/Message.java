@@ -35,14 +35,14 @@ public class Message extends BaseEntity {
     @Column(nullable = false)
     String content;
 
+    @ManyToOne
+    @JoinColumn(name = "conversation_id", nullable = false)
+    Conversation conversation;
+
     @PrePersist
     public void prePersist() {
         if (status == null) {
             status = MessageStatusEnum.SENT;
         }
     }
-
-    @ManyToOne
-    @JoinColumn(name = "conversation_id", nullable = false)
-    Conversation conversation;
 }

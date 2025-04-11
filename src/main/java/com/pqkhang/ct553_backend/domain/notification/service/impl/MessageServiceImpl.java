@@ -11,6 +11,7 @@ import com.pqkhang.ct553_backend.domain.notification.mapper.MessageMapper;
 import com.pqkhang.ct553_backend.domain.notification.repository.ConversationRepository;
 import com.pqkhang.ct553_backend.domain.notification.repository.MessageRepository;
 import com.pqkhang.ct553_backend.domain.notification.service.MessageService;
+import com.pqkhang.ct553_backend.infrastructure.websocket.service.WebSocketService;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.experimental.FieldDefaults;
@@ -30,11 +31,11 @@ public class MessageServiceImpl implements MessageService {
 
     MessageMapper messageMapper;
     MessageRepository messageRepository;
-
+    ConversationRepository conversationRepository;
+    WebSocketService webSocketService;
 
     static String DEFAULT_PAGE = "1";
     static String DEFAULT_PAGE_SIZE = "30";
-    private final ConversationRepository conversationRepository;
 
     private Pageable createPageable(Map<String, String> params) {
         int page = Integer.parseInt(params.getOrDefault("page", DEFAULT_PAGE));
@@ -84,10 +85,15 @@ public class MessageServiceImpl implements MessageService {
         message.setConversation(conversation);
 
         messageRepository.save(message);
+
+        // ✅ Gửi message real-time qua WebSocket
+        MessageDTO savedDTO = messageMapper.toMessageDTO(message);
+        webSocketService.sendMessage(message.getConversation().getConversationId(), savedDTO);
     }
 
     @Override
-    public void readMessage(UUID messageId) throws ResourceNotFoundException {
+    @SneakyThrows
+    public void readMessage(UUID messageId) {
         Message message = messageRepository.findById(messageId)
                 .orElseThrow(() -> new ResourceNotFoundException("Message not found"));
 

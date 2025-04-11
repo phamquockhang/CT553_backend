@@ -26,6 +26,7 @@ public class MessageDTO {
 
     String status;
 
+    @NotBlank(message = "Content required")
     String content;
 
     LocalDateTime createdAt;
