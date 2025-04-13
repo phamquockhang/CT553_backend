@@ -86,6 +86,9 @@ public class MessageServiceImpl implements MessageService {
 
         messageRepository.save(message);
 
+        conversation.setLastMessageContent(MessageDTO.getContent());
+        conversationRepository.save(conversation);
+
         // ✅ Gửi message real-time qua WebSocket
         MessageDTO savedDTO = messageMapper.toMessageDTO(message);
         webSocketService.sendMessage(message.getConversation().getConversationId(), savedDTO);
