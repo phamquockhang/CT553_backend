@@ -10,7 +10,7 @@ import java.util.UUID;
 
 @Repository
 public interface ConversationRepository extends JpaRepository<Conversation, UUID>, JpaSpecificationExecutor<Conversation> {
-    List<Conversation> findAllByParticipantId1(String participantId1);
-
     Conversation findByParticipantId1AndParticipantId2(String participantId1, String participantId2);
+
+    List<Conversation> findByParticipantId1OrParticipantId2(String participantId1, String participantId2);
 }

@@ -62,10 +62,18 @@ public class ConversationServiceImpl implements ConversationService {
     @Override
     @SneakyThrows
     public List<ConversationDTO> getConversations(Map<String, String> params) {
-        List<Conversation> conversations = conversationRepository.findAllByParticipantId1(params.get("participantId1"));
+        String participantId = params.get("participantId");
+        if (participantId == null || participantId.trim().isEmpty()) {
+            throw new IllegalArgumentException("Participant ID cannot be null or empty");
+        }
+
+        List<Conversation> conversations = conversationRepository
+                .findByParticipantId1OrParticipantId2(participantId, participantId);
+
         if (conversations.isEmpty()) {
             throw new ResourceNotFoundException("No conversations found");
         }
+
         return conversations.stream()
                 .map(conversationMapper::toConversationDTO)
                 .collect(Collectors.toList());
