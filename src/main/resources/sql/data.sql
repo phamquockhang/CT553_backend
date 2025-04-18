@@ -112,7 +112,19 @@ VALUES ('Get all roles', '/api/v1/roles', 'GET', 'ROLE'),
        ('Get a voucher', '/api/v1/vouchers/{id}', 'GET', 'VOUCHER'),
        ('Create a voucher', '/api/v1/vouchers', 'POST', 'VOUCHER'),
        ('Update a voucher', '/api/v1/vouchers/{id}', 'PUT', 'VOUCHER'),
-       ('Delete a voucher', '/api/v1/vouchers/{id}', 'DELETE', 'VOUCHER');
+       ('Delete a voucher', '/api/v1/vouchers/{id}', 'DELETE', 'VOUCHER'),
+
+       ('Get all conversations', '/api/v1/conversations', 'GET', 'CONVERSATION'),
+       ('Get a conversation', '/api/v1/conversations/{id}', 'GET', 'CONVERSATION'),
+       ('Create a conversation', '/api/v1/conversations', 'POST', 'CONVERSATION'),
+       ('Update a conversation', '/api/v1/conversations/{id}', 'PUT', 'CONVERSATION'),
+       ('Delete a conversation', '/api/v1/conversations/{id}', 'DELETE', 'CONVERSATION'),
+
+       ('Get all messages', '/api/v1/messages', 'GET', 'MESSAGE'),
+       ('Get a message', '/api/v1/messages/{id}', 'GET', 'MESSAGE'),
+       ('Create a message', '/api/v1/messages', 'POST', 'MESSAGE'),
+       ('Update a message', '/api/v1/messages/{id}', 'PUT', 'MESSAGE'),
+       ('Delete a message', '/api/v1/messages/{id}', 'DELETE', 'MESSAGE');
 
 --ROLE_PERMISSION FOR STAFF
 INSERT INTO public.permission_role (role_id, permission_id)
@@ -126,7 +138,11 @@ VALUES (2, 18),
        (2, 33),
        (2, 34),
        (2, 85),
-       (2, 86);
+       (2, 86),
+       (2, 90),
+       (2, 91),
+       (2, 96),
+       (2, 97);
 
 --ROLE_PERMISSION FOR CUSTOMER
 -- INSERT INTO public.permission_role (role_id, permission_id)
@@ -169,6 +185,10 @@ VALUES (gen_random_uuid(), 'staff1@gmail.com', 'FEMALE', 'STAFF', 'I am',
        (gen_random_uuid(), 'staff9@gmail.com', 'MALE', 'STAFF', 'I am',
         '$2a$10$MEo.Zw55GDOEVwKtOnJ/TuKNrWVAjluxnWqH96ecqAKUwkFwAVkra', 2, true, '1999-12-09'),
        (gen_random_uuid(), 'staff10@gmail.com', 'MALE', 'STAFF', 'I am',
+        '$2a$10$MEo.Zw55GDOEVwKtOnJ/TuKNrWVAjluxnWqH96ecqAKUwkFwAVkra', 2, true, '1999-12-10'),
+
+
+       (gen_random_uuid(), 'supporter@gmail.com', 'MALE', 'Supporter', 'I am',
         '$2a$10$MEo.Zw55GDOEVwKtOnJ/TuKNrWVAjluxnWqH96ecqAKUwkFwAVkra', 2, true, '1999-12-10');
 
 --SCORE
