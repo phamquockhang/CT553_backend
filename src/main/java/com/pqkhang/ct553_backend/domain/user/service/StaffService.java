@@ -20,6 +20,8 @@ public interface StaffService {
 
     StaffDTO getStaffById(UUID id) throws ResourceNotFoundException;
 
+    StaffDTO getStaffByEmail(String email) throws ResourceNotFoundException;
+
     StaffDTO getLoggedInStaff();
 
     StaffDTO updateStaff(UUID id, StaffDTO staffDTO) throws ResourceNotFoundException;

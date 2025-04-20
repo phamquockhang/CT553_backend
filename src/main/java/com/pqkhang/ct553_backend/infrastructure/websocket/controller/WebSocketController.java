@@ -21,9 +21,14 @@ public class WebSocketController {
         return message;
     }
 
-    // Nhận từ React gửi lên
+    // Nhận từ FE
     @MessageMapping("/chat.sendMessage")
-    public void receiveMessage(MessageDTO messageDTO) {
+    public void receiveMessageCreateMessage(MessageDTO messageDTO) {
         messageService.createMessage(messageDTO);
+    }
+
+    @MessageMapping("/chat.readMessage")
+    public void receiveMessageReadMessage(MessageDTO messageDTO) {
+        messageService.readMessage(messageDTO.getMessageId());
     }
 }

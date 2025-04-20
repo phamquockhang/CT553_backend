@@ -51,6 +51,16 @@ public class StaffController {
                 .build();
     }
 
+    @GetMapping("/email/{email}")
+    public ApiResponse<StaffDTO> getStaffByEmail(@PathVariable("email") String email) throws ResourceNotFoundException {
+        return ApiResponse.<StaffDTO>builder()
+                .status(HttpStatus.OK.value())
+                .success(true)
+                .payload(staffService.getStaffByEmail(email))
+                .message("Get staff has email " + email + " successfully")
+                .build();
+    }
+
     @GetMapping("/logged-in")
     public ApiResponse<StaffDTO> getLoggedInStaff() {
         return ApiResponse.<StaffDTO>builder()

@@ -132,6 +132,13 @@ public class StaffServiceImpl implements StaffService {
     }
 
     @Override
+    public StaffDTO getStaffByEmail(String email) throws ResourceNotFoundException {
+        Staff staff = staffRepository.findStaffByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("Staff not found with email: " + email));
+        return staffMapper.toStaffDTO(staff);
+    }
+
+    @Override
     public StaffDTO getLoggedInStaff() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null) {

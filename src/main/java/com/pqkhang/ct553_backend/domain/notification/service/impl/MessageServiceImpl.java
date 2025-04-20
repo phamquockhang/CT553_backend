@@ -7,6 +7,7 @@ import com.pqkhang.ct553_backend.domain.notification.dto.MessageDTO;
 import com.pqkhang.ct553_backend.domain.notification.entity.Conversation;
 import com.pqkhang.ct553_backend.domain.notification.entity.Message;
 import com.pqkhang.ct553_backend.domain.notification.enums.MessageStatusEnum;
+import com.pqkhang.ct553_backend.domain.notification.mapper.ConversationMapper;
 import com.pqkhang.ct553_backend.domain.notification.mapper.MessageMapper;
 import com.pqkhang.ct553_backend.domain.notification.repository.ConversationRepository;
 import com.pqkhang.ct553_backend.domain.notification.repository.MessageRepository;
@@ -33,6 +34,7 @@ public class MessageServiceImpl implements MessageService {
     MessageRepository messageRepository;
     ConversationRepository conversationRepository;
     WebSocketService webSocketService;
+    ConversationMapper conversationMapper;
 
     static String DEFAULT_PAGE = "1";
     static String DEFAULT_PAGE_SIZE = "30";
@@ -92,6 +94,11 @@ public class MessageServiceImpl implements MessageService {
         // ✅ Gửi message real-time qua WebSocket
         MessageDTO savedDTO = messageMapper.toMessageDTO(message);
         webSocketService.sendMessage(message.getConversation().getConversationId(), savedDTO);
+
+        UUID participantId1 = UUID.fromString(conversation.getParticipantId1());
+        UUID participantId2 = UUID.fromString(conversation.getParticipantId2());
+        webSocketService.refetchConversation(participantId1, conversationMapper.toConversationDTO(conversation));
+        webSocketService.refetchConversation(participantId2, conversationMapper.toConversationDTO(conversation));
     }
 
     @Override
@@ -102,5 +109,6 @@ public class MessageServiceImpl implements MessageService {
 
         message.setStatus(MessageStatusEnum.READ);
         messageRepository.save(message);
+        webSocketService.markMessageAsRead(messageMapper.toMessageDTO(message));
     }
 }
