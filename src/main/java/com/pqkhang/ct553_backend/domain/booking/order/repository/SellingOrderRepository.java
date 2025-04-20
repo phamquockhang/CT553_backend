@@ -1,6 +1,7 @@
 package com.pqkhang.ct553_backend.domain.booking.order.repository;
 
 import com.pqkhang.ct553_backend.domain.booking.order.entity.SellingOrder;
+import com.pqkhang.ct553_backend.domain.booking.order.enums.OrderStatusEnum;
 import com.pqkhang.ct553_backend.domain.booking.order.enums.PaymentStatusEnum;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
@@ -14,6 +15,8 @@ import java.util.UUID;
 @Repository
 public interface SellingOrderRepository extends JpaRepository<SellingOrder, String>, JpaSpecificationExecutor<SellingOrder> {
     List<SellingOrder> findAllByCustomer_CustomerId(UUID customerId);
+
+    List<SellingOrder> findByOrderStatusAndCreatedAtBefore(OrderStatusEnum orderStatus, LocalDateTime createdAtBefore);
 
     List<SellingOrder> findByPaymentStatusAndCreatedAtBefore(PaymentStatusEnum paymentStatus, LocalDateTime createdAtBefore);
 

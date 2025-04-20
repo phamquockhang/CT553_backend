@@ -150,13 +150,13 @@ VALUES (2, 18),
 
 --CUSTOMER
 INSERT INTO public.customers (customer_id, email, gender, first_name, last_name, password, role_id, is_activated, dob)
-VALUES (gen_random_uuid(), 'customer1@gmail.com', 'MALE', 'CUSTOMER', 'I am',
+VALUES (gen_random_uuid(), 'customer1@gmail.com', 'MALE', 'CUSTOMER 1', 'I am',
         '$2a$10$MEo.Zw55GDOEVwKtOnJ/TuKNrWVAjluxnWqH96ecqAKUwkFwAVkra', 3, true, '1999-01-01'),
-       (gen_random_uuid(), 'customer2@gmail.com', 'FEMALE', 'CUSTOMER', 'I am',
+       (gen_random_uuid(), 'customer2@gmail.com', 'FEMALE', 'CUSTOMER 2', 'I am',
         '$2a$10$MEo.Zw55GDOEVwKtOnJ/TuKNrWVAjluxnWqH96ecqAKUwkFwAVkra', 3, true, '1999-01-02'),
-       (gen_random_uuid(), 'customer3@gmail.com', 'FEMALE', 'CUSTOMER', 'I am',
+       (gen_random_uuid(), 'customer3@gmail.com', 'FEMALE', 'CUSTOMER 3', 'I am',
         '$2a$10$MEo.Zw55GDOEVwKtOnJ/TuKNrWVAjluxnWqH96ecqAKUwkFwAVkra', 3, true, '1999-01-03'),
-       (gen_random_uuid(), 'customer4@gmail.com', 'MALE', 'CUSTOMER', 'I am',
+       (gen_random_uuid(), 'customer4@gmail.com', 'MALE', 'CUSTOMER 4', 'I am',
         '$2a$10$MEo.Zw55GDOEVwKtOnJ/TuKNrWVAjluxnWqH96ecqAKUwkFwAVkra', 3, true, '1999-01-04');
 
 --MANAGER
@@ -166,25 +166,25 @@ VALUES (gen_random_uuid(), 'manager@gmail.com', 'MALE', 'MANAGER', 'I am',
 
 --STAFF
 INSERT INTO public.staffs (staff_id, email, gender, first_name, last_name, password, role_id, is_activated, dob)
-VALUES (gen_random_uuid(), 'staff1@gmail.com', 'FEMALE', 'STAFF', 'I am',
+VALUES (gen_random_uuid(), 'staff1@gmail.com', 'FEMALE', 'STAFF 1', 'I am',
         '$2a$10$MEo.Zw55GDOEVwKtOnJ/TuKNrWVAjluxnWqH96ecqAKUwkFwAVkra', 2, true, '1999-12-01'),
-       (gen_random_uuid(), 'staff2@gmail.com', 'FEMALE', 'STAFF', 'I am',
+       (gen_random_uuid(), 'staff2@gmail.com', 'FEMALE', 'STAFF 2', 'I am',
         '$2a$10$MEo.Zw55GDOEVwKtOnJ/TuKNrWVAjluxnWqH96ecqAKUwkFwAVkra', 2, true, '1999-12-02'),
-       (gen_random_uuid(), 'staff3@gmail.com', 'MALE', 'STAFF', 'I am',
+       (gen_random_uuid(), 'staff3@gmail.com', 'MALE', 'STAFF 3', 'I am',
         '$2a$10$MEo.Zw55GDOEVwKtOnJ/TuKNrWVAjluxnWqH96ecqAKUwkFwAVkra', 2, true, '1999-12-03'),
-       (gen_random_uuid(), 'staff4@gmail.com', 'MALE', 'STAFF', 'I am',
+       (gen_random_uuid(), 'staff4@gmail.com', 'MALE', 'STAFF 4', 'I am',
         '$2a$10$MEo.Zw55GDOEVwKtOnJ/TuKNrWVAjluxnWqH96ecqAKUwkFwAVkra', 2, true, '1999-12-04'),
-       (gen_random_uuid(), 'staff5@gmail.com', 'MALE', 'STAFF', 'I am',
+       (gen_random_uuid(), 'staff5@gmail.com', 'MALE', 'STAFF 5', 'I am',
         '$2a$10$MEo.Zw55GDOEVwKtOnJ/TuKNrWVAjluxnWqH96ecqAKUwkFwAVkra', 2, true, '1999-12-05'),
-       (gen_random_uuid(), 'staff6@gmail.com', 'MALE', 'STAFF', 'I am',
+       (gen_random_uuid(), 'staff6@gmail.com', 'MALE', 'STAFF 6', 'I am',
         '$2a$10$MEo.Zw55GDOEVwKtOnJ/TuKNrWVAjluxnWqH96ecqAKUwkFwAVkra', 2, true, '1999-12-06'),
-       (gen_random_uuid(), 'staff7@gmail.com', 'MALE', 'STAFF', 'I am',
+       (gen_random_uuid(), 'staff7@gmail.com', 'MALE', 'STAFF 7', 'I am',
         '$2a$10$MEo.Zw55GDOEVwKtOnJ/TuKNrWVAjluxnWqH96ecqAKUwkFwAVkra', 2, true, '1999-12-07'),
-       (gen_random_uuid(), 'staff8@gmail.com', 'MALE', 'STAFF', 'I am',
+       (gen_random_uuid(), 'staff8@gmail.com', 'MALE', 'STAFF 8', 'I am',
         '$2a$10$MEo.Zw55GDOEVwKtOnJ/TuKNrWVAjluxnWqH96ecqAKUwkFwAVkra', 2, true, '1999-12-08'),
-       (gen_random_uuid(), 'staff9@gmail.com', 'MALE', 'STAFF', 'I am',
+       (gen_random_uuid(), 'staff9@gmail.com', 'MALE', 'STAFF 9', 'I am',
         '$2a$10$MEo.Zw55GDOEVwKtOnJ/TuKNrWVAjluxnWqH96ecqAKUwkFwAVkra', 2, true, '1999-12-09'),
-       (gen_random_uuid(), 'staff10@gmail.com', 'MALE', 'STAFF', 'I am',
+       (gen_random_uuid(), 'staff10@gmail.com', 'MALE', 'STAFF 10', 'I am',
         '$2a$10$MEo.Zw55GDOEVwKtOnJ/TuKNrWVAjluxnWqH96ecqAKUwkFwAVkra', 2, true, '1999-12-10'),
 
 

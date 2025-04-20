@@ -4,6 +4,7 @@ import com.pqkhang.ct553_backend.app.exception.ResourceNotFoundException;
 import com.pqkhang.ct553_backend.app.response.Page;
 import com.pqkhang.ct553_backend.domain.auth.dto.request.ChangePasswordRequest;
 import com.pqkhang.ct553_backend.domain.user.dto.StaffDTO;
+import com.pqkhang.ct553_backend.domain.user.dto.response.StaffStatisticDTO;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -30,4 +31,5 @@ public interface StaffService {
 
     void changePassword(UUID id, ChangePasswordRequest changePasswordRequest) throws ResourceNotFoundException;
 
+    List<StaffStatisticDTO> getStaffStatistic();
 }

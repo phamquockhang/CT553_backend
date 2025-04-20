@@ -5,6 +5,7 @@ import com.pqkhang.ct553_backend.app.response.ApiResponse;
 import com.pqkhang.ct553_backend.app.response.Page;
 import com.pqkhang.ct553_backend.domain.auth.dto.request.ChangePasswordRequest;
 import com.pqkhang.ct553_backend.domain.user.dto.StaffDTO;
+import com.pqkhang.ct553_backend.domain.user.dto.response.StaffStatisticDTO;
 import com.pqkhang.ct553_backend.domain.user.service.StaffService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -108,6 +109,16 @@ public class StaffController {
                 .status(HttpStatus.OK.value())
                 .success(true)
                 .message("Đổi mật khẩu thành công")
+                .build();
+    }
+
+    @GetMapping("/statistic")
+    public ApiResponse<List<StaffStatisticDTO>> getStaffStatistic() {
+        return ApiResponse.<List<StaffStatisticDTO>>builder()
+                .status(HttpStatus.OK.value())
+                .success(true)
+                .payload(staffService.getStaffStatistic())
+                .message("Get staff statistic successfully")
                 .build();
     }
 }

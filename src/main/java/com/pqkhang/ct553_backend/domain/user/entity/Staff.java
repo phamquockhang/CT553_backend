@@ -29,6 +29,9 @@ public class Staff extends BaseEntity implements UserDetails {
     @GeneratedValue(strategy = GenerationType.UUID)
     UUID staffId;
 
+    Integer processedOrders;
+    Integer delayedOrders;
+
     String lastName;
     String firstName;
     LocalDate dob;
@@ -50,6 +53,12 @@ public class Staff extends BaseEntity implements UserDetails {
     public void prePersist() {
         if (isActivated == null) {
             isActivated = true;
+        }
+        if (processedOrders == null) {
+            processedOrders = 0;
+        }
+        if (delayedOrders == null) {
+            delayedOrders = 0;
         }
     }
 

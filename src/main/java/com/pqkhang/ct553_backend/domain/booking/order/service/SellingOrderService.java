@@ -29,4 +29,6 @@ public interface SellingOrderService {
     Page<SellingOrderDTO> getSellingOrders(Map<String, String> params) throws ResourceNotFoundException;
 
     SellingOrderStatisticsDTO getSellingOrderStatistics(LocalDateTime startDate, LocalDateTime endDate);
+
+    void checkDelayedOrders();
 }

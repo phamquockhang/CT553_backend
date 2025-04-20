@@ -8,6 +8,7 @@ import com.pqkhang.ct553_backend.domain.auth.dto.request.ChangePasswordRequest;
 import com.pqkhang.ct553_backend.domain.auth.entity.Role;
 import com.pqkhang.ct553_backend.domain.auth.repository.RoleRepository;
 import com.pqkhang.ct553_backend.domain.user.dto.StaffDTO;
+import com.pqkhang.ct553_backend.domain.user.dto.response.StaffStatisticDTO;
 import com.pqkhang.ct553_backend.domain.user.entity.Staff;
 import com.pqkhang.ct553_backend.domain.user.mapper.StaffMapper;
 import com.pqkhang.ct553_backend.domain.user.repository.CustomerRepository;
@@ -31,10 +32,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -212,6 +210,21 @@ public class StaffServiceImpl implements StaffService {
 
         staff.setPassword(passwordEncoder.encode(changePasswordRequest.getNewPassword()));
         staffRepository.save(staff);
+    }
+
+    @Override
+    public List<StaffStatisticDTO> getStaffStatistic() {
+        List<Staff> staffs = staffRepository.findAll();
+
+        return staffs.stream()
+                .filter(staff -> staff.getRole().getRoleId() != 1L) // Exclude staff with roleId == 1L
+                .filter(staff -> !Objects.equals(staff.getEmail(), "supporter@gmail.com")) // Exclude staff with email == supporter@gmail.com
+                .map(staff -> StaffStatisticDTO.builder()
+                        .staffName(staff.getLastName() + " " + staff.getFirstName())
+                        .processedOrders(staff.getProcessedOrders())
+                        .delayedOrders(staff.getDelayedOrders())
+                        .build())
+                .collect(Collectors.toList());
     }
 }
 
