@@ -72,7 +72,7 @@ public class EmailServiceImpl implements EmailService {
         Map<String, Object> context = Map.of(
                 "transactionId", transaction.getTransactionId(),
                 "sellingOrderId", transaction.getSellingOrder().getSellingOrderId(),
-                "sellingOrderDetailURL", CLIENT_URL + "/selling-order/" + transaction.getSellingOrder().getSellingOrderId()
+                "sellingOrderDetailURL", CLIENT_URL + "/selling-orders/" + transaction.getSellingOrder().getSellingOrderId()
         );
 
         EmailObject emailObject = EmailObject.builder()
@@ -136,7 +136,7 @@ public class EmailServiceImpl implements EmailService {
                 "orderStatusText", orderStatusText,
                 "orderMessage", orderMessage,
                 "sellingOrderId", sellingOrder.getSellingOrderId(),
-                "sellingOrderDetailURL", CLIENT_URL + "/selling-order/" + sellingOrder.getSellingOrderId()
+                "sellingOrderDetailURL", CLIENT_URL + "/selling-orders/" + sellingOrder.getSellingOrderId()
         );
 
         EmailObject emailObject = EmailObject.builder()
