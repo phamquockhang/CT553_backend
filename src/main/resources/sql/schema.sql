@@ -6,6 +6,8 @@ ALTER TABLE public.customers
 
 --STAFF
 ALTER TABLE public.staffs
+    ALTER COLUMN processed_orders SET DEFAULT 0,
+    ALTER COLUMN delayed_orders SET DEFAULT 0,
     ALTER COLUMN created_at SET DEFAULT CURRENT_TIMESTAMP;
 
 --SCORE

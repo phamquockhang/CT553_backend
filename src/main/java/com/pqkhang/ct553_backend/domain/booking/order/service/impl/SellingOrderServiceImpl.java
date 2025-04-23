@@ -49,6 +49,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -393,6 +394,12 @@ public class SellingOrderServiceImpl implements SellingOrderService {
             }
         });
 
+        Staff staff = staffRepository.findStaffByEmail(sellingOrder.getAssignedStaffEmail()).orElseThrow();
+        if (sellingOrder.getOrderStatus().equals(OrderStatusEnum.COMPLETED) && sellingOrder.getPaymentStatus().equals(PaymentStatusEnum.SUCCESS)) {
+            staff.setProcessedOrders(staff.getProcessedOrders() + 1);
+            staffRepository.save(staff);
+        }
+
         return sellingOrderMapper.toSellingOrderDTO(sellingOrder);
     }
 
@@ -444,6 +451,12 @@ public class SellingOrderServiceImpl implements SellingOrderService {
         }
 
         sellingOrderRepository.save(sellingOrder);
+
+        Staff staff = staffRepository.findStaffByEmail(sellingOrder.getAssignedStaffEmail()).orElseThrow();
+        if (newOrderStatus.equals(OrderStatusEnum.COMPLETED) && newPaymentStatus.equals(PaymentStatusEnum.SUCCESS)) {
+            staff.setProcessedOrders(staff.getProcessedOrders() + 1);
+            staffRepository.save(staff);
+        }
     }
 
     @Override
@@ -504,6 +517,26 @@ public class SellingOrderServiceImpl implements SellingOrderService {
                 .totalCompletedOrders(totalCompletedOrders)
                 .totalCancelledOrders(totalCancelledOrders)
                 .build();
+    }
+
+    @Override
+    @Transactional
+    public void checkDelayedOrders() {
+        LocalDateTime minusHours = LocalDateTime.now().minusHours(24);
+
+        List<SellingOrder> delayedOrders = sellingOrderRepository.findByOrderStatusAndCreatedAtBefore(
+                OrderStatusEnum.PENDING, minusHours
+        );
+
+        if (!delayedOrders.isEmpty()) {
+            delayedOrders.forEach(order -> {
+                Staff staff = staffRepository.findStaffByEmail(order.getAssignedStaffEmail()).orElseThrow();
+                staff.setDelayedOrders(staff.getDelayedOrders() + 1);
+                staffRepository.save(staff);
+
+                log.info("🔄 SellingOrder: Đơn hàng {} đã bị trễ hơn 1 ngày,", order.getSellingOrderId());
+            });
+        }
     }
 }
 
