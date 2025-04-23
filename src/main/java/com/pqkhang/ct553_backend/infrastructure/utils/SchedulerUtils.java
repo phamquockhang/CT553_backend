@@ -34,7 +34,7 @@ public class SchedulerUtils {
         System.out.println("✅ Transaction: Hoàn thành cập nhật trạng thái.");
     }
 
-    @Scheduled(cron = "0 */1 * * * *")
+    @Scheduled(cron = "0 */30 * * * *")
     public void checkDelayedOrders() {
         System.out.println("🔄 SellingOrder: Bắt đầu kiểm tra các đơn hàng xử lí chậm.");
         sellingOrderService.checkDelayedOrders();

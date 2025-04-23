@@ -522,10 +522,10 @@ public class SellingOrderServiceImpl implements SellingOrderService {
     @Override
     @Transactional
     public void checkDelayedOrders() {
-        LocalDateTime oneMinuteAgo = LocalDateTime.now().minusHours(3);
+        LocalDateTime minusHours = LocalDateTime.now().minusHours(24);
 
         List<SellingOrder> delayedOrders = sellingOrderRepository.findByOrderStatusAndCreatedAtBefore(
-                OrderStatusEnum.PENDING, oneMinuteAgo
+                OrderStatusEnum.PENDING, minusHours
         );
 
         if (!delayedOrders.isEmpty()) {
@@ -534,7 +534,7 @@ public class SellingOrderServiceImpl implements SellingOrderService {
                 staff.setDelayedOrders(staff.getDelayedOrders() + 1);
                 staffRepository.save(staff);
 
-                log.info("🔄 SellingOrder: Đơn hàng {} đã bị trễ hơn 1 phút,", order.getSellingOrderId());
+                log.info("🔄 SellingOrder: Đơn hàng {} đã bị trễ hơn 1 ngày,", order.getSellingOrderId());
             });
         }
     }
