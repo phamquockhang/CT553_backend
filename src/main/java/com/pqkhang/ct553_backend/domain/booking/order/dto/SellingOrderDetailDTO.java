@@ -21,6 +21,8 @@ public class SellingOrderDetailDTO {
 
     Double quantity;
 
+    Double totalWeight;
+
     BigDecimal unitPrice;
 
     BigDecimal totalPrice;

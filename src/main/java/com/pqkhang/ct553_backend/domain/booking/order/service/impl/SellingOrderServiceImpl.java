@@ -4,6 +4,7 @@ import com.pqkhang.ct553_backend.app.exception.ResourceNotFoundException;
 import com.pqkhang.ct553_backend.app.response.Meta;
 import com.pqkhang.ct553_backend.app.response.Page;
 import com.pqkhang.ct553_backend.domain.booking.order.dto.SellingOrderDTO;
+import com.pqkhang.ct553_backend.domain.booking.order.dto.SellingOrderDetailDTO;
 import com.pqkhang.ct553_backend.domain.booking.order.dto.request.RequestSellingOrderDTO;
 import com.pqkhang.ct553_backend.domain.booking.order.dto.response.SellingOrderStatisticsDTO;
 import com.pqkhang.ct553_backend.domain.booking.order.entity.SellingOrder;
@@ -404,6 +405,63 @@ public class SellingOrderServiceImpl implements SellingOrderService {
     }
 
     @Override
+    public void updateSellingOrderStatus(String sellingOrderId, OrderStatusEnum newOrderStatus, PaymentStatusEnum newPaymentStatus, List<SellingOrderDetailDTO> sellingOrderDetailDTOList) throws ResourceNotFoundException {
+        SellingOrder sellingOrder = sellingOrderRepository.findById(sellingOrderId).orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy đơn hàng với id: " + sellingOrderId));
+
+        OrderStatusEnum oldOrderStatus = sellingOrder.getOrderStatus();
+        if (!oldOrderStatus.equals(newOrderStatus)) {
+            orderStatusService.createOrderStatus(sellingOrderId, newOrderStatus);
+            sellingOrder.setOrderStatus(newOrderStatus);
+            if (newOrderStatus.equals(OrderStatusEnum.CANCELLED)) {
+                if (sellingOrder.getUsedVoucher() != null) {
+                    UsedVoucher usedVoucher = sellingOrder.getUsedVoucher();
+
+                    sellingOrder.setUsedVoucher(null);
+                    sellingOrderRepository.save(sellingOrder);
+
+                    voucherService.returnVoucher(usedVoucher.getVoucher().getVoucherCode());
+//                    usedVoucherService.deleteUsedVoucher(usedVoucher.getUsedVoucherId());
+                }
+
+                // Đánh dấu thông báo đã đọc khi hủy đơn hàng
+                Notification notification = notificationRepository.findBySellingOrder_SellingOrderId(sellingOrderId).orElse(null);
+                if (notification != null && !notification.getIsRead()) {
+                    notificationService.readNotification(notification.getNotificationId());
+                }
+            } else if (newOrderStatus.equals(OrderStatusEnum.CONFIRMED)) {
+                // Đánh dấu thông báo đã đọc khi xác nhận đơn hàng
+                Notification notification = notificationRepository.findBySellingOrder_SellingOrderId(sellingOrderId).orElse(null);
+                if (notification != null && !notification.getIsRead()) {
+                    notificationService.readNotification(notification.getNotificationId());
+                }
+
+                sellingOrderDetailService.updateWeightInSellingOrderDetail(sellingOrderDetailDTOList);
+            }
+
+            log.info("Sending email to customer");
+            emailService.sendSellingOrderStatusEmail(sellingOrder);
+        }
+
+        PaymentStatusEnum oldPaymentStatus = sellingOrder.getPaymentStatus();
+        if (!oldPaymentStatus.equals(newPaymentStatus)) {
+            sellingOrder.setPaymentStatus(newPaymentStatus);
+            sellingOrderRepository.save(sellingOrder);
+        }
+
+        if (sellingOrder.getCustomer() != null) {
+            processCustomerScore(sellingOrderMapper.toSellingOrderDTO(sellingOrder), sellingOrder, sellingOrder.getCustomer().getCustomerId());
+        }
+
+        sellingOrderRepository.save(sellingOrder);
+
+        Staff staff = staffRepository.findStaffByEmail(sellingOrder.getAssignedStaffEmail()).orElseThrow();
+        if (newOrderStatus.equals(OrderStatusEnum.COMPLETED) && newPaymentStatus.equals(PaymentStatusEnum.SUCCESS)) {
+            staff.setProcessedOrders(staff.getProcessedOrders() + 1);
+            staffRepository.save(staff);
+        }
+    }
+
+    @Override
     public void updateSellingOrderStatus(String sellingOrderId, OrderStatusEnum newOrderStatus, PaymentStatusEnum newPaymentStatus) throws ResourceNotFoundException {
         SellingOrder sellingOrder = sellingOrderRepository.findById(sellingOrderId).orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy đơn hàng với id: " + sellingOrderId));
 
@@ -423,15 +481,14 @@ public class SellingOrderServiceImpl implements SellingOrderService {
                 }
 
                 // Đánh dấu thông báo đã đọc khi hủy đơn hàng
-                Notification notification = notificationRepository.findBySellingOrder_SellingOrderId(sellingOrderId).orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy thông báo cho đơn hàng: " + sellingOrderId));
-                if (!notification.getIsRead()) {
+                Notification notification = notificationRepository.findBySellingOrder_SellingOrderId(sellingOrderId).orElse(null);
+                if (notification != null && !notification.getIsRead()) {
                     notificationService.readNotification(notification.getNotificationId());
                 }
             } else if (newOrderStatus.equals(OrderStatusEnum.CONFIRMED)) {
                 // Đánh dấu thông báo đã đọc khi xác nhận đơn hàng
-                Notification notification = notificationRepository.findBySellingOrder_SellingOrderId(sellingOrderId).orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy thông báo cho đơn hàng: " + sellingOrderId));
-
-                if (!notification.getIsRead()) {
+                Notification notification = notificationRepository.findBySellingOrder_SellingOrderId(sellingOrderId).orElse(null);
+                if (notification != null && !notification.getIsRead()) {
                     notificationService.readNotification(notification.getNotificationId());
                 }
             }
