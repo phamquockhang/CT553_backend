@@ -150,45 +150,45 @@ VALUES (2, 18),
 
 --CUSTOMER
 INSERT INTO public.customers (customer_id, email, gender, first_name, last_name, password, role_id, is_activated, dob)
-VALUES (gen_random_uuid(), 'customer1@gmail.com', 'MALE', 'CUSTOMER 1', 'I am',
+VALUES (gen_random_uuid(), 'customer1@gmail.com', 'MALE', 'Mot', 'Ly Van',
         '$2a$10$MEo.Zw55GDOEVwKtOnJ/TuKNrWVAjluxnWqH96ecqAKUwkFwAVkra', 3, true, '1999-01-01'),
-       (gen_random_uuid(), 'customer2@gmail.com', 'FEMALE', 'CUSTOMER 2', 'I am',
+       (gen_random_uuid(), 'customer2@gmail.com', 'FEMALE', 'Hai', 'Ly Van',
         '$2a$10$MEo.Zw55GDOEVwKtOnJ/TuKNrWVAjluxnWqH96ecqAKUwkFwAVkra', 3, true, '1999-01-02'),
-       (gen_random_uuid(), 'customer3@gmail.com', 'FEMALE', 'CUSTOMER 3', 'I am',
+       (gen_random_uuid(), 'customer3@gmail.com', 'FEMALE', 'Ba', 'Ly Van',
         '$2a$10$MEo.Zw55GDOEVwKtOnJ/TuKNrWVAjluxnWqH96ecqAKUwkFwAVkra', 3, true, '1999-01-03'),
-       (gen_random_uuid(), 'customer4@gmail.com', 'MALE', 'CUSTOMER 4', 'I am',
+       (gen_random_uuid(), 'customer4@gmail.com', 'MALE', 'Bon', 'Ly Van',
         '$2a$10$MEo.Zw55GDOEVwKtOnJ/TuKNrWVAjluxnWqH96ecqAKUwkFwAVkra', 3, true, '1999-01-04');
 
 --MANAGER
 INSERT INTO public.staffs (staff_id, email, gender, first_name, last_name, password, role_id, is_activated, dob)
-VALUES (gen_random_uuid(), 'manager@gmail.com', 'MALE', 'MANAGER', 'I am',
+VALUES (gen_random_uuid(), 'manager@gmail.com', 'MALE', 'A', 'Nguyen Van',
         '$2a$10$MEo.Zw55GDOEVwKtOnJ/TuKNrWVAjluxnWqH96ecqAKUwkFwAVkra', 1, true, '2003-08-11');
 
 --STAFF
 INSERT INTO public.staffs (staff_id, email, gender, first_name, last_name, password, role_id, is_activated, dob)
-VALUES (gen_random_uuid(), 'staff1@gmail.com', 'FEMALE', 'STAFF 1', 'I am',
+VALUES (gen_random_uuid(), 'staff1@gmail.com', 'FEMALE', 'Mot', 'Nguyen Van',
         '$2a$10$MEo.Zw55GDOEVwKtOnJ/TuKNrWVAjluxnWqH96ecqAKUwkFwAVkra', 2, true, '1999-12-01'),
-       (gen_random_uuid(), 'staff2@gmail.com', 'FEMALE', 'STAFF 2', 'I am',
+       (gen_random_uuid(), 'staff2@gmail.com', 'FEMALE', 'Hai', 'Nguyen Van',
         '$2a$10$MEo.Zw55GDOEVwKtOnJ/TuKNrWVAjluxnWqH96ecqAKUwkFwAVkra', 2, true, '1999-12-02'),
-       (gen_random_uuid(), 'staff3@gmail.com', 'MALE', 'STAFF 3', 'I am',
+       (gen_random_uuid(), 'staff3@gmail.com', 'MALE', 'Ba', 'Nguyen Van',
         '$2a$10$MEo.Zw55GDOEVwKtOnJ/TuKNrWVAjluxnWqH96ecqAKUwkFwAVkra', 2, true, '1999-12-03'),
-       (gen_random_uuid(), 'staff4@gmail.com', 'MALE', 'STAFF 4', 'I am',
+       (gen_random_uuid(), 'staff4@gmail.com', 'MALE', 'Bon', 'Nguyen Van',
         '$2a$10$MEo.Zw55GDOEVwKtOnJ/TuKNrWVAjluxnWqH96ecqAKUwkFwAVkra', 2, true, '1999-12-04'),
-       (gen_random_uuid(), 'staff5@gmail.com', 'MALE', 'STAFF 5', 'I am',
+       (gen_random_uuid(), 'staff5@gmail.com', 'MALE', 'Nam', 'Nguyen Van',
         '$2a$10$MEo.Zw55GDOEVwKtOnJ/TuKNrWVAjluxnWqH96ecqAKUwkFwAVkra', 2, true, '1999-12-05'),
-       (gen_random_uuid(), 'staff6@gmail.com', 'MALE', 'STAFF 6', 'I am',
+       (gen_random_uuid(), 'staff6@gmail.com', 'MALE', 'Sau', 'Nguyen Van',
         '$2a$10$MEo.Zw55GDOEVwKtOnJ/TuKNrWVAjluxnWqH96ecqAKUwkFwAVkra', 2, true, '1999-12-06'),
-       (gen_random_uuid(), 'staff7@gmail.com', 'MALE', 'STAFF 7', 'I am',
+       (gen_random_uuid(), 'staff7@gmail.com', 'MALE', 'Bay', 'Nguyen Van',
         '$2a$10$MEo.Zw55GDOEVwKtOnJ/TuKNrWVAjluxnWqH96ecqAKUwkFwAVkra', 2, true, '1999-12-07'),
-       (gen_random_uuid(), 'staff8@gmail.com', 'MALE', 'STAFF 8', 'I am',
+       (gen_random_uuid(), 'staff8@gmail.com', 'MALE', 'Tam', 'Nguyen Van',
         '$2a$10$MEo.Zw55GDOEVwKtOnJ/TuKNrWVAjluxnWqH96ecqAKUwkFwAVkra', 2, true, '1999-12-08'),
-       (gen_random_uuid(), 'staff9@gmail.com', 'MALE', 'STAFF 9', 'I am',
+       (gen_random_uuid(), 'staff9@gmail.com', 'MALE', 'Chin', 'Nguyen Van',
         '$2a$10$MEo.Zw55GDOEVwKtOnJ/TuKNrWVAjluxnWqH96ecqAKUwkFwAVkra', 2, true, '1999-12-09'),
-       (gen_random_uuid(), 'staff10@gmail.com', 'MALE', 'STAFF 10', 'I am',
+       (gen_random_uuid(), 'staff10@gmail.com', 'MALE', 'Muoi', 'Nguyen Van',
         '$2a$10$MEo.Zw55GDOEVwKtOnJ/TuKNrWVAjluxnWqH96ecqAKUwkFwAVkra', 2, true, '1999-12-10'),
 
 
-       (gen_random_uuid(), 'supporter@gmail.com', 'MALE', 'Supporter', 'I am',
+       (gen_random_uuid(), 'supporter@gmail.com', 'MALE', 'B', 'Nguyen Van',
         '$2a$10$MEo.Zw55GDOEVwKtOnJ/TuKNrWVAjluxnWqH96ecqAKUwkFwAVkra', 2, true, '1999-12-10');
 
 --SCORE
