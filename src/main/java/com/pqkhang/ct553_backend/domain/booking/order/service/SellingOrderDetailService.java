@@ -12,5 +12,7 @@ import java.util.List;
 public interface SellingOrderDetailService {
     List<SellingOrderDetail> createSellingOrderDetail(String sellingOrderId, @Valid List<SellingOrderDetailDTO> sellingOrderDetailDTOList) throws ResourceNotFoundException;
 
+    void updateWeightInSellingOrderDetail(@Valid List<SellingOrderDetailDTO> sellingOrderDetailDTOList) throws ResourceNotFoundException;
+
     List<SellingOrderDetailDTO> getAllOrderDetailByOrderId(String orderId) throws ResourceNotFoundException;
 }

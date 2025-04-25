@@ -27,6 +27,8 @@ public class SellingOrderDetail {
 
     Double quantity;
 
+    Double totalWeight;
+
     BigDecimal unitPrice;
 
     BigDecimal totalPrice;

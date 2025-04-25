@@ -14,6 +14,7 @@ import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/v1/selling_orders")
 @RequiredArgsConstructor
@@ -49,7 +51,8 @@ public class SellingOrderController {
         OrderStatusEnum orderStatusEnum = OrderStatusEnum.valueOf(sellingOrderDTO.getOrderStatus());
         PaymentStatusEnum paymentStatusEnum = PaymentStatusEnum.valueOf(sellingOrderDTO.getPaymentStatus());
 
-        sellingOrderService.updateSellingOrderStatus(sellingOrderId, orderStatusEnum, paymentStatusEnum);
+        sellingOrderService.updateSellingOrderStatus(sellingOrderId, orderStatusEnum, paymentStatusEnum, sellingOrderDTO.getSellingOrderDetails());
+
         return ApiResponse.<Void>builder()
                 .status(HttpStatus.OK.value())
                 .success(true)
