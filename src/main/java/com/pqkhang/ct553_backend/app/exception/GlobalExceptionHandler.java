@@ -51,7 +51,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     })
     public ResponseEntity<ApiResponse<Object>> handleLoginException(Exception ex) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                .body(createErrorResponse(HttpStatus.UNAUTHORIZED, ex.getMessage()));
+                .body(createErrorResponse(HttpStatus.UNAUTHORIZED, "Email hoặc mật khẩu không đúng!"));
+//                .body(createErrorResponse(HttpStatus.UNAUTHORIZED, ex.getMessage()));
     }
 
     @ExceptionHandler(value = {
